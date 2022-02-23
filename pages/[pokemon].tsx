@@ -5,10 +5,11 @@ import { Container, Row, Col } from "react-bootstrap";
 import StatsChart from "../components/chart";
 import { capFirstLetter } from "../utils/helpers";
 import * as https from "https";
+import UsageDetails, { UsageDetailsType } from "../components/usageDetails";
 
 type PokeDetailsProps = {
   data: Pokedex.Pokemon | string;
-  usage: any;
+  usage: UsageDetailsType;
 };
 
 const PokeDetails = ({ data, usage }: PokeDetailsProps) => {
@@ -35,6 +36,11 @@ const PokeDetails = ({ data, usage }: PokeDetailsProps) => {
             <StatsChart stats={stats} />
           </Col>
         </Row>
+        <Row>
+          <UsageDetails {...usage} />
+
+          <p>{JSON.stringify(usage, null, 2)}</p>
+        </Row>
       </Container>
       <Container>{JSON.stringify(data, null, 2)}</Container>
     </main>
@@ -52,7 +58,9 @@ const getUsageStats = async (pokemon: string) => {
       });
 
       res.on("end", () => {
-        resolve(data);
+        const obj = JSON.parse(data);
+
+        resolve(obj);
       });
     });
   });
