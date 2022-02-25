@@ -8,8 +8,8 @@ const Search = () => {
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
-
-    router.push(`/${formVal}`);
+    const str = formVal.replace(/\s+/g, '-').toLowerCase();
+    router.push(`/${str}`);
   };
 
   return (

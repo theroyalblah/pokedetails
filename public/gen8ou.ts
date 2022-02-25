@@ -1,4 +1,4 @@
-export const gen8stats = {
+const gen8stats = {
   battles: 1024667,
   pokemon: {
     "Landorus-Therian": {
@@ -111496,3 +111496,5 @@ export const gen8stats = {
     },
   },
 };
+
+export default gen8stats;

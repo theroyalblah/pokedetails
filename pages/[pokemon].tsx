@@ -4,27 +4,30 @@ import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import StatsChart from "../components/chart";
 import { capFirstLetter } from "../utils/helpers";
-import * as https from "https";
-import UsageDetails, { UsageDetailsType } from "../components/usageDetails";
+import UsageDetails, { SmogonStats } from "../components/usageDetails";
 import Search from "../components/search";
+import Image from "next/image";
+import { Smogon } from "@pkmn/smogon";
+import { Generations } from "@pkmn/data";
+import { Dex } from "@pkmn/dex";
 
 type PokeDetailsProps = {
   data: Pokedex.Pokemon | string | undefined;
-  ouUsage: UsageDetailsType;
+  smogonStats: SmogonStats;
 };
 
-const PokeDetails = ({ data, ouUsage }: PokeDetailsProps) => {
+const PokeDetails = ({ data, smogonStats }: PokeDetailsProps) => {
   if (!data || typeof data === "string") {
     return (
       <>
-        We didn't find anything with that name
+        We didn&lsquo;t find anything with that name
         <Search />
       </>
     );
   }
 
   const { name, stats } = data;
-  console.log(ouUsage);
+
   return (
     <main className="poke-details">
       <Container>
@@ -33,68 +36,88 @@ const PokeDetails = ({ data, ouUsage }: PokeDetailsProps) => {
         <Row>
           <Col sm={3}>
             <h2>Sprites</h2>
-            <img src={data.sprites.front_default ?? ""} />
-            <img src={data.sprites.front_shiny ?? ""} />
-            <img src={data.sprites.back_default ?? ""} />
-            <img src={data.sprites.back_shiny ?? ""} />
+            {data.sprites.front_default ? (
+              <Image
+                width={120}
+                height={120}
+                alt="front default"
+                src={data.sprites.front_default}
+              />
+            ) : null}
+            {data.sprites.front_shiny ? (
+              <Image
+                width={120}
+                height={120}
+                alt="front shiny"
+                src={data.sprites.front_shiny ?? ""}
+              />
+            ) : null}
+            {data.sprites.back_default ? (
+              <Image
+                width={120}
+                height={120}
+                alt="back default"
+                src={data.sprites.back_default ?? ""}
+              />
+            ) : null}
+            {data.sprites.back_shiny ? (
+              <Image
+                width={120}
+                height={120}
+                alt="back shiny"
+                src={data.sprites.back_shiny ?? ""}
+              />
+            ) : null}
           </Col>
           <Col sm={9}>
             <StatsChart stats={stats} />
           </Col>
         </Row>
         <Row>
-          {!ouUsage?.error ? (
-            <UsageDetails {...ouUsage} />
+          {!smogonStats?.error ? (
+            <UsageDetails {...smogonStats} />
           ) : (
-            <p>Looks like there's no usage in gen 8 OU :(</p>
+            <p>Looks like there&lsquo;s no usage in gen 8 OU :(</p>
           )}
         </Row>
+        <Search />
       </Container>
-      <Container>{JSON.stringify(data, null, 2)}</Container>
     </main>
   );
 };
 
-const getUsageStats = async (pokemon: string) => {
-  const url = `https://smogon-usage-stats.herokuapp.com/gen8ou/${pokemon}`;
-
-  return new Promise((resolve) => {
-    https.get(url, (res) => {
-      let data = "";
-      res.on("data", (chunk) => {
-        data += chunk;
-      });
-
-      res.on("end", () => {
-        const obj = JSON.parse(data);
-
-        resolve(obj);
-      });
-    });
-  });
-};
-
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const pokemon = query.pokemon;
+  const pokemon = (query.pokemon as string).toLowerCase();
   const P = new Pokedex();
 
-  try {
-    const pokedata = await P.getPokemonByName(pokemon as string);
-    const ouUsage = await getUsageStats(pokemon as string);
+  const gens = new Generations(Dex);
+  const smogon = new Smogon(fetch);
 
+  const pokedata = await P.getPokemonByName(pokemon);
+  const smogonStats = await smogon.stats(gens.get(8), pokemon);
+
+  if (!pokedata) {
     return {
       props: {
-        data: pokedata,
-        ouUsage: ouUsage,
-      },
-    };
-  } catch (error) {
-    return {
-      props: {
-        error: "pokemon not found",
+        error: "Looks like this pokemon does not exist",
       },
     };
   }
+
+  if (pokedata && !smogonStats) {
+    return {
+      props: {
+        data: pokedata,
+        smogonStats: { error: `This pokemon isn't used in gen 8 ou :( ` },
+      },
+    };
+  }
+  return {
+    props: {
+      data: pokedata,
+      smogonStats: smogonStats,
+    },
+  };
 };
 
 export default PokeDetails;
