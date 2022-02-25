@@ -6,23 +6,29 @@ import StatsChart from "../components/chart";
 import { capFirstLetter } from "../utils/helpers";
 import * as https from "https";
 import UsageDetails, { UsageDetailsType } from "../components/usageDetails";
+import Search from "../components/search";
 
 type PokeDetailsProps = {
-  data: Pokedex.Pokemon | string;
-  usage: UsageDetailsType;
+  data: Pokedex.Pokemon | string | undefined;
+  ouUsage: UsageDetailsType;
 };
 
-const PokeDetails = ({ data, usage }: PokeDetailsProps) => {
-  if (typeof data === "string") {
-    return <>{data}</>;
+const PokeDetails = ({ data, ouUsage }: PokeDetailsProps) => {
+  if (!data || typeof data === "string") {
+    return (
+      <>
+        We didn't find anything with that name
+        <Search />
+      </>
+    );
   }
 
   const { name, stats } = data;
-  console.log(usage);
-
+  console.log(ouUsage);
   return (
     <main className="poke-details">
       <Container>
+        <Search />
         <h1>{capFirstLetter(name)}</h1>
         <Row>
           <Col sm={3}>
@@ -37,9 +43,11 @@ const PokeDetails = ({ data, usage }: PokeDetailsProps) => {
           </Col>
         </Row>
         <Row>
-          <UsageDetails {...usage} />
-
-          <p>{JSON.stringify(usage, null, 2)}</p>
+          {!ouUsage?.error ? (
+            <UsageDetails {...ouUsage} />
+          ) : (
+            <p>Looks like there's no usage in gen 8 OU :(</p>
+          )}
         </Row>
       </Container>
       <Container>{JSON.stringify(data, null, 2)}</Container>
@@ -72,12 +80,12 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 
   try {
     const pokedata = await P.getPokemonByName(pokemon as string);
-    const usage = await getUsageStats(pokemon as string);
+    const ouUsage = await getUsageStats(pokemon as string);
 
     return {
       props: {
         data: pokedata,
-        usage: usage,
+        ouUsage: ouUsage,
       },
     };
   } catch (error) {
