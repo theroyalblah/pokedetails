@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { GetServerSideProps } from "next";
 import Pokedex from "pokedex-promise-v2";
 import React from "react";
@@ -6,7 +7,6 @@ import StatsChart from "../components/chart";
 import { capFirstLetter } from "../utils/helpers";
 import UsageDetails, { SmogonStats } from "../components/usageDetails";
 import Search from "../components/search";
-import Image from "next/image";
 import { Smogon } from "@pkmn/smogon";
 import { Generations } from "@pkmn/data";
 import { Dex } from "@pkmn/dex";
@@ -37,7 +37,7 @@ const PokeDetails = ({ data, smogonStats }: PokeDetailsProps) => {
           <Col sm={3}>
             <h2>Sprites</h2>
             {data.sprites.front_default ? (
-              <Image
+              <img
                 width={120}
                 height={120}
                 alt="front default"
@@ -45,7 +45,7 @@ const PokeDetails = ({ data, smogonStats }: PokeDetailsProps) => {
               />
             ) : null}
             {data.sprites.front_shiny ? (
-              <Image
+              <img
                 width={120}
                 height={120}
                 alt="front shiny"
@@ -53,7 +53,7 @@ const PokeDetails = ({ data, smogonStats }: PokeDetailsProps) => {
               />
             ) : null}
             {data.sprites.back_default ? (
-              <Image
+              <img
                 width={120}
                 height={120}
                 alt="back default"
@@ -61,7 +61,7 @@ const PokeDetails = ({ data, smogonStats }: PokeDetailsProps) => {
               />
             ) : null}
             {data.sprites.back_shiny ? (
-              <Image
+              <img
                 width={120}
                 height={120}
                 alt="back shiny"
