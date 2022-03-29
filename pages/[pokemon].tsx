@@ -11,7 +11,6 @@ import { Smogon } from "@pkmn/smogon";
 import { Generations } from "@pkmn/data";
 import { Dex } from "@pkmn/dex";
 import pokemonList from '../utils/allpokemon';
-import prefix from "../utils/prefix";
 
 type PokeDetailsProps = {
   data: Pokedex.Pokemon | string | undefined;
@@ -43,7 +42,7 @@ const PokeDetails = ({ data, smogonStats }: PokeDetailsProps) => {
                 width={120}
                 height={120}
                 alt="front default"
-                src={`${prefix}/data.sprites.front_default`}
+                src={data.sprites.front_default}
               />
             ) : null}
             {data.sprites.front_shiny ? (
@@ -51,7 +50,7 @@ const PokeDetails = ({ data, smogonStats }: PokeDetailsProps) => {
                 width={120}
                 height={120}
                 alt="front shiny"
-                src={`${prefix}/data.sprites.front_shiny`}
+                src={data.sprites.front_shiny ?? ""}
               />
             ) : null}
             {data.sprites.back_default ? (
@@ -59,7 +58,7 @@ const PokeDetails = ({ data, smogonStats }: PokeDetailsProps) => {
                 width={120}
                 height={120}
                 alt="back default"
-                src={`${prefix}/data.sprites.back_default`}
+                src={data.sprites.back_default ?? ""}
               />
             ) : null}
             {data.sprites.back_shiny ? (
@@ -67,7 +66,7 @@ const PokeDetails = ({ data, smogonStats }: PokeDetailsProps) => {
                 width={120}
                 height={120}
                 alt="back shiny"
-                src={`${prefix}/data.sprites.back_shiny`}
+                src={data.sprites.back_shiny ?? ""}
               />
             ) : null}
           </Col>
