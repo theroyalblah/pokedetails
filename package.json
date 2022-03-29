@@ -10,7 +10,7 @@
     "export": "next export"
   },
   "dependencies": {
-    "@pkmn/dex": "^0.5.8",
+    "@pkmn/dex": "^0.5.11",
     "@pkmn/smogon": "^0.0.12",
     "bootstrap": "^5.1.3",
     "next": "12.1.0",

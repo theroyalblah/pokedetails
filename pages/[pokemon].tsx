@@ -124,7 +124,7 @@ export const getStaticProps: GetServerSideProps = async ({ params }) => {
 
 export async function getStaticPaths() {
   const pokemonPaths = pokemonList.map((poke) => {
-    return `/${poke.toLowerCase()}`
+    return `/${poke.toLowerCase().replace(' ', '')}`
   })
   return {
     paths: pokemonPaths,
