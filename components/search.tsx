@@ -13,7 +13,7 @@ const Search = () => {
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit} className='search-bar'>
       <Form.Group>
         <Form.Label>Enter Pokemon</Form.Label>
 
@@ -24,7 +24,7 @@ const Search = () => {
         />
       </Form.Group>
 
-      <Button variant="primary" type="submit">
+      <Button variant="primary" type="submit" className='search-bar__submit-btn'>
         Submit
       </Button>
     </Form>
