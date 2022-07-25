@@ -30,6 +30,12 @@ export type SmogonStats = {
 
 const toPercentageString = (num: number) => `${(num * 100).toFixed(2)}%`;
 
+const createGoodLink = (name: string): string => {
+  let poke = name.toLowerCase();
+  poke = poke.replace(/[^\w\s-]/gi, '');
+  return poke.replace(' ', '-');
+}
+
 const UsageDetails = ({
   usage,
   moves,
@@ -41,7 +47,7 @@ const UsageDetails = ({
 }: SmogonStats) => {
   const countersList = Object.keys(counters);
 
-  const list = (name: string, list: StringPercent, n = 10) => {
+  const list = (name: string, list: StringPercent, n = 10, isLink = false) => {
     const keyList = Object.keys(list);
     return (
       <>
@@ -52,6 +58,14 @@ const UsageDetails = ({
             const listItem = keyList[i];
 
             if (!listItem) return null;
+
+            if (isLink) {
+              return (
+                <li key={listItem}>
+                  <a href={createGoodLink(listItem)}>{listItem} : {toPercentageString(list[listItem])}</a>
+                </li>
+              );
+            }
             return (
               <li key={listItem}>
                 {listItem} : {toPercentageString(list[listItem])}
@@ -65,13 +79,13 @@ const UsageDetails = ({
 
   return (
     <section className="usage">
-      <h2>Gen 8 OU Usage: {toPercentageString(usage.weighted)}</h2>
+      <h3>Usage: {toPercentageString(usage.weighted)}</h3>
 
       <Container>
         <Row>
           <Col sm={4}>{list("Moves", moves, 20)}</Col>
           <Col sm={4}>{list("Items", items, 20)}</Col>
-          <Col sm={4}>{list("Teammates", teammates, 20)}</Col>
+          <Col sm={4}>{list("Teammates", teammates, 20, true)}</Col>
         </Row>
 
         <Row>
@@ -83,7 +97,9 @@ const UsageDetails = ({
 
             <ol>
               {countersList.map((_, i) => (
-                <li key={countersList[i]}>{countersList[i]}</li>
+                <li key={countersList[i]}>
+                  <a href={createGoodLink(createGoodLink(countersList[i]))}>{countersList[i]}</a>
+                </li>
               ))}
             </ol>
           </Col>
