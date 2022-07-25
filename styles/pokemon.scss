@@ -4,4 +4,85 @@
   h1 {
     font-size: 48px;
   }
+
+  .types {
+    & > span {
+      border-radius: 4px;
+      padding: 8px;
+      margin-right: 8px;
+      color: white;
+    }
+
+    &__normal {
+      background-color: #a8a878;
+    }
+
+    &__fire {
+      background-color: #f08030;
+    }
+
+    &__water {
+      background-color: #6890f0;
+    }
+
+    &__grass {
+      background-color: #78c850;
+    }
+
+    &__electric {
+      background-color: #f8d030;
+    }
+
+    &__ice {
+      background-color: #98d8d8;
+    }
+
+    &__fighting {
+      background-color: #c03028;
+    }
+
+    &__poison {
+      background-color: #a040a0;
+    }
+
+    &__ground {
+      background-color: #e0c068;
+    }
+
+    &__flying {
+      background-color: #a890f0;
+    }
+
+    &__psychic {
+      background-color: #f85888;
+    }
+
+    &__bug {
+      background-color: #a8b820;
+    }
+
+    &__rock {
+      background-color: #b8a038;
+    }
+
+    &__ghost {
+      background-color: #705898;
+    }
+
+    &__dark {
+      background-color: #705848;
+    }
+
+    &__dragon {
+      background-color: #7038f8;
+    }
+
+    &__steel {
+      background-color: #b8b8d0;
+    }
+
+    &__fairy {
+      background-color: #f0b6bc;
+    }
+  }
 }
