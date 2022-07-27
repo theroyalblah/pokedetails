@@ -161,11 +161,13 @@ export const getStaticProps: GetServerSideProps = async ({ params }) => {
     .map((format) => (formats.includes(format) ? format : null))
     .filter((e) => !!e);
 
-  const smogonStats = await Promise.all(
+  let smogonStats = await Promise.all(
     availableFormats.map((format) =>
       smogon.stats(gens.get(8), pokemon, format as any)
     )
   );
+
+  smogonStats = smogonStats.filter((e) => !!e);
 
   // smogon's wonky typing is the issue behind this any type, a string is desirable here
   const vgcStats = await smogon.stats(
