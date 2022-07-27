@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { GetServerSideProps } from "next";
-import Pokedex from "pokedex-promise-v2";
+import Pokedex, { Pokemon } from "pokedex-promise-v2";
 import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import StatsChart from "../components/chart";
@@ -11,18 +11,25 @@ import { Smogon } from "@pkmn/smogon";
 import { Generations } from "@pkmn/data";
 import { Dex } from "@pkmn/dex";
 import pokemonList from "../utils/allpokemon";
+import acceptedFormats from "../utils/formats";
 
 type PokeDetailsProps = {
   data: Pokedex.Pokemon | string | undefined;
-  smogonStats: SmogonStats;
+  smogonStats: SmogonStats[];
+  formats: string[];
   vgcStats: SmogonStats;
 };
 
 const capitalize = (s: string) => {
   return s.charAt(0).toUpperCase() + s.slice(1);
-}
+};
 
-const PokeDetails = ({ data, smogonStats, vgcStats }: PokeDetailsProps) => {
+const PokeDetails = ({
+  data,
+  smogonStats,
+  vgcStats,
+  formats,
+}: PokeDetailsProps) => {
   if (!data || typeof data === "string") {
     return (
       <>
@@ -96,17 +103,16 @@ const PokeDetails = ({ data, smogonStats, vgcStats }: PokeDetailsProps) => {
           </Col>
         </Row>
 
-        <Row>
-          {!smogonStats?.error ? (
-            <>
-              <h2>Gen 8 OU</h2>
+        {!!smogonStats &&
+          smogonStats.map((format, i) => {
+            return (
+              <div key={formats[i]}>
+                <h2>{formats[i]}</h2>
 
-              <UsageDetails {...smogonStats} />
-            </>
-          ) : (
-            <p>Looks like there&lsquo;s no usage in gen 8 OU :(</p>
-          )}
-        </Row>
+                <UsageDetails {...format} />
+              </div>
+            );
+          })}
 
         {vgcStats && (
           <>
@@ -129,7 +135,7 @@ const PokeDetails = ({ data, smogonStats, vgcStats }: PokeDetailsProps) => {
 };
 
 export const getStaticProps: GetServerSideProps = async ({ params }) => {
-  const pokemonName = params?.pokemon ?? "";
+  let pokemonName = (params?.pokemon as string) ?? "";
   const pokemon = (pokemonName as string).toLowerCase();
   const P = new Pokedex();
 
@@ -141,10 +147,28 @@ export const getStaticProps: GetServerSideProps = async ({ params }) => {
     pokedata = await P.getPokemonByName(pokemon);
   } catch (e) {}
 
-  const smogonStats = await smogon.stats(gens.get(8), pokemon);
+  if (!!pokedata) {
+    pokemonName = (pokedata as Pokemon)?.name ?? pokemonName;
+  }
+
+  const analyses = await smogon.analyses(gens.get(8), pokemonName);
+  let formats: string[] = [];
+  if (!!analyses) {
+    analyses.forEach((analysis) => formats.push(analysis.format));
+  }
+
+  const availableFormats = acceptedFormats
+    .map((format) => (formats.includes(format) ? format : null))
+    .filter((e) => !!e);
+
+  const smogonStats = await Promise.all(
+    availableFormats.map((format) =>
+      smogon.stats(gens.get(8), pokemon, format as any)
+    )
+  );
 
   // smogon's wonky typing is the issue behind this any type, a string is desirable here
-  let vgcStats = await smogon.stats(
+  const vgcStats = await smogon.stats(
     gens.get(8),
     pokemon,
     "gen8vgc2022" as any
@@ -161,7 +185,10 @@ export const getStaticProps: GetServerSideProps = async ({ params }) => {
   return {
     props: {
       data: pokedata,
-      smogonStats: smogonStats ?? { error: `This pokemon isn't used in gen 8 ou :( ` },
+      formats: availableFormats,
+      smogonStats: smogonStats ?? {
+        error: `This pokemon isn't used in gen 8 ou :( `,
+      },
       vgcStats: vgcStats ?? { error: `This pokemon isn't used in vgc :( ` },
     },
   };
