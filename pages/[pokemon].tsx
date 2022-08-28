@@ -8,16 +8,17 @@ import { capFirstLetter } from "../utils/helpers";
 import UsageDetails, { SmogonStats } from "../components/usageDetails";
 import Search from "../components/search";
 import { Smogon } from "@pkmn/smogon";
-import { Generations } from "@pkmn/data";
+import { Generations, Specie } from "@pkmn/data";
 import { Dex } from "@pkmn/dex";
-import pokemonList from "../utils/allpokemon";
+import pokemonList from "../pokemon.json";
 import acceptedFormats from "../utils/formats";
 
 type PokeDetailsProps = {
-  data: Pokedex.Pokemon | string | undefined;
+  data?: Pokedex.Pokemon | string;
   smogonStats: SmogonStats[];
   formats: string[];
   vgcStats: SmogonStats;
+  species?: Specie;
 };
 
 const capitalize = (s: string) => {
@@ -29,6 +30,7 @@ const PokeDetails = ({
   smogonStats,
   vgcStats,
   formats,
+  species,
 }: PokeDetailsProps) => {
   if (!data || typeof data === "string") {
     return (
@@ -41,13 +43,15 @@ const PokeDetails = ({
 
   const { name, stats, types } = data;
 
+  const pokemonTypes = types ?? [];
+
   return (
     <main className="poke-details">
       <Container>
         <Search />
-        <h1>{capFirstLetter(name)}</h1>
+        <h1>{capFirstLetter(name ?? species?.name)}</h1>
 
-        {types.map((type) => {
+        {pokemonTypes.map((type) => {
           return (
             <span key={type.type.name} className="types">
               <span className={`types__${type.type.name}`}>
@@ -59,48 +63,46 @@ const PokeDetails = ({
 
         <Row>
           <Col sm={3}>
-            <h2>Sprites</h2>
-
-            {data.sprites.front_default ? (
-              <img
-                width={120}
-                height={120}
-                alt="front default"
-                src={data.sprites.front_default}
-              />
-            ) : null}
-
-            {data.sprites.front_shiny ? (
-              <img
-                width={120}
-                height={120}
-                alt="front shiny"
-                src={data.sprites.front_shiny ?? ""}
-              />
-            ) : null}
-
-            {data.sprites.back_default ? (
-              <img
-                width={120}
-                height={120}
-                alt="back default"
-                src={data.sprites.back_default ?? ""}
-              />
-            ) : null}
-
-            {data.sprites.back_shiny ? (
-              <img
-                width={120}
-                height={120}
-                alt="back shiny"
-                src={data.sprites.back_shiny ?? ""}
-              />
-            ) : null}
+            {data.sprites && (
+              <>
+                <h2>Sprites</h2>
+                {data.sprites.front_default ? (
+                  <img
+                    width={120}
+                    height={120}
+                    alt="front default"
+                    src={data.sprites.front_default}
+                  />
+                ) : null}
+                {data.sprites.front_shiny ? (
+                  <img
+                    width={120}
+                    height={120}
+                    alt="front shiny"
+                    src={data.sprites.front_shiny ?? ""}
+                  />
+                ) : null}
+                {data.sprites.back_default ? (
+                  <img
+                    width={120}
+                    height={120}
+                    alt="back default"
+                    src={data.sprites.back_default ?? ""}
+                  />
+                ) : null}
+                {data.sprites.back_shiny ? (
+                  <img
+                    width={120}
+                    height={120}
+                    alt="back shiny"
+                    src={data.sprites.back_shiny ?? ""}
+                  />
+                ) : null}
+              </>
+            )}
           </Col>
 
-          <Col sm={9}>
-            <StatsChart stats={stats} />
-          </Col>
+          <Col sm={9}>{stats && <StatsChart stats={stats} />}</Col>
         </Row>
 
         {!!smogonStats &&
@@ -142,6 +144,15 @@ export const getStaticProps: GetServerSideProps = async ({ params }) => {
   const gens = new Generations(Dex);
   const smogon = new Smogon(fetch);
 
+  const gen8 = gens.get(8);
+  const species = gen8.species.get(pokemon)?.toJSON() ?? {};
+
+  Object.keys(species).forEach((key) => {
+    if (species[key] === undefined) {
+      delete species[key];
+    }
+  });
+
   let pokedata;
   try {
     pokedata = await P.getPokemonByName(pokemon);
@@ -176,18 +187,13 @@ export const getStaticProps: GetServerSideProps = async ({ params }) => {
     "gen8vgc2022" as any
   );
 
-  if (!pokedata) {
-    return {
-      props: {
-        error: "Looks like this pokemon does not exist",
-      },
-    };
-  }
-
   return {
     props: {
-      data: pokedata,
+      data: pokedata ?? {
+        error: `This pokemon isn't available`,
+      },
       formats: availableFormats,
+      species: species,
       smogonStats: smogonStats ?? {
         error: `This pokemon isn't used in gen 8 ou :( `,
       },
@@ -198,7 +204,7 @@ export const getStaticProps: GetServerSideProps = async ({ params }) => {
 
 export async function getStaticPaths() {
   const pokemonPaths = pokemonList.map((poke) => {
-    return `/${poke.toLowerCase().replace(" ", "")}`;
+    return `/${poke}`;
   });
 
   return {
