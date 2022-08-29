@@ -42,12 +42,13 @@ const PokeDetails = ({
   }
 
   const pokemonTypes = species?.types ?? [];
+  const name = data.name ?? species?.name;
 
   return (
     <main className="poke-details">
       <Container>
         <Search />
-        <h1>{capFirstLetter(data.name ?? species?.name)}</h1>
+        {name && <h1>{capFirstLetter(name)}</h1>}
 
         <div className="types-container">
           {pokemonTypes.map((type) => {
