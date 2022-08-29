@@ -49,17 +49,17 @@ const PokeDetails = ({
         <Search />
         <h1>{capFirstLetter(data.name ?? species?.name)}</h1>
 
-        {pokemonTypes.map((type) => {
-          const t = type.toLowerCase();
+        <div className="types-container">
+          {pokemonTypes.map((type) => {
+            const t = type.toLowerCase();
 
-          return (
-            <span key={t} className="types">
-              <span className={`types__${t}`}>
-                {capitalize(t)}
+            return (
+              <span key={t} className="types">
+                <span className={`types__${t}`}>{capitalize(t)}</span>
               </span>
-            </span>
-          );
-        })}
+            );
+          })}
+        </div>
 
         <Row>
           <Col sm={3}>
@@ -102,7 +102,14 @@ const PokeDetails = ({
             )}
           </Col>
 
-          <Col sm={9}>{species?.baseStats && <StatsChart stats={species?.baseStats} bst={((species as unknown) as {bst: number})?.bst} />}</Col>
+          <Col sm={9}>
+            {species?.baseStats && (
+              <StatsChart
+                stats={species?.baseStats}
+                bst={(species as unknown as { bst: number })?.bst}
+              />
+            )}
+          </Col>
         </Row>
 
         {!!smogonStats &&
