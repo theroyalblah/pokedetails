@@ -41,7 +41,7 @@ const PokeDetails = ({
     );
   }
 
-  const { name, stats, types } = data;
+  const { name, types } = data;
 
   const pokemonTypes = types ?? [];
 
@@ -102,7 +102,7 @@ const PokeDetails = ({
             )}
           </Col>
 
-          <Col sm={9}>{stats && <StatsChart stats={stats} />}</Col>
+          <Col sm={9}>{species?.baseStats && <StatsChart stats={species?.baseStats} bst={((species as unknown) as {bst: number})?.bst} />}</Col>
         </Row>
 
         {!!smogonStats &&

@@ -1,38 +1,34 @@
-import Pokedex from "pokedex-promise-v2";
 import React from "react";
 import {
   Bar,
   BarChart,
   CartesianGrid,
-  Legend,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
 
-type StatsChartProps = {
-  stats: Pokedex.StatElement[];
+type Stats = {
+  stats: {
+    hp: number;
+    atk: number;
+    def: number;
+    spa: number;
+    spd: number;
+    spe: number;
+  };
+  bst: number;
 };
 
-const StatsChart = ({ stats }: StatsChartProps) => {
-  const statNames = [
-    "Health",
-    "Attack",
-    "Defense",
-    "Special Attack",
-    "Special Defense",
-    "Speed",
+const StatsChart = ({ stats, bst }: Stats) => {
+  const data = [
+    { name: "Health", stat: stats.hp },
+    { name: "Attack", stat: stats.atk },
+    { name: "Defense", stat: stats.def },
+    { name: "Special Attack", stat: stats.spa },
+    { name: "Special Defense", stat: stats.spd },
+    { name: "Speed", stat: stats.spe },
   ];
-
-  let bst = 0;
-
-  const data = stats.map((stat, i) => {
-    bst += stat.base_stat;
-    return {
-      name: statNames[i],
-      stat: stat.base_stat,
-    };
-  });
 
   return (
     <section className="statChart">

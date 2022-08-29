@@ -11,7 +11,7 @@ const species = gen8.dex.data.Species;
 const pokemonNames = Object.entries(species).map((pkmn) => {
   let name = pkmn[1].name;
   name = name.replace(" ", "-");
-  name = name.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, "");
+  name = name.replace(/[&\/\\#,’+()$~%.'":*?<>{}]/g, "");
   return name.toLowerCase();
 });
 
