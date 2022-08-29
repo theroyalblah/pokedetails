@@ -41,21 +41,21 @@ const PokeDetails = ({
     );
   }
 
-  const { name, types } = data;
-
-  const pokemonTypes = types ?? [];
+  const pokemonTypes = species?.types ?? [];
 
   return (
     <main className="poke-details">
       <Container>
         <Search />
-        <h1>{capFirstLetter(name ?? species?.name)}</h1>
+        <h1>{capFirstLetter(data.name ?? species?.name)}</h1>
 
         {pokemonTypes.map((type) => {
+          const t = type.toLowerCase();
+
           return (
-            <span key={type.type.name} className="types">
-              <span className={`types__${type.type.name}`}>
-                {capitalize(type.type.name)}
+            <span key={t} className="types">
+              <span className={`types__${t}`}>
+                {capitalize(t)}
               </span>
             </span>
           );

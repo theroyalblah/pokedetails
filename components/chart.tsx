@@ -3,6 +3,7 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
+  Cell,
   Tooltip,
   XAxis,
   YAxis,
@@ -30,21 +31,33 @@ const StatsChart = ({ stats, bst }: Stats) => {
     { name: "Speed", stat: stats.spe },
   ];
 
+  const colors = [
+    "#FF5959",
+    "#F5AC78",
+    "#FAE078",
+    "#9DB7F5",
+    "#A7DB8D",
+    "#FA92B2",
+  ];
+
+  let width = 800;
+  if (typeof window !== "undefined") {
+    width = document.getElementById("statChart")?.offsetWidth ?? 800;
+  }
+
   return (
-    <section className="statChart">
+    <section className="statChart" id="statChart">
       <h2>Stats</h2>
       <BarChart width={800} height={250} data={data}>
         <CartesianGrid strokeDasharray="3 3" />
-        <defs>
-          <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="10%" stopColor="#ADD8E6" />
-            <stop offset="90%" stopColor="#82ca9d" />
-          </linearGradient>
-        </defs>
         <XAxis dataKey="name" />
         <YAxis />
         <Tooltip />
-        <Bar dataKey="stat" fill="url(#colorPv)" />
+        <Bar dataKey="stat" fill="#8884d8" label={{ position: "top" }}>
+          {data.map((_entry, index) => (
+            <Cell key={`cell-${index}`} fill={colors[index]} />
+          ))}
+        </Bar>
       </BarChart>
       <p>Base stat total: {bst}</p>
     </section>
