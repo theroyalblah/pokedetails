@@ -40,13 +40,8 @@ const StatsChart = ({ stats, bst }: Stats) => {
     "#FA92B2",
   ];
 
-  let width = 800;
-  if (typeof window !== "undefined") {
-    width = document.getElementById("statChart")?.offsetWidth ?? 800;
-  }
-
   return (
-    <section className="statChart" id="statChart">
+    <section className="statChart">
       <h2>Stats</h2>
       <BarChart width={800} height={250} data={data}>
         <CartesianGrid strokeDasharray="3 3" />
