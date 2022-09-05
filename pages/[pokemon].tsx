@@ -12,6 +12,7 @@ import { Dex } from "@pkmn/dex";
 import pokemonList from "../pokemon.json";
 import acceptedFormats from "../utils/formats";
 import dynamic from "next/dynamic";
+import Head from "next/head";
 
 // nextjs renders this server-side differently than client-side
 // and as a result issues a warning. The workaround is to
@@ -52,110 +53,117 @@ const PokeDetails = ({
   const name = data.name ?? species?.name;
 
   return (
-    <main className="poke-details">
-      <Container>
-        <Search />
-        {name && <h1>{capFirstLetter(name)}</h1>}
+    <>
+      <Head>
+        <title>Pokedetails - {capitalize(name)}</title>
+        <meta property="og:title" content={`Pokedetails - ${name}`} key="title" />
+      </Head>
 
-        <div className="types-container">
-          {pokemonTypes.map((type) => {
-            const t = type.toLowerCase();
+      <main className="poke-details">
+        <Container>
+          <Search />
+          {name && <h1>{capFirstLetter(name)}</h1>}
 
-            return (
-              <span key={t} className="types">
-                <span className={`types__${t}`}>{capitalize(t)}</span>
-              </span>
-            );
-          })}
-        </div>
+          <div className="types-container">
+            {pokemonTypes.map((type) => {
+              const t = type.toLowerCase();
 
-        <Row>
-          <Col sm={3}>
-            {data.sprites && (
-              <>
-                <h2>Sprites</h2>
-                {data.sprites.front_default ? (
-                  <img
-                    width={120}
-                    height={120}
-                    alt="front default"
-                    src={data.sprites.front_default}
-                  />
-                ) : null}
-                {data.sprites.front_shiny ? (
-                  <img
-                    width={120}
-                    height={120}
-                    alt="front shiny"
-                    src={data.sprites.front_shiny ?? ""}
-                  />
-                ) : null}
-                {data.sprites.back_default ? (
-                  <img
-                    width={120}
-                    height={120}
-                    alt="back default"
-                    src={data.sprites.back_default ?? ""}
-                  />
-                ) : null}
-                {data.sprites.back_shiny ? (
-                  <img
-                    width={120}
-                    height={120}
-                    alt="back shiny"
-                    src={data.sprites.back_shiny ?? ""}
-                  />
-                ) : null}
-              </>
-            )}
-          </Col>
+              return (
+                <span key={t} className="types">
+                  <span className={`types__${t}`}>{capitalize(t)}</span>
+                </span>
+              );
+            })}
+          </div>
 
-          <Col sm={9}>
-            {species?.baseStats && (
-              <StatsChart
-                stats={species?.baseStats}
-                bst={(species as unknown as { bst: number })?.bst}
-              />
-            )}
-          </Col>
-        </Row>
-
-        <a
-          href={`https://www.smogon.com/dex/ss/pokemon/${name}`}
-          rel="noreferrer"
-          target="_blank"
-        >
-          View on Smogon
-        </a>
-
-        {!!smogonStats &&
-          smogonStats.map((format, i) => {
-            return (
-              <div key={formats[i]}>
-                <h2>{formats[i]}</h2>
-
-                <UsageDetails {...format} />
-              </div>
-            );
-          })}
-
-        {vgcStats && (
-          <>
-            <h2>VGC 2022 Stats</h2>
-
-            <Row>
-              {!vgcStats?.error ? (
-                <UsageDetails {...vgcStats} />
-              ) : (
-                <p>Looks like there&lsquo;s no usage in vgc :(</p>
+          <Row>
+            <Col sm={3}>
+              {data.sprites && (
+                <>
+                  <h2>Sprites</h2>
+                  {data.sprites.front_default ? (
+                    <img
+                      width={120}
+                      height={120}
+                      alt="front default"
+                      src={data.sprites.front_default}
+                    />
+                  ) : null}
+                  {data.sprites.front_shiny ? (
+                    <img
+                      width={120}
+                      height={120}
+                      alt="front shiny"
+                      src={data.sprites.front_shiny ?? ""}
+                    />
+                  ) : null}
+                  {data.sprites.back_default ? (
+                    <img
+                      width={120}
+                      height={120}
+                      alt="back default"
+                      src={data.sprites.back_default ?? ""}
+                    />
+                  ) : null}
+                  {data.sprites.back_shiny ? (
+                    <img
+                      width={120}
+                      height={120}
+                      alt="back shiny"
+                      src={data.sprites.back_shiny ?? ""}
+                    />
+                  ) : null}
+                </>
               )}
-            </Row>
-          </>
-        )}
+            </Col>
 
-        <Search />
-      </Container>
-    </main>
+            <Col sm={9}>
+              {species?.baseStats && (
+                <StatsChart
+                  stats={species?.baseStats}
+                  bst={(species as unknown as { bst: number })?.bst}
+                />
+              )}
+            </Col>
+          </Row>
+
+          <a
+            href={`https://www.smogon.com/dex/ss/pokemon/${name}`}
+            rel="noreferrer"
+            target="_blank"
+          >
+            View on Smogon
+          </a>
+
+          {!!smogonStats &&
+            smogonStats.map((format, i) => {
+              return (
+                <div key={formats[i]}>
+                  <h2>{formats[i]}</h2>
+
+                  <UsageDetails {...format} />
+                </div>
+              );
+            })}
+
+          {vgcStats && (
+            <>
+              <h2>VGC 2022 Stats</h2>
+
+              <Row>
+                {!vgcStats?.error ? (
+                  <UsageDetails {...vgcStats} />
+                ) : (
+                  <p>Looks like there&lsquo;s no usage in vgc :(</p>
+                )}
+              </Row>
+            </>
+          )}
+
+          <Search />
+        </Container>
+      </main>
+    </>
   );
 };
 
