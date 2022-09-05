@@ -11,14 +11,14 @@ import { Generations, Specie } from "@pkmn/data";
 import { Dex } from "@pkmn/dex";
 import pokemonList from "../pokemon.json";
 import acceptedFormats from "../utils/formats";
-import dynamic from 'next/dynamic'
+import dynamic from "next/dynamic";
 
 // nextjs renders this server-side differently than client-side
 // and as a result issues a warning. The workaround is to
 // only render server side, which is fine.
-const StatsChart = dynamic(import('../components/chart'), {
-  ssr: false
-})
+const StatsChart = dynamic(import("../components/chart"), {
+  ssr: false,
+});
 
 type PokeDetailsProps = {
   data?: Pokedex.Pokemon | string;
