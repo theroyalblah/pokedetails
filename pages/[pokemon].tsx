@@ -120,6 +120,14 @@ const PokeDetails = ({
           </Col>
         </Row>
 
+        <a
+          href={`https://www.smogon.com/dex/ss/pokemon/${name}`}
+          rel="noreferrer"
+          target="_blank"
+        >
+          View on Smogon
+        </a>
+
         {!!smogonStats &&
           smogonStats.map((format, i) => {
             return (
