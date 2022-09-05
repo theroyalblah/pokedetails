@@ -8,6 +8,7 @@ import pokemonList from "../pokemon.json";
 const Search = () => {
   const router = useRouter();
   const [formVal, setFormVal] = useState("");
+  const [isBadInput, setisBadInput] = useState(true);
 
   const handleSubmit = (_e: React.SyntheticEvent, value?: string | null) => {
     const input = value ?? formVal;
@@ -18,14 +19,19 @@ const Search = () => {
     }
   };
 
+  const handleInputChange = (_e: React.SyntheticEvent, newInputValue: string) => {
+    setFormVal(newInputValue)
+    setisBadInput(!pokemonList.includes(newInputValue));
+  }
+
   return (
     <div className="search-bar">
       <Autocomplete
+        freeSolo
         disablePortal
-        id="combo-box-demo"
         options={pokemonList}
         sx={{ width: 300 }}
-        onInputChange={(_e, newInputValue) => setFormVal(newInputValue)}
+        onInputChange={handleInputChange}
         onChange={handleSubmit}
         renderInput={(params) => (
           <TextField
@@ -37,8 +43,9 @@ const Search = () => {
       />
 
       <Button
-        variant="primary"
+        variant={!isBadInput ? "primary" : "secondary"}
         type="submit"
+        disabled={isBadInput}
         onClick={handleSubmit}
         className="search-bar__submit-btn"
       >
