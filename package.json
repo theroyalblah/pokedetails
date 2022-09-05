@@ -11,6 +11,9 @@
     "generate-pokemon": "ts-node-esm ./scripts/generatePokemonList.ts"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
+    "@mui/material": "^5.10.3",
     "@pkmn/dex": "^0.5.11",
     "@pkmn/smogon": "^0.0.12",
     "bootstrap": "^5.1.3",

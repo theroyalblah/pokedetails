@@ -1,34 +1,50 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { Form, Button } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
+import pokemonList from "../pokemon.json";
 
 const Search = () => {
   const router = useRouter();
   const [formVal, setFormVal] = useState("");
 
-  const handleSubmit = (e: React.SyntheticEvent) => {
-    e.preventDefault();
-    const str = formVal.replace(/\s+/g, '-').toLowerCase();
-    router.push(`/${str}`);
+  const handleSubmit = (_e: React.SyntheticEvent, value?: string | null) => {
+    const input = value ?? formVal;
+    const str = input.replace(/\s+/g, "-").toLowerCase();
+
+    if (pokemonList.includes(str)) {
+      router.push(`/${str}`);
+    }
   };
 
   return (
-    <Form onSubmit={handleSubmit} className='search-bar'>
-      <Form.Group>
-        <Form.Label>Enter Pokemon</Form.Label>
+    <div className="search-bar">
+      <Autocomplete
+        disablePortal
+        id="combo-box-demo"
+        options={pokemonList}
+        sx={{ width: 300 }}
+        onInputChange={(_e, newInputValue) => setFormVal(newInputValue)}
+        onChange={handleSubmit}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            onSubmit={handleSubmit}
+            label="Search Pokemon"
+          />
+        )}
+      />
 
-        <Form.Control
-          type="text"
-          placeholder="Enter pokemon"
-          onChange={(e) => setFormVal(e.target.value)}
-        />
-      </Form.Group>
-
-      <Button variant="primary" type="submit" className='search-bar__submit-btn'>
+      <Button
+        variant="primary"
+        type="submit"
+        onClick={handleSubmit}
+        className="search-bar__submit-btn"
+      >
         Submit
       </Button>
-    </Form>
+    </div>
   );
 };
 
