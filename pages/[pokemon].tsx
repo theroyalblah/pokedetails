@@ -3,7 +3,6 @@ import { GetServerSideProps } from "next";
 import Pokedex, { Pokemon } from "pokedex-promise-v2";
 import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import StatsChart from "../components/chart";
 import { capFirstLetter } from "../utils/helpers";
 import UsageDetails, { SmogonStats } from "../components/usageDetails";
 import Search from "../components/search";
@@ -12,6 +11,14 @@ import { Generations, Specie } from "@pkmn/data";
 import { Dex } from "@pkmn/dex";
 import pokemonList from "../pokemon.json";
 import acceptedFormats from "../utils/formats";
+import dynamic from 'next/dynamic'
+
+// nextjs renders this server-side differently than client-side
+// and as a result issues a warning. The workaround is to
+// only render server side, which is fine.
+const StatsChart = dynamic(import('../components/chart'), {
+  ssr: false
+})
 
 type PokeDetailsProps = {
   data?: Pokedex.Pokemon | string;
