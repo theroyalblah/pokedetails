@@ -1,13 +1,5 @@
-import React from "react";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Cell,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Bar, BarChart, Cell, Tooltip, XAxis, YAxis } from "recharts";
+import React, { useState, useEffect } from "react";
 
 type Stats = {
   stats: {
@@ -21,14 +13,36 @@ type Stats = {
   bst: number;
 };
 
+const getWindowWidth = () => window.innerWidth;
+
 const StatsChart = ({ stats, bst }: Stats) => {
-  const data = [
+  const [width, setWidth] = useState(getWindowWidth());
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWidth(getWindowWidth());
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const desktopData = [
     { name: "Health", stat: stats.hp },
     { name: "Attack", stat: stats.atk },
     { name: "Defense", stat: stats.def },
     { name: "Special Attack", stat: stats.spa },
     { name: "Special Defense", stat: stats.spd },
     { name: "Speed", stat: stats.spe },
+  ];
+
+  const mobileData = [
+    { name: "HP", stat: stats.hp },
+    { name: "Atk", stat: stats.atk },
+    { name: "Def", stat: stats.def },
+    { name: "SpA", stat: stats.spa },
+    { name: "SpD", stat: stats.spd },
+    { name: "Spe", stat: stats.spe },
   ];
 
   const colors = [
@@ -40,16 +54,27 @@ const StatsChart = ({ stats, bst }: Stats) => {
     "#FA92B2",
   ];
 
+  const isDesktop = width > 1200;
+  const widthThreshold = 576;
+
   return (
     <section className="statChart">
       <h2>Stats</h2>
-      <BarChart width={800} height={250} data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
+
+      <BarChart
+        width={width > widthThreshold ? width * 0.6 : width - 50}
+        height={250}
+        data={isDesktop ? desktopData : mobileData}
+        margin={{ top: 25 }}
+      >
         <XAxis dataKey="name" />
+
         <YAxis />
+
         <Tooltip />
-        <Bar dataKey="stat" fill="#8884d8" label={{ position: "top" }}>
-          {data.map((_entry, index) => (
+
+        <Bar dataKey="stat" label={{ position: "top" }}>
+          {desktopData.map((_entry, index) => (
             <Cell key={`cell-${index}`} fill={colors[index]} />
           ))}
         </Bar>
