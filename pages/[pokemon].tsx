@@ -55,7 +55,7 @@ const PokeDetails = ({
   return (
     <>
       <Head>
-        <title>Pokedetails - {capitalize(name)}</title>
+        <title>Pokedetails - {!!name ? capitalize(name) : ''}</title>
         <meta property="og:title" content={`Pokedetails - ${name}`} key="title" />
       </Head>
 
