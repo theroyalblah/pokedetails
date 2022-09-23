@@ -56,13 +56,14 @@ const StatsChart = ({ stats, bst }: Stats) => {
 
   const isDesktop = width > 1200;
   const widthThreshold = 576;
+  const largeWidth = (width * 0.6) > 950 ? 950 : width * 0.6;
 
   return (
     <section className="statChart">
       <h2>Stats</h2>
 
       <BarChart
-        width={width > widthThreshold ? width * 0.6 : width - 50}
+        width={width > widthThreshold ? largeWidth : width - 50}
         height={250}
         data={isDesktop ? desktopData : mobileData}
         margin={{ top: 25 }}
