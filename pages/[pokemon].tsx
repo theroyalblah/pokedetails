@@ -29,10 +29,6 @@ type PokeDetailsProps = {
   species?: Specie;
 };
 
-const capitalize = (s: string) => {
-  return s.charAt(0).toUpperCase() + s.slice(1);
-};
-
 const PokeDetails = ({
   data,
   smogonStats,
@@ -55,7 +51,7 @@ const PokeDetails = ({
   return (
     <>
       <Head>
-        <title>Pokedetails - {!!name ? capitalize(name) : ''}</title>
+        <title>Pokedetails - {!!name ? capFirstLetter(name) : ''}</title>
         <meta property="og:title" content={`Pokedetails - ${name}`} key="title" />
       </Head>
 
@@ -70,7 +66,7 @@ const PokeDetails = ({
 
               return (
                 <span key={t} className="types">
-                  <span className={`types__${t}`}>{capitalize(t)}</span>
+                  <span className={`types__${t}`}>{capFirstLetter(t)}</span>
                 </span>
               );
             })}
