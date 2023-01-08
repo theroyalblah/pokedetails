@@ -3,7 +3,7 @@ import { GetServerSideProps } from "next";
 import Pokedex, { Pokemon } from "pokedex-promise-v2";
 import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import { capFirstLetter } from "../utils/helpers";
+import { capFirstLetter, removeDashes } from "../utils/helpers";
 import UsageDetails, { SmogonStats } from "../components/usageDetails";
 import Search from "../components/search";
 import { Smogon } from "@pkmn/smogon";
@@ -48,11 +48,17 @@ const PokeDetails = ({
   const pokemonTypes = species?.types ?? [];
   const name = data.name ?? species?.name;
 
+  
+
   return (
     <>
       <Head>
-        <title>Pokedetails - {!!name ? capFirstLetter(name) : ''}</title>
-        <meta property="og:title" content={`Pokedetails - ${name}`} key="title" />
+        <title>Pokedetails - {!!name ? capFirstLetter(name) : ""}</title>
+        <meta
+          property="og:title"
+          content={`Pokedetails - ${name}`}
+          key="title"
+        />
       </Head>
 
       <main className="poke-details">
@@ -124,7 +130,7 @@ const PokeDetails = ({
           </Row>
 
           <a
-            href={`https://www.smogon.com/dex/ss/pokemon/${name}`}
+            href={`https://www.smogon.com/dex/sv/pokemon/${name}`}
             rel="noreferrer"
             target="_blank"
           >
@@ -144,7 +150,7 @@ const PokeDetails = ({
 
           {vgcStats && (
             <>
-              <h2>VGC 2022 Stats</h2>
+              <h2>VGC 2023 Stats</h2>
 
               <Row>
                 {!vgcStats?.error ? (
@@ -165,20 +171,12 @@ const PokeDetails = ({
 
 export const getStaticProps: GetServerSideProps = async ({ params }) => {
   let pokemonName = (params?.pokemon as string) ?? "";
-  const pokemon = (pokemonName as string).toLowerCase();
+  const pokemon = removeDashes((pokemonName as string).toLowerCase());
   const P = new Pokedex();
 
+  const species = Dex.data.Species[pokemon];
   const gens = new Generations(Dex);
   const smogon = new Smogon(fetch);
-
-  const gen8 = gens.get(8);
-  const species = gen8.species.get(pokemon)?.toJSON() ?? {};
-
-  Object.keys(species).forEach((key) => {
-    if (species[key] === undefined) {
-      delete species[key];
-    }
-  });
 
   let pokedata;
   try {
@@ -189,7 +187,7 @@ export const getStaticProps: GetServerSideProps = async ({ params }) => {
     pokemonName = (pokedata as Pokemon)?.name ?? pokemonName;
   }
 
-  const analyses = await smogon.analyses(gens.get(8), pokemonName);
+  const analyses = await smogon.analyses(gens.get(9), pokemonName);
   let formats: string[] = [];
   if (!!analyses) {
     analyses.forEach((analysis) => formats.push(analysis.format));
@@ -201,7 +199,7 @@ export const getStaticProps: GetServerSideProps = async ({ params }) => {
 
   let smogonStats = await Promise.all(
     availableFormats.map((format) =>
-      smogon.stats(gens.get(8), pokemon, format as any)
+      smogon.stats(gens.get(9), pokemon, format as any)
     )
   );
 
@@ -209,9 +207,9 @@ export const getStaticProps: GetServerSideProps = async ({ params }) => {
 
   // smogon's wonky typing is the issue behind this any type, a string is desirable here
   const vgcStats = await smogon.stats(
-    gens.get(8),
+    gens.get(9),
     pokemon,
-    "gen8vgc2022" as any
+    "gen9vgc2023" as any
   );
 
   return {
@@ -222,7 +220,7 @@ export const getStaticProps: GetServerSideProps = async ({ params }) => {
       formats: availableFormats,
       species: species,
       smogonStats: smogonStats ?? {
-        error: `This pokemon isn't used in gen 8 ou :( `,
+        error: `This pokemon doesn't have any sets on smogon :(`,
       },
       vgcStats: vgcStats ?? { error: `This pokemon isn't used in vgc :( ` },
     },

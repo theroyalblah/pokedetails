@@ -4,9 +4,9 @@ import fs from "fs";
 
 const gens = new Generations(Dex);
 
-const gen8 = gens.get(8);
+const gen9 = gens.get(9);
 
-const species = gen8.dex.data.Species;
+const species = gen9.dex.data.Species;
 
 const pokemonNames = Object.entries(species).map((pkmn) => {
   let name = pkmn[1].name;

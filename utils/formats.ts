@@ -1,11 +1,11 @@
 export const formats = [
-  "gen8ubers",
-  "gen8ou",
-  "gen8uu",
-  "gen8ru",
-  "gen8nu",
-  "gen8pu",
-  "gen8zu",
+  "gen9ubers",
+  "gen9ou",
+  "gen9uu",
+  "gen9ru",
+  "gen9nu",
+  "gen9pu",
+  "gen9zu",
 ];
 
 export default formats;
