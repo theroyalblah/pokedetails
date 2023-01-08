@@ -1,0 +1,1 @@
+{"pageProps":{"data":{"error":"This pokemon isn't available"},"formats":[],"species":{"num":0,"name":"MissingNo.","types":["Bird","Normal"],"baseStats":{"hp":33,"atk":136,"def":0,"spa":6,"spd":6,"spe":29},"abilities":{"0":""},"weightkg":1590.8,"eggGroups":["Undiscovered"]},"smogonStats":[],"vgcStats":{"error":"This pokemon isn't used in vgc :( "}},"__N_SSG":true}
