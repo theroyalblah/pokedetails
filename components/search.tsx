@@ -36,6 +36,7 @@ const Search = () => {
         renderInput={(params) => (
           <TextField
             {...params}
+            name="Search Pokemon"
             onSubmit={handleSubmit}
             label="Search Pokemon"
           />

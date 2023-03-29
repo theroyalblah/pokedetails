@@ -98,7 +98,7 @@ const UsageDetails = ({
             <ol>
               {countersList.map((_, i) => (
                 <li key={countersList[i]}>
-                  <a href={createGoodLink(createGoodLink(countersList[i]))}>{countersList[i]}</a>
+                  <a href={createGoodLink(countersList[i])}>{countersList[i]}</a>
                 </li>
               ))}
             </ol>
