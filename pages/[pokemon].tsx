@@ -218,7 +218,7 @@ export const getStaticProps: GetServerSideProps = async ({ params }) => {
         error: `This pokemon isn't available`,
       },
       formats: availableFormats,
-      species: species,
+      species: species ?? null,
       smogonStats: smogonStats ?? {
         error: `This pokemon doesn't have any sets on smogon :(`,
       },
