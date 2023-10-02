@@ -48,8 +48,6 @@ const PokeDetails = ({
   const pokemonTypes = species?.types ?? [];
   const name = data.name ?? species?.name;
 
-  
-
   return (
     <>
       <Head>
