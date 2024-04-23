@@ -9,7 +9,6 @@ import Search from "../components/search";
 import { Smogon } from "@pkmn/smogon";
 import { Generations, Specie } from "@pkmn/data";
 import { Dex } from "@pkmn/dex";
-import pokemonList from "../pokemon.json";
 import acceptedFormats from "../utils/formats";
 import dynamic from "next/dynamic";
 import Head from "next/head";
@@ -167,8 +166,8 @@ const PokeDetails = ({
   );
 };
 
-export const getStaticProps: GetServerSideProps = async ({ params }) => {
-  let pokemonName = (params?.pokemon as string) ?? "";
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  let pokemonName = (query.pokemon as string) ?? "".toLowerCase();
   const pokemon = removeDashes((pokemonName as string).toLowerCase());
   const P = new Pokedex();
 
@@ -224,16 +223,5 @@ export const getStaticProps: GetServerSideProps = async ({ params }) => {
     },
   };
 };
-
-export async function getStaticPaths() {
-  const pokemonPaths = pokemonList.map((poke) => {
-    return `/${poke}`;
-  });
-
-  return {
-    paths: pokemonPaths,
-    fallback: false,
-  };
-}
 
 export default PokeDetails;
