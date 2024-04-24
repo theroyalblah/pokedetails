@@ -8,20 +8,16 @@ import pokemonList from "../pokemon.json";
 const Search = () => {
   const router = useRouter();
   const [formVal, setFormVal] = useState("");
-  const [isBadInput, setisBadInput] = useState(true);
 
   const handleSubmit = (_e: React.SyntheticEvent, value?: string | null) => {
     const input = value ?? formVal;
     const str = input.replace(/\s+/g, "-").toLowerCase();
 
-    if (pokemonList.includes(str)) {
-      router.push(`/${str}`);
-    }
+    router.push(`/${str}`);
   };
 
   const handleInputChange = (_e: React.SyntheticEvent, newInputValue: string) => {
-    setFormVal(newInputValue)
-    setisBadInput(!pokemonList.includes(newInputValue));
+    setFormVal(newInputValue);
   }
 
   return (
@@ -44,9 +40,8 @@ const Search = () => {
       />
 
       <Button
-        variant={!isBadInput ? "primary" : "secondary"}
+        variant={"primary"}
         type="submit"
-        disabled={isBadInput}
         onClick={handleSubmit}
         className="search-bar__submit-btn"
       >
