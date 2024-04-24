@@ -60,8 +60,11 @@ const PokeDetails = ({
 
       <main className="poke-details">
         <Container>
+          <h1>PokeDetails</h1>
+
           <Search />
-          {name && <h1>{capFirstLetter(name)}</h1>}
+
+          {name && <h2>{capFirstLetter(name)}</h2>}
 
           <div className="types-container">
             {pokemonTypes.map((type) => {
@@ -79,7 +82,7 @@ const PokeDetails = ({
             <Col sm={3}>
               {data.sprites && (
                 <>
-                  <h2>Sprites</h2>
+                  <h3>Sprites</h3>
                   {data.sprites.front_default ? (
                     <img
                       width={120}
@@ -149,7 +152,7 @@ const PokeDetails = ({
 
           {vgcStats && (
             <>
-              <h2>VGC 2023 Stats</h2>
+              <h3>VGC 2023 Stats</h3>
 
               <Row>
                 {!vgcStats?.error ? (
