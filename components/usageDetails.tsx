@@ -32,9 +32,55 @@ const toPercentageString = (num: number) => `${(num * 100).toFixed(2)}%`;
 
 const createGoodLink = (name: string): string => {
   let poke = name.toLowerCase();
-  poke = poke.replace(/[^\w\s-]/gi, '');
-  return poke.replace(' ', '-');
-}
+  poke = poke.replace(/[^\w\s-]/gi, "");
+  return poke.replace(" ", "-");
+};
+
+const colors = [
+  "#FF5959",
+  "#F5AC78",
+  "#FAE078",
+  "#9DB7F5",
+  "#A7DB8D",
+  "#FA92B2",
+];
+
+const handleSpreads = (spreads: StringPercent, n = 10) => {
+  const keyList = Object.keys(spreads);
+  return (
+    <>
+      <h3>Spreads</h3>
+      <ol>
+        {[...Array(n)].map((_, i) => {
+          const listItem = keyList[i];
+
+          if (!listItem) return null;
+
+          const parts = listItem.split(":");
+          const nature = parts[0];
+          const stats = parts[1].split("/");
+
+          const coloredText = stats.map((stat, index) => {
+            return (
+              <>
+                <span key={stat} style={{ color: colors[index] }}>
+                  {stat}
+                </span>
+                {index < stats.length - 1 ? " / " : ""}
+              </>
+            );
+          });
+
+          return (
+            <li key={listItem}>
+              {nature} : {coloredText} : {toPercentageString(spreads[listItem])}
+            </li>
+          );
+        })}
+      </ol>
+    </>
+  );
+};
 
 const UsageDetails = ({
   usage,
@@ -62,7 +108,9 @@ const UsageDetails = ({
             if (isLink) {
               return (
                 <li key={listItem}>
-                  <a href={createGoodLink(listItem)}>{listItem} : {toPercentageString(list[listItem])}</a>
+                  <a href={createGoodLink(listItem)}>
+                    {listItem} : {toPercentageString(list[listItem])}
+                  </a>
                 </li>
               );
             }
@@ -90,7 +138,7 @@ const UsageDetails = ({
 
         <Row>
           <Col sm={4}>{list("Abilities", abilities)}</Col>
-          <Col sm={4}>{list("Spreads", spreads)}</Col>
+          <Col sm={4}>{handleSpreads(spreads)}</Col>
 
           <Col sm={4}>
             <h3>Counters</h3>
@@ -98,7 +146,9 @@ const UsageDetails = ({
             <ol>
               {countersList.map((_, i) => (
                 <li key={countersList[i]}>
-                  <a href={createGoodLink(countersList[i])}>{countersList[i]}</a>
+                  <a href={createGoodLink(countersList[i])}>
+                    {countersList[i]}
+                  </a>
                 </li>
               ))}
             </ol>
