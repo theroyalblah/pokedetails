@@ -30,10 +30,10 @@ export type SmogonStats = {
 
 const toPercentageString = (num: number) => `${(num * 100).toFixed(2)}%`;
 
-const createGoodLink = (name: string): string => {
+const createGoodLink = (name: string, baseUrl = ""): string => {
   let poke = name.toLowerCase();
   poke = poke.replace(/[^\w\s-]/gi, "");
-  return poke.replace(" ", "-");
+  return baseUrl + poke.replace(" ", "-");
 };
 
 const colors = [
@@ -44,6 +44,11 @@ const colors = [
   "#A7DB8D",
   "#FA92B2",
 ];
+
+const SMOGON_ABILITIES_URL = "https://www.smogon.com/dex/sv/abilities/";
+const SMOGON_MOVES_URL = "https://www.smogon.com/dex/sv/moves/";
+const SMOGON_ITEMS_URL = "https://www.smogon.com/dex/sv/items/";
+const INTERNAL_URL = "";
 
 const handleSpreads = (spreads: StringPercent, n = 10) => {
   const keyList = Object.keys(spreads);
@@ -93,8 +98,11 @@ const UsageDetails = ({
 }: SmogonStats) => {
   const countersList = Object.keys(counters);
 
-  const list = (name: string, list: StringPercent, n = 10, isLink = false) => {
+  const list = (name: string, list: StringPercent, n = 10, baseUrl: string) => {
     const keyList = Object.keys(list);
+    const noFollow =
+      baseUrl !== "" ? { rel: "noreferrer noopener", target: "_blank" } : {};
+
     return (
       <>
         <h3>{name}</h3>
@@ -105,18 +113,13 @@ const UsageDetails = ({
 
             if (!listItem) return null;
 
-            if (isLink) {
-              return (
-                <li key={listItem}>
-                  <a href={createGoodLink(listItem)}>
-                    {listItem} : {toPercentageString(list[listItem])}
-                  </a>
-                </li>
-              );
-            }
             return (
               <li key={listItem}>
-                {listItem} : {toPercentageString(list[listItem])}
+                <a href={createGoodLink(listItem, baseUrl)} {...noFollow}>
+                  {listItem}
+                </a>
+
+                <span>: {toPercentageString(list[listItem])}</span>
               </li>
             );
           })}
@@ -131,13 +134,16 @@ const UsageDetails = ({
 
       <Container>
         <Row>
-          <Col sm={4}>{list("Moves", moves, 20)}</Col>
-          <Col sm={4}>{list("Items", items, 20)}</Col>
-          <Col sm={4}>{list("Teammates", teammates, 20, true)}</Col>
+          <Col sm={4}>{list("Moves", moves, 20, SMOGON_MOVES_URL)}</Col>
+          <Col sm={4}>{list("Items", items, 20, SMOGON_ITEMS_URL)}</Col>
+          <Col sm={4}>{list("Teammates", teammates, 20, INTERNAL_URL)}</Col>
         </Row>
 
         <Row>
-          <Col sm={4}>{list("Abilities", abilities)}</Col>
+          <Col sm={4}>
+            {list("Abilities", abilities, 10, SMOGON_ABILITIES_URL)}
+          </Col>
+
           <Col sm={4}>{handleSpreads(spreads)}</Col>
 
           <Col sm={4}>
