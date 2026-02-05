@@ -57,8 +57,6 @@ const StatsChart = ({ stats, bst }: Stats) => {
     stack: 'total',
   }));
 
-  console.log(stats);
-
   return (
     <section className="statChart">
       <h2>Stats</h2>

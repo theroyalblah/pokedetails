@@ -83,38 +83,14 @@ const PokeDetails = ({
               {data.sprites && (
                 <>
                   <h3>Sprites</h3>
-                  {data.sprites.front_default ? (
-                    <img
-                      width={120}
-                      height={120}
-                      alt="front default"
-                      src={data.sprites.front_default}
-                    />
-                  ) : null}
-                  {data.sprites.front_shiny ? (
-                    <img
-                      width={120}
-                      height={120}
-                      alt="front shiny"
-                      src={data.sprites.front_shiny ?? ""}
-                    />
-                  ) : null}
-                  {data.sprites.back_default ? (
-                    <img
-                      width={120}
-                      height={120}
-                      alt="back default"
-                      src={data.sprites.back_default ?? ""}
-                    />
-                  ) : null}
-                  {data.sprites.back_shiny ? (
-                    <img
-                      width={120}
-                      height={120}
-                      alt="back shiny"
-                      src={data.sprites.back_shiny ?? ""}
-                    />
-                  ) : null}
+
+                  <img
+                    width={300}
+                    alt="official artwork"
+                    src={
+                      data.sprites.other["official-artwork"].front_default ?? ""
+                    }
+                  />
                 </>
               )}
             </Col>
@@ -128,6 +104,48 @@ const PokeDetails = ({
               )}
             </Col>
           </Row>
+
+          {data.sprites && (
+            <Row>
+              <Col sm={12}>
+                {data.sprites.front_default ? (
+                  <img
+                    width={120}
+                    height={120}
+                    alt="front default"
+                    src={data.sprites.front_default}
+                  />
+                ) : null}
+
+                {data.sprites.back_default ? (
+                  <img
+                    width={120}
+                    height={120}
+                    alt="back default"
+                    src={data.sprites.back_default ?? ""}
+                  />
+                ) : null}
+
+                {data.sprites.front_shiny ? (
+                  <img
+                    width={120}
+                    height={120}
+                    alt="front shiny"
+                    src={data.sprites.front_shiny ?? ""}
+                  />
+                ) : null}
+
+                {data.sprites.back_shiny ? (
+                  <img
+                    width={120}
+                    height={120}
+                    alt="back shiny"
+                    src={data.sprites.back_shiny ?? ""}
+                  />
+                ) : null}
+              </Col>
+            </Row>
+          )}
 
           <div className="divider" />
 
@@ -148,6 +166,8 @@ const PokeDetails = ({
                   <h2>{formats[i]}</h2>
 
                   <UsageDetails {...format} />
+
+                  <div className="divider" />
                 </div>
               );
             })}
@@ -184,7 +204,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 
   let pokedata;
   try {
-    pokedata = await P.getPokemonByName(pokemon);
+    pokedata = await P.getPokemonByName(pokemonName);
   } catch (e) {}
 
   if (!!pokedata) {
@@ -203,8 +223,8 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 
   let smogonStats = await Promise.all(
     availableFormats.map((format) =>
-      smogon.stats(gens.get(9), pokemon, format as any)
-    )
+      smogon.stats(gens.get(9), pokemon, format as any),
+    ),
   );
 
   smogonStats = smogonStats.filter((e) => !!e);
@@ -213,7 +233,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const vgcStats = await smogon.stats(
     gens.get(9),
     pokemon,
-    "gen9vgc2023" as any
+    "gen9vgc2025" as any,
   );
 
   return {
