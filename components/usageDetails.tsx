@@ -45,44 +45,73 @@ const colors = [
   "#FA92B2",
 ];
 
+const colorNames = ["HP", "ATK", "DEF", "SPA", "SPD", "SPE"];
+
 const SMOGON_ABILITIES_URL = "https://www.smogon.com/dex/sv/abilities/";
 const SMOGON_MOVES_URL = "https://www.smogon.com/dex/sv/moves/";
 const SMOGON_ITEMS_URL = "https://www.smogon.com/dex/sv/items/";
 const INTERNAL_URL = "";
 
-const handleSpreads = (spreads: StringPercent, n = 10) => {
-  const keyList = Object.keys(spreads);
+const handleSpreads = (spreads: StringPercent, n = 5) => {
+  const keyList = Object.keys(spreads).slice(0, n);
+
+  const borderBottom = "2px solid #444";
+  const padding = "8px";
+
   return (
     <>
       <h3>Spreads</h3>
-      <ol>
-        {[...Array(n)].map((_, i) => {
-          const listItem = keyList[i];
 
-          if (!listItem) return null;
+      <table
+        style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.9em" }}
+      >
+        <thead>
+          <tr>
+            <th style={{ padding, borderBottom }}>Nature</th>
 
-          const parts = listItem.split(":");
-          const nature = parts[0];
-          const stats = parts[1].split("/");
+            {colorNames.map((name, index) => (
+              <th
+                key={name}
+                style={{
+                  padding,
+                  textAlign: "center",
+                  borderBottom,
+                  color: colors[index],
+                }}
+              >
+                {name}
+              </th>
+            ))}
 
-          const coloredText = stats.map((stat, index) => {
+            <th style={{ padding, borderBottom }}>Usage</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {keyList.map((listItem) => {
+            const parts = listItem.split(":");
+            const nature = parts[0];
+            const stats = parts[1].split("/");
+
             return (
-              <>
-                <span key={stat} style={{ color: colors[index] }}>
-                  {stat}
-                </span>
-                {index < stats.length - 1 ? " / " : ""}
-              </>
+              <tr key={listItem} style={{ borderBottom: "1px solid #333" }}>
+                <td style={{ padding }}>{nature}</td>
+                {colors.map((color, index) => (
+                  <td
+                    key={index}
+                    style={{ padding, textAlign: "center", color }}
+                  >
+                    {stats[index]}
+                  </td>
+                ))}
+                <td style={{ padding, textAlign: "right" }}>
+                  {toPercentageString(spreads[listItem])}
+                </td>
+              </tr>
             );
-          });
-
-          return (
-            <li key={listItem}>
-              {nature} : {coloredText} : {toPercentageString(spreads[listItem])}
-            </li>
-          );
-        })}
-      </ol>
+          })}
+        </tbody>
+      </table>
     </>
   );
 };
@@ -144,8 +173,6 @@ const UsageDetails = ({
             {list("Abilities", abilities, 10, SMOGON_ABILITIES_URL)}
           </Col>
 
-          <Col sm={4}>{handleSpreads(spreads)}</Col>
-
           <Col sm={4}>
             <h3>Counters</h3>
 
@@ -159,6 +186,8 @@ const UsageDetails = ({
               ))}
             </ol>
           </Col>
+
+          <Col sm={4}>{handleSpreads(spreads)}</Col>
         </Row>
       </Container>
     </section>
