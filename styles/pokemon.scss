@@ -9,6 +9,12 @@
     margin: 16px 0;
   }
 
+  .divider {
+    height: 1px;
+    background-color: #ccc;
+    margin: 16px 0;
+  }
+
   .types {
     & > span {
       border-radius: 4px;

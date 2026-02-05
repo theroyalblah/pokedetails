@@ -1,4 +1,4 @@
-import { Bar, BarChart, Cell, Tooltip, XAxis, YAxis } from "recharts";
+import { BarChart } from "@mui/x-charts/BarChart";
 import React, { useState, useEffect } from "react";
 
 type Stats = {
@@ -27,23 +27,10 @@ const StatsChart = ({ stats, bst }: Stats) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const desktopData = [
-    { name: "Health", stat: stats.hp },
-    { name: "Attack", stat: stats.atk },
-    { name: "Defense", stat: stats.def },
-    { name: "Special Attack", stat: stats.spa },
-    { name: "Special Defense", stat: stats.spd },
-    { name: "Speed", stat: stats.spe },
-  ];
+  const desktopLabels = ["Health", "Attack", "Defense", "Special Attack", "Special Defense", "Speed"];
+  const mobileLabels = ["HP", "Atk", "Def", "SpA", "SpD", "Spe"];
 
-  const mobileData = [
-    { name: "HP", stat: stats.hp },
-    { name: "Atk", stat: stats.atk },
-    { name: "Def", stat: stats.def },
-    { name: "SpA", stat: stats.spa },
-    { name: "SpD", stat: stats.spd },
-    { name: "Spe", stat: stats.spe },
-  ];
+  const statValues = [stats.hp, stats.atk, stats.def, stats.spa, stats.spd, stats.spe];
 
   const colors = [
     "#FF5959",
@@ -58,29 +45,35 @@ const StatsChart = ({ stats, bst }: Stats) => {
   const widthThreshold = 576;
   const largeWidth = (width * 0.6) > 950 ? 950 : width * 0.6;
 
+  const baseStatTotal = bst ? bst : stats.hp + stats.atk + stats.def + stats.spa + stats.spd + stats.spe;
+
+  const labels = isDesktop ? desktopLabels : mobileLabels;
+
+  const series = statValues.map((value, index) => ({
+    data: statValues.map((_, i) => (i === index ? value : 0)),
+    label: labels[index],
+    id: `stat-${index}`,
+    color: colors[index],
+    stack: 'total',
+  }));
+
+  console.log(stats);
+
   return (
     <section className="statChart">
       <h2>Stats</h2>
 
       <BarChart
+        xAxis={[{ 
+          scaleType: "band", 
+          data: labels
+        }]}
+        series={series}
         width={width > widthThreshold ? largeWidth : width - 50}
         height={250}
-        data={isDesktop ? desktopData : mobileData}
-        margin={{ top: 25 }}
-      >
-        <XAxis dataKey="name" />
-
-        <YAxis />
-
-        <Tooltip />
-
-        <Bar dataKey="stat" label={{ position: "top" }}>
-          {desktopData.map((_entry, index) => (
-            <Cell key={`cell-${index}`} fill={colors[index]} />
-          ))}
-        </Bar>
-      </BarChart>
-      <p>Base stat total: {bst}</p>
+        slotProps={{ tooltip: { trigger: 'item' } }}
+      />
+      <p>Base Stat Total (BST): {baseStatTotal}</p>
     </section>
   );
 };

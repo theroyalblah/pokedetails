@@ -129,6 +129,8 @@ const PokeDetails = ({
             </Col>
           </Row>
 
+          <div className="divider" />
+
           {!!name && (
             <a
               href={`https://www.smogon.com/dex/sv/pokemon/${name}`}
@@ -152,7 +154,7 @@ const PokeDetails = ({
 
           {vgcStats && (
             <>
-              <h3>VGC 2023 Stats</h3>
+              <h3>VGC Stats</h3>
 
               <Row>
                 {!vgcStats?.error ? (
