@@ -21,13 +21,22 @@ type TeamBuilderProps = {
   error?: string;
 };
 
-const TeamBuilder = ({ mainPokemon, teammates, otherTeammates, error }: TeamBuilderProps) => {
+const TeamBuilder = ({
+  mainPokemon,
+  teammates,
+  otherTeammates,
+  error,
+}: TeamBuilderProps) => {
   if (error || !mainPokemon) {
     return (
       <>
         <Head>
           <title>Pokedetails - Team Builder</title>
-          <meta property="og:title" content="Pokedetails - Team Builder" key="title" />
+          <meta
+            property="og:title"
+            content="Pokedetails - Team Builder"
+            key="title"
+          />
         </Head>
 
         <main className="poke-details">
@@ -42,14 +51,17 @@ const TeamBuilder = ({ mainPokemon, teammates, otherTeammates, error }: TeamBuil
     );
   }
 
-  const mainPokemonName = typeof mainPokemon.data === "string" 
-    ? "" 
-    : mainPokemon.data?.name ?? mainPokemon.species?.name ?? "";
+  const mainPokemonName =
+    typeof mainPokemon.data === "string"
+      ? ""
+      : (mainPokemon.data?.name ?? mainPokemon.species?.name ?? "");
 
   return (
     <>
       <Head>
-        <title>Pokedetails - Team Builder - {capFirstLetter(mainPokemonName)}</title>
+        <title>
+          Pokedetails - Team Builder - {capFirstLetter(mainPokemonName)}
+        </title>
         <meta
           property="og:title"
           content={`Pokedetails - Team Builder - ${mainPokemonName}`}
@@ -64,10 +76,7 @@ const TeamBuilder = ({ mainPokemon, teammates, otherTeammates, error }: TeamBuil
 
           <Row className="mb-4">
             <Col sm={12}>
-              <PokemonCard 
-                pokemonData={mainPokemon} 
-                name={mainPokemonName}
-              />
+              <PokemonCard pokemonData={mainPokemon} name={mainPokemonName} />
             </Col>
           </Row>
 
@@ -81,7 +90,7 @@ const TeamBuilder = ({ mainPokemon, teammates, otherTeammates, error }: TeamBuil
 
               return (
                 <Col key={teammate.name} sm={12} md={6} lg={4} className="mb-4">
-                  <PokemonCard 
+                  <PokemonCard
                     pokemonData={teammate.data}
                     name={teammate.name}
                     usage={teammate.usage}
@@ -94,13 +103,19 @@ const TeamBuilder = ({ mainPokemon, teammates, otherTeammates, error }: TeamBuil
                 </Col>
               );
             })}
-            
+
             {otherTeammates && Object.keys(otherTeammates).length > 0 && (
               <Col sm={12} md={6} lg={4} className="mb-4">
-                <Card style={{ backgroundColor: "#2a2a2a", border: "1px solid #444", height: "100%" }}>
+                <Card
+                  style={{
+                    backgroundColor: "#2a2a2a",
+                    border: "1px solid #444",
+                    height: "100%",
+                  }}
+                >
                   <Card.Body>
-                    <UsageList 
-                      title="Other Teammates" 
+                    <UsageList
+                      title="Other Teammates"
                       data={otherTeammates}
                       count={10}
                       baseUrl=""
@@ -129,9 +144,13 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   }
 
   try {
-    const mainPokemonData = await fetchPokemon(pokemonName);
+    const results = await fetchPokemon([pokemonName]);
+    const mainPokemonData = results[0];
 
-    if (typeof mainPokemonData.data === "string" || !mainPokemonData.smogonStats.length) {
+    if (
+      typeof mainPokemonData.data === "string" ||
+      !mainPokemonData.smogonStats.length
+    ) {
       return {
         props: {
           error: "Could not find that Pokémon or it has no usage stats",
@@ -143,8 +162,9 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     const firstFormatStats = mainPokemonData.smogonStats[0];
     const teammates = firstFormatStats?.teammates || {};
 
-    const sortedTeammateNames = Object.keys(teammates)
-      .sort((a, b) => teammates[b] - teammates[a]);
+    const sortedTeammateNames = Object.keys(teammates).sort(
+      (a, b) => teammates[b] - teammates[a],
+    );
 
     const topTeammateNames = sortedTeammateNames.slice(0, 5);
     const otherTeammateNames = sortedTeammateNames.slice(5, 20);
@@ -154,24 +174,18 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
       otherTeammates[name] = teammates[name];
     });
 
-    const teammateDataPromises = topTeammateNames.map(async (name) => {
-      try {
-        const normalizedName = normalizePokemonName(name);
-        const data = await fetchPokemon(normalizedName);
-        return {
-          name,
-          usage: teammates[name],
-          data,
-        };
-      } catch (e) {
-        return {
-          name,
-          usage: teammates[name],
-        };
-      }
-    });
+    // Normalize all teammate names and fetch them all at once
+    const normalizedTeammateNames = topTeammateNames.map((name) =>
+      normalizePokemonName(name),
+    );
 
-    const teammatesWithData = await Promise.all(teammateDataPromises);
+    const teammateDataArray = await fetchPokemon(normalizedTeammateNames);
+
+    const teammatesWithData = topTeammateNames.map((name, index) => ({
+      name,
+      usage: teammates[name],
+      data: teammateDataArray[index],
+    }));
 
     return {
       props: {

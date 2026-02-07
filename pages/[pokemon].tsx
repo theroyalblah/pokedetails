@@ -200,10 +200,10 @@ const PokeDetails = ({
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const pokemonName = (query.pokemon as string) ?? "".toLowerCase();
 
-  const result = await fetchPokemon(pokemonName);
+  const results = await fetchPokemon([pokemonName]);
 
   return {
-    props: result,
+    props: results[0],
   };
 };
 

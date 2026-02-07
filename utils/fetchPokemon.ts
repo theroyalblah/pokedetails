@@ -14,56 +14,69 @@ export type PokemonData = {
   species?: Specie;
 };
 
-export async function fetchPokemon(pokemonName: string): Promise<PokemonData> {
-  const pokemon = removeDashes(pokemonName.toLowerCase());
+export async function fetchPokemon(pokemonNames: string[]): Promise<PokemonData[]> {
   const P = new Pokedex();
-
-  const species = Dex.data.Species[pokemon];
   const gens = new Generations(Dex);
   const smogon = new Smogon(fetch);
 
-  let pokedata;
-  try {
-    pokedata = await P.getPokemonByName(pokemonName);
-  } catch (e) {}
-
-  if (!!pokedata) {
-    pokemonName = (pokedata as Pokemon)?.name ?? pokemonName;
+  // Fetch all pokemon data at once
+  const pokeDataArray = await P.getPokemonByName(pokemonNames).catch(() => []);
+  const pokeDataMap = new Map<string, Pokedex.Pokemon>();
+  
+  if (Array.isArray(pokeDataArray)) {
+    pokeDataArray.forEach((poke) => {
+      if (poke && typeof poke !== 'string') {
+        pokeDataMap.set(poke.name.toLowerCase(), poke);
+      }
+    });
   }
 
-  const analyses = await smogon.analyses(gens.get(9), pokemonName);
-  let formats: string[] = [];
-  if (!!analyses) {
-    analyses.forEach((analysis) => formats.push(analysis.format));
-  }
+  // Process each pokemon
+  const results = await Promise.all(
+    pokemonNames.map(async (pokemonName) => {
+      const pokemon = removeDashes(pokemonName.toLowerCase());
+      const species = Dex.data.Species[pokemon];
 
-  const availableFormats = acceptedFormats
-    .map((format) => (formats.includes(format) ? format : null))
-    .filter((e) => !!e);
+      const pokedata = pokeDataMap.get(pokemonName.toLowerCase());
+      const finalPokemonName = pokedata?.name ?? pokemonName;
 
-  let smogonStats = await Promise.all(
-    availableFormats.map((format) =>
-      smogon.stats(gens.get(9), pokemon, format as any),
-    ),
+      const analyses = await smogon.analyses(gens.get(9), finalPokemonName);
+      let formats: string[] = [];
+      if (!!analyses) {
+        analyses.forEach((analysis) => formats.push(analysis.format));
+      }
+
+      const availableFormats = acceptedFormats
+        .map((format) => (formats.includes(format) ? format : null))
+        .filter((e) => !!e);
+
+      let smogonStats = await Promise.all(
+        availableFormats.map((format) =>
+          smogon.stats(gens.get(9), pokemon, format as any),
+        ),
+      );
+
+      smogonStats = smogonStats.filter((e) => !!e);
+
+      const vgcStats = await smogon.stats(
+        gens.get(9),
+        pokemon,
+        "gen9vgc2025" as any,
+      );
+
+      return {
+        data: pokedata ?? ({
+          error: `This pokemon isn't available`,
+        } as any),
+        formats: availableFormats as string[],
+        species: (species ?? null) as any,
+        smogonStats: (smogonStats ?? {
+          error: `This pokemon doesn't have any sets on smogon :(`,
+        }) as any,
+        vgcStats: (vgcStats ?? { error: `This pokemon isn't used in vgc :( ` }) as any,
+      };
+    })
   );
 
-  smogonStats = smogonStats.filter((e) => !!e);
-
-  const vgcStats = await smogon.stats(
-    gens.get(9),
-    pokemon,
-    "gen9vgc2025" as any,
-  );
-
-  return {
-    data: pokedata ?? ({
-      error: `This pokemon isn't available`,
-    } as any),
-    formats: availableFormats as string[],
-    species: (species ?? null) as any,
-    smogonStats: (smogonStats ?? {
-      error: `This pokemon doesn't have any sets on smogon :(`,
-    }) as any,
-    vgcStats: (vgcStats ?? { error: `This pokemon isn't used in vgc :( ` }) as any,
-  };
+  return results;
 }
