@@ -62,7 +62,7 @@ const StatsChart = ({ stats, bst, isSmall }: Stats) => {
     ? bst
     : stats.hp + stats.atk + stats.def + stats.spa + stats.spd + stats.spe;
 
-  const labels = isDesktop ? desktopLabels : mobileLabels;
+  const labels = isDesktop && !isSmall ? desktopLabels : mobileLabels;
 
   const series = statValues.map((value, index) => ({
     data: statValues.map((_, i) => (i === index ? value : 0)),
