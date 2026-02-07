@@ -18,6 +18,7 @@ type TeamBuilderProps = {
   otherTeammates?: {
     [key: string]: number;
   };
+  format?: string;
   error?: string;
 };
 
@@ -25,6 +26,7 @@ const TeamBuilder = ({
   mainPokemon,
   teammates,
   otherTeammates,
+  format,
   error,
 }: TeamBuilderProps) => {
   if (error || !mainPokemon) {
@@ -80,7 +82,10 @@ const TeamBuilder = ({
             </Col>
           </Row>
 
-          <h2>{capFirstLetter(mainPokemonName)}&apos;s Top Teammates</h2>
+          <h2>
+            {capFirstLetter(mainPokemonName)}&apos;s Top Teammates
+            {format && ` for ${format}`}
+          </h2>
 
           <Row>
             {teammates.map((teammate) => {
@@ -191,6 +196,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
         mainPokemon: mainPokemonData,
         teammates: teammatesWithData,
         otherTeammates,
+        format: mainPokemonData.formats[0] || null,
       },
     };
   } catch (error) {
