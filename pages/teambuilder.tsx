@@ -72,7 +72,7 @@ const TeamBuilder = ({
       <main className="poke-details">
         <Container>
           <h1>Team Builder</h1>
-          <Search route="/teambuilder?pokemon" />
+          <Search route="/teambuilder" />
 
           <Row className="mb-4">
             <Col sm={12}>
@@ -133,7 +133,6 @@ const TeamBuilder = ({
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const pokemonName = query.pokemon as string;
-  console.log("Fetching data for:", pokemonName);
 
   if (!pokemonName) {
     return {
