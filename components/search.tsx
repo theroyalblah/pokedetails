@@ -5,7 +5,11 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import pokemonList from "../pokemon.json";
 
-const Search = () => {
+type SearchProps = {
+  route?: string;
+};
+
+const Search = ({ route = "" }: SearchProps) => {
   const router = useRouter();
   const [formVal, setFormVal] = useState("");
 
@@ -13,7 +17,11 @@ const Search = () => {
     const input = value ?? formVal;
     const str = input.replace(/\s+/g, "-").toLowerCase();
 
-    router.push(`/${str}`);
+    if (route) {
+      router.push(`${route}?pokemon=${str}`);
+    } else {
+      router.push(`/${str}`);
+    }
   };
 
   const handleInputChange = (_e: React.SyntheticEvent, newInputValue: string) => {

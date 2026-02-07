@@ -1,0 +1,97 @@
+import { Card } from "react-bootstrap";
+import { capFirstLetter } from "../utils/helpers";
+import { PokemonData } from "../utils/fetchPokemon";
+import dynamic from "next/dynamic";
+
+const StatsChart = dynamic(() => import("./chart"), {
+  ssr: false,
+});
+
+type PokemonCardProps = {
+  pokemonData: PokemonData;
+  name: string;
+  usage?: number;
+  isSmall?: boolean;
+};
+
+const PokemonCard = ({
+  pokemonData,
+  name,
+  usage,
+  isSmall,
+}: PokemonCardProps) => {
+  const pokemonName =
+    typeof pokemonData.data === "string"
+      ? name
+      : (pokemonData.data?.name ?? pokemonData.species?.name ?? name);
+
+  const species = pokemonData.species;
+  const pokemonTypes = species?.types ?? [];
+  const sprite =
+    typeof pokemonData.data !== "string"
+      ? pokemonData.data?.sprites?.other["official-artwork"]?.front_default
+      : null;
+
+  return (
+    <Card
+      style={{
+        backgroundColor: "#2a2a2a",
+        border: "1px solid #444",
+        height: "100%",
+      }}
+    >
+      <Card.Body>
+        <Card.Title style={{ color: "#e0e0e0" }}>
+          {capFirstLetter(pokemonName)}
+        </Card.Title>
+        {usage !== undefined && (
+          <Card.Subtitle className="mb-2" style={{ color: "#b0b0b0" }}>
+            Usage: {(usage * 100).toFixed(2)}%
+          </Card.Subtitle>
+        )}
+
+        <div className="types-container">
+          {pokemonTypes.map((type) => {
+            const t = type.toLowerCase();
+            return (
+              <span key={t} className="types">
+                <span className={`types__${t}`}>{capFirstLetter(t)}</span>
+              </span>
+            );
+          })}
+        </div>
+
+        {sprite && (
+          <div style={{ textAlign: "center", marginTop: "16px" }}>
+            <img
+              src={sprite}
+              alt={pokemonName}
+              style={{ maxWidth: "200px", height: "auto" }}
+            />
+          </div>
+        )}
+
+        {species?.baseStats && (
+          <div style={{ marginTop: "16px" }}>
+            <StatsChart
+              stats={species.baseStats}
+              bst={(species as unknown as { bst: number })?.bst}
+              isSmall={isSmall}
+            />
+          </div>
+        )}
+
+        <div style={{ marginTop: "16px" }}>
+          <a
+            href={`/${pokemonName.toLowerCase()}`}
+            style={{ color: "#6b9bd1" }}
+          >
+            View Details →
+          </a>
+        </div>
+      </Card.Body>
+    </Card>
+  );
+};
+
+export default PokemonCard;

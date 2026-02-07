@@ -1,17 +1,15 @@
 /* eslint-disable @next/next/no-img-element */
 import { GetServerSideProps } from "next";
-import Pokedex, { Pokemon } from "pokedex-promise-v2";
+import Pokedex from "pokedex-promise-v2";
 import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import { capFirstLetter, removeDashes } from "../utils/helpers";
+import { capFirstLetter } from "../utils/helpers";
 import UsageDetails, { SmogonStats } from "../components/usageDetails";
 import Search from "../components/search";
-import { Smogon } from "@pkmn/smogon";
-import { Generations, Specie } from "@pkmn/data";
-import { Dex } from "@pkmn/dex";
-import acceptedFormats from "../utils/formats";
+import { Specie } from "@pkmn/data";
 import dynamic from "next/dynamic";
 import Head from "next/head";
+import { fetchPokemon } from "../utils/fetchPokemon";
 
 // nextjs renders this server-side differently than client-side
 // and as a result issues a warning. The workaround is to
@@ -97,10 +95,16 @@ const PokeDetails = ({
 
             <Col sm={9}>
               {species?.baseStats && (
-                <StatsChart
-                  stats={species?.baseStats}
-                  bst={(species as unknown as { bst: number })?.bst}
-                />
+                <>
+                  <section className="statChart">
+                    <h2>Stats</h2>
+
+                    <StatsChart
+                      stats={species?.baseStats}
+                      bst={(species as unknown as { bst: number })?.bst}
+                    />
+                  </section>
+                </>
               )}
             </Col>
           </Row>
@@ -194,60 +198,12 @@ const PokeDetails = ({
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  let pokemonName = (query.pokemon as string) ?? "".toLowerCase();
-  const pokemon = removeDashes((pokemonName as string).toLowerCase());
-  const P = new Pokedex();
+  const pokemonName = (query.pokemon as string) ?? "".toLowerCase();
 
-  const species = Dex.data.Species[pokemon];
-  const gens = new Generations(Dex);
-  const smogon = new Smogon(fetch);
-
-  let pokedata;
-  try {
-    pokedata = await P.getPokemonByName(pokemonName);
-  } catch (e) {}
-
-  if (!!pokedata) {
-    pokemonName = (pokedata as Pokemon)?.name ?? pokemonName;
-  }
-
-  const analyses = await smogon.analyses(gens.get(9), pokemonName);
-  let formats: string[] = [];
-  if (!!analyses) {
-    analyses.forEach((analysis) => formats.push(analysis.format));
-  }
-
-  const availableFormats = acceptedFormats
-    .map((format) => (formats.includes(format) ? format : null))
-    .filter((e) => !!e);
-
-  let smogonStats = await Promise.all(
-    availableFormats.map((format) =>
-      smogon.stats(gens.get(9), pokemon, format as any),
-    ),
-  );
-
-  smogonStats = smogonStats.filter((e) => !!e);
-
-  // smogon's wonky typing is the issue behind this any type, a string is desirable here
-  const vgcStats = await smogon.stats(
-    gens.get(9),
-    pokemon,
-    "gen9vgc2025" as any,
-  );
+  const result = await fetchPokemon(pokemonName);
 
   return {
-    props: {
-      data: pokedata ?? {
-        error: `This pokemon isn't available`,
-      },
-      formats: availableFormats,
-      species: species ?? null,
-      smogonStats: smogonStats ?? {
-        error: `This pokemon doesn't have any sets on smogon :(`,
-      },
-      vgcStats: vgcStats ?? { error: `This pokemon isn't used in vgc :( ` },
-    },
+    props: result,
   };
 };
 

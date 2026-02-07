@@ -11,11 +11,12 @@ type Stats = {
     spe: number;
   };
   bst: number;
+  isSmall?: boolean;
 };
 
 const getWindowWidth = () => window.innerWidth;
 
-const StatsChart = ({ stats, bst }: Stats) => {
+const StatsChart = ({ stats, bst, isSmall }: Stats) => {
   const [width, setWidth] = useState(getWindowWidth());
 
   useEffect(() => {
@@ -27,10 +28,24 @@ const StatsChart = ({ stats, bst }: Stats) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const desktopLabels = ["Health", "Attack", "Defense", "Special Attack", "Special Defense", "Speed"];
+  const desktopLabels = [
+    "Health",
+    "Attack",
+    "Defense",
+    "Special Attack",
+    "Special Defense",
+    "Speed",
+  ];
   const mobileLabels = ["HP", "Atk", "Def", "SpA", "SpD", "Spe"];
 
-  const statValues = [stats.hp, stats.atk, stats.def, stats.spa, stats.spd, stats.spe];
+  const statValues = [
+    stats.hp,
+    stats.atk,
+    stats.def,
+    stats.spa,
+    stats.spd,
+    stats.spe,
+  ];
 
   const colors = [
     "#FF5959",
@@ -42,10 +57,10 @@ const StatsChart = ({ stats, bst }: Stats) => {
   ];
 
   const isDesktop = width > 1200;
-  const widthThreshold = 576;
-  const largeWidth = (width * 0.6) > 950 ? 950 : width * 0.6;
 
-  const baseStatTotal = bst ? bst : stats.hp + stats.atk + stats.def + stats.spa + stats.spd + stats.spe;
+  const baseStatTotal = bst
+    ? bst
+    : stats.hp + stats.atk + stats.def + stats.spa + stats.spd + stats.spe;
 
   const labels = isDesktop ? desktopLabels : mobileLabels;
 
@@ -54,25 +69,25 @@ const StatsChart = ({ stats, bst }: Stats) => {
     label: labels[index],
     id: `stat-${index}`,
     color: colors[index],
-    stack: 'total',
+    stack: "total",
   }));
 
   return (
-    <section className="statChart">
-      <h2>Stats</h2>
-
+    <>
       <BarChart
-        xAxis={[{ 
-          scaleType: "band", 
-          data: labels
-        }]}
+        xAxis={[
+          {
+            scaleType: "band",
+            data: labels,
+          },
+        ]}
+        hideLegend={true}
         series={series}
-        width={width > widthThreshold ? largeWidth : width - 50}
-        height={250}
-        slotProps={{ tooltip: { trigger: 'item' } }}
+        height={isSmall ? 150 : 300}
+        slotProps={{ tooltip: { trigger: "item" } }}
       />
-      <p>Base Stat Total (BST): {baseStatTotal}</p>
-    </section>
+      <p style={{textAlign: "center"}}>Base Stat Total (BST): {baseStatTotal}</p>
+    </>
   );
 };
 
