@@ -77,6 +77,8 @@ const TeamBuilder = ({ mainPokemon, teammates, otherTeammates, error }: TeamBuil
             {teammates.map((teammate) => {
               if (!teammate.data) return null;
 
+              const firstFormatStats = teammate.data.smogonStats?.[0];
+
               return (
                 <Col key={teammate.name} sm={12} md={6} lg={4} className="mb-4">
                   <PokemonCard 
@@ -84,6 +86,10 @@ const TeamBuilder = ({ mainPokemon, teammates, otherTeammates, error }: TeamBuil
                     name={teammate.name}
                     usage={teammate.usage}
                     isSmall={true}
+                    moves={firstFormatStats?.moves}
+                    items={firstFormatStats?.items}
+                    abilities={firstFormatStats?.abilities}
+                    spreads={firstFormatStats?.spreads}
                   />
                 </Col>
               );

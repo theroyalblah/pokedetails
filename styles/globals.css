@@ -21,3 +21,40 @@ a:hover {
 * {
   box-sizing: border-box;
 }
+
+/* Dark mode Accordion styling */
+.accordion.accordion-dark {
+  border: 1px solid #555;
+  border-radius: 0.375rem;
+  overflow: hidden;
+}
+
+.accordion.accordion-dark .accordion-item {
+  background-color: transparent;
+  border: none;
+}
+
+.accordion.accordion-dark .accordion-button {
+  background-color: #414040;
+  color: #e0e0e0;
+  border: none;
+  box-shadow: none;
+}
+
+.accordion.accordion-dark .accordion-button:not(.collapsed) {
+  background-color: #414040;
+  color: #e0e0e0;
+}
+
+.accordion.accordion-dark .accordion-button:hover {
+  background-color: #333;
+}
+
+.accordion.accordion-dark .accordion-button:focus {
+  box-shadow: none;
+  border-color: transparent;
+}
+
+.accordion.accordion-dark .accordion-button::after {
+  filter: invert(1);
+}
