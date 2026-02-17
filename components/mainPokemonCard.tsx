@@ -20,6 +20,8 @@ type MainPokemonCardProps = {
   abilities?: StringPercent;
   spreads?: StringPercent;
   showSprites?: boolean;
+  linkUrl?: string;
+  linkText?: string;
 };
 
 const SMALL_POKEMON_IMAGE_SIZE = 120;
@@ -39,11 +41,16 @@ const MainPokemonCard = ({
   abilities,
   spreads,
   showSprites = false,
+  linkUrl,
+  linkText,
 }: MainPokemonCardProps) => {
   const pokemonName =
     typeof pokemonData.data === "string"
       ? name
       : (pokemonData.data?.name ?? pokemonData.species?.name ?? name);
+
+  const filledInLinkUrl = linkUrl || `/${pokemonName.toLowerCase()}`;
+  const filledInLinkText = linkText || "View Details →";
 
   const species = pokemonData.species;
   const pokemonTypes = species?.types ?? [];
@@ -172,10 +179,10 @@ const MainPokemonCard = ({
 
         <div style={{ marginTop: "16px" }}>
           <a
-            href={`/${pokemonName.toLowerCase()}`}
+            href={filledInLinkUrl}
             style={{ color: "#6b9bd1" }}
           >
-            View Details →
+            {filledInLinkText}
           </a>
         </div>
       </Card.Body>

@@ -61,6 +61,8 @@ const PokeDetails = ({
                 abilities={smogonStats[0]?.abilities}
                 spreads={smogonStats[0]?.spreads}
                 showSprites={true}
+                linkUrl={`/teambuilder?pokemon=${name?.toLowerCase()}`}
+                linkText="Build a team with this Pokémon →"
               />
             </Col>
           </Row>
