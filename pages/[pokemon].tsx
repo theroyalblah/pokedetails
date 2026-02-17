@@ -68,7 +68,7 @@ const PokeDetails = ({
                 abilities={smogonStats[0]?.abilities}
                 spreads={smogonStats[0]?.spreads}
                 showSprites={true}
-                linkUrl={`/teambuilder?pokemon=${name?.toLowerCase()}`}
+                linkUrl={`/teambuilder?pokemon=${name?.toLowerCase()}&gen=${currentGeneration}`}
                 linkText="Build a team with this Pokémon →"
               />
             </Col>
@@ -80,7 +80,7 @@ const PokeDetails = ({
                 <div key={formats[i]}>
                   <h2>{formats[i]}</h2>
 
-                  <UsageDetails {...format} />
+                  <UsageDetails {...format} currentGeneration={currentGeneration} />
 
                   <div className="divider" />
                 </div>
@@ -93,7 +93,7 @@ const PokeDetails = ({
 
               <Row>
                 {!vgcStats?.error ? (
-                  <UsageDetails {...vgcStats} />
+                  <UsageDetails {...vgcStats} currentGeneration={currentGeneration} />
                 ) : (
                   <p>Looks like there&lsquo;s no usage in vgc :(</p>
                 )}

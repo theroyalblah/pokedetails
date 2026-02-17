@@ -1,5 +1,6 @@
 import { Container, Row, Col } from "react-bootstrap";
 import UsageList from "./usageList";
+import { createLinkWithGeneration } from "../utils/helpers";
 
 type SmogonPercent = {
   raw: number;
@@ -30,12 +31,6 @@ export type SmogonStats = {
 };
 
 const toPercentageString = (num: number) => `${(num * 100).toFixed(2)}%`;
-
-const createGoodLink = (name: string, baseUrl = ""): string => {
-  let poke = name.toLowerCase();
-  poke = poke.replace(/[^\w\s-]/gi, "");
-  return baseUrl + poke.replace(" ", "-");
-};
 
 const colors = [
   "#FF5959",
@@ -125,7 +120,8 @@ const UsageDetails = ({
   abilities,
   items,
   spreads,
-}: SmogonStats) => {
+  currentGeneration,
+}: SmogonStats & { currentGeneration?: number }) => {
   const countersList = Object.keys(counters);
 
   return (
@@ -141,7 +137,13 @@ const UsageDetails = ({
             <UsageList title="Items" data={items} count={20} baseUrl={SMOGON_ITEMS_URL} />
           </Col>
           <Col sm={4}>
-            <UsageList title="Teammates" data={teammates} count={20} baseUrl={INTERNAL_URL} />
+            <UsageList 
+              title="Teammates" 
+              data={teammates} 
+              count={20} 
+              baseUrl={INTERNAL_URL} 
+              currentGeneration={currentGeneration}
+            />
           </Col>
         </Row>
 
@@ -156,7 +158,7 @@ const UsageDetails = ({
             <ol>
               {countersList.map((_, i) => (
                 <li key={countersList[i]}>
-                  <a href={createGoodLink(countersList[i])}>
+                  <a href={createLinkWithGeneration(countersList[i], "", currentGeneration)}>
                     {countersList[i]}
                   </a>
                 </li>

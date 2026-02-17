@@ -22,6 +22,7 @@ type PokemonCardProps = {
   items?: StringPercent;
   abilities?: StringPercent;
   spreads?: StringPercent;
+  currentGeneration?: number;
 };
 
 const PokemonCard = ({
@@ -33,6 +34,7 @@ const PokemonCard = ({
   items,
   abilities,
   spreads,
+  currentGeneration = 9,
 }: PokemonCardProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -134,7 +136,7 @@ const PokemonCard = ({
 
         <div style={{ marginTop: "16px" }}>
           <a
-            href={`/${pokemonName.toLowerCase()}`}
+            href={`/${pokemonName.toLowerCase()}?gen=${currentGeneration}`}
             style={{ color: "#6b9bd1" }}
           >
             View Details →

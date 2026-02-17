@@ -121,6 +121,7 @@ const TeamBuilder = ({
                     items={firstFormatStats?.items}
                     abilities={firstFormatStats?.abilities}
                     spreads={firstFormatStats?.spreads}
+                    currentGeneration={currentGeneration}
                   />
                 </Col>
               );

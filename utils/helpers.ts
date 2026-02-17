@@ -3,6 +3,25 @@ export const capFirstLetter = (text: string): string =>
 
 export const removeDashes = (text: string): string => text.replace("-", "");
 
+export const createGoodLink = (name: string, baseUrl = ""): string => {
+  let poke = name.toLowerCase();
+  poke = poke.replace(/[^\w\s-]/gi, "");
+  return baseUrl + poke.replace(" ", "-");
+};
+
+export const createLinkWithGeneration = (
+  name: string,
+  baseUrl = "",
+  currentGeneration?: number
+): string => {
+  const link = createGoodLink(name, baseUrl);
+  // Only add generation param for internal links (empty baseUrl)
+  if (baseUrl === "" && currentGeneration) {
+    return `${link}?gen=${currentGeneration}`;
+  }
+  return link;
+};
+
 import pokemonList from "../pokemon.json";
 
 export const normalizePokemonName = (name: string): string => {

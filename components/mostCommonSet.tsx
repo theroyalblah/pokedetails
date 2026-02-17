@@ -1,3 +1,5 @@
+import { createGoodLink } from "../utils/helpers";
+
 type StringPercent = {
   [key: string]: number;
 };
@@ -17,12 +19,6 @@ const colors = [
   "#A7DB8D",
   "#FA92B2",
 ];
-
-const createGoodLink = (name: string, baseUrl = ""): string => {
-  let poke = name.toLowerCase();
-  poke = poke.replace(/[^\w\s-]/gi, "");
-  return baseUrl + poke.replace(" ", "-");
-};
 
 const SMOGON_ABILITIES_URL = "https://www.smogon.com/dex/sv/abilities/";
 const SMOGON_MOVES_URL = "https://www.smogon.com/dex/sv/moves/";

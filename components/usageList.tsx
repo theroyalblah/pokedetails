@@ -1,3 +1,5 @@
+import { createLinkWithGeneration } from "../utils/helpers";
+
 type StringPercent = {
   [key: string]: number;
 };
@@ -7,17 +9,12 @@ type UsageListProps = {
   data: StringPercent;
   count?: number;
   baseUrl?: string;
+  currentGeneration?: number;
 };
 
 const toPercentageString = (num: number) => `${(num * 100).toFixed(2)}%`;
 
-const createGoodLink = (name: string, baseUrl = ""): string => {
-  let poke = name.toLowerCase();
-  poke = poke.replace(/[^\w\s-]/gi, "");
-  return baseUrl + poke.replace(" ", "-");
-};
-
-const UsageList = ({ title, data, count = 10, baseUrl = "" }: UsageListProps) => {
+const UsageList = ({ title, data, count = 10, baseUrl = "", currentGeneration }: UsageListProps) => {
   const keyList = Object.keys(data);
   const noFollow =
     baseUrl !== "" ? { rel: "noreferrer noopener", target: "_blank" } : {};
@@ -34,7 +31,7 @@ const UsageList = ({ title, data, count = 10, baseUrl = "" }: UsageListProps) =>
 
           return (
             <li key={listItem}>
-              <a href={createGoodLink(listItem, baseUrl)} {...noFollow}>
+              <a href={createLinkWithGeneration(listItem, baseUrl, currentGeneration)} {...noFollow}>
                 {listItem}
               </a>
 
