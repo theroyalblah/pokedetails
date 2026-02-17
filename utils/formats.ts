@@ -1,11 +1,13 @@
-export const formats = [
-  "gen9ubers",
-  "gen9ou",
-  "gen9uu",
-  "gen9ru",
-  "gen9nu",
-  "gen9pu",
-  "gen9zu",
+export const tiers = [
+  "ubers",
+  "ou",
+  "uu",
+  "ru",
+  "nu",
+  "pu",
+  "zu",
 ];
 
-export default formats;
+export const getFormatsForGeneration = (generation: number): string[] => {
+  return tiers.map(tier => `gen${generation}${tier}`);
+};

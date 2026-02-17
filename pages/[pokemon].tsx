@@ -7,8 +7,11 @@ import Search from "../components/search";
 import Head from "next/head";
 import { fetchPokemon, PokemonData } from "../utils/fetchPokemon";
 import MainPokemonCard from "../components/mainPokemonCard";
+import GenerationSelector from "../components/generationSelector";
 
-type PokeDetailsProps = PokemonData;
+type PokeDetailsProps = PokemonData & {
+  currentGeneration: number;
+};
 
 const PokeDetails = ({
   data,
@@ -16,6 +19,7 @@ const PokeDetails = ({
   vgcStats,
   formats,
   species,
+  currentGeneration,
 }: PokeDetailsProps) => {
   if (!data || typeof data === "string") {
     return (
@@ -43,7 +47,10 @@ const PokeDetails = ({
         <Container>
           <h1>PokeDetails</h1>
 
-          <Search />
+          <div style={{ display: "flex", gap: "16px", marginBottom: "16px", flexWrap: "wrap" }}>
+            <Search />
+            <GenerationSelector currentGeneration={currentGeneration} />
+          </div>
 
           <Row className="mb-4">
             <Col sm={12}>
@@ -103,11 +110,15 @@ const PokeDetails = ({
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const pokemonName = (query.pokemon as string) ?? "".toLowerCase();
+  const generation = parseInt((query.gen as string) || "9", 10);
 
-  const results = await fetchPokemon([pokemonName]);
+  const results = await fetchPokemon([pokemonName], generation);
 
   return {
-    props: results[0],
+    props: {
+      ...results[0],
+      currentGeneration: generation,
+    },
   };
 };
 

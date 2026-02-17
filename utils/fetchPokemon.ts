@@ -2,7 +2,7 @@ import Pokedex, { Pokemon } from "pokedex-promise-v2";
 import { Smogon } from "@pkmn/smogon";
 import { Generations, Specie } from "@pkmn/data";
 import { Dex } from "@pkmn/dex";
-import acceptedFormats from "./formats";
+import { getFormatsForGeneration } from "./formats";
 import { removeDashes } from "./helpers";
 import { SmogonStats } from "../components/usageDetails";
 
@@ -14,7 +14,10 @@ export type PokemonData = {
   species?: Specie;
 };
 
-export async function fetchPokemon(pokemonNames: string[]): Promise<PokemonData[]> {
+export async function fetchPokemon(
+  pokemonNames: string[], 
+  generation: number = 9
+): Promise<PokemonData[]> {
   const P = new Pokedex();
   const gens = new Generations(Dex);
   const smogon = new Smogon(fetch);
@@ -40,29 +43,31 @@ export async function fetchPokemon(pokemonNames: string[]): Promise<PokemonData[
       const pokedata = pokeDataMap.get(pokemonName.toLowerCase());
       const finalPokemonName = pokedata?.name ?? pokemonName;
 
-      const analyses = await smogon.analyses(gens.get(9), finalPokemonName);
+      const analyses = await smogon.analyses(gens.get(generation), finalPokemonName).catch(() => null);
+
       let formats: string[] = [];
       if (!!analyses) {
         analyses.forEach((analysis) => formats.push(analysis.format));
       }
 
+      const acceptedFormats = getFormatsForGeneration(generation);
       const availableFormats = acceptedFormats
         .map((format) => (formats.includes(format) ? format : null))
         .filter((e) => !!e);
 
       let smogonStats = await Promise.all(
         availableFormats.map((format) =>
-          smogon.stats(gens.get(9), pokemon, format as any),
+          smogon.stats(gens.get(generation), pokemon, format as any).catch(() => null),
         ),
       );
 
       smogonStats = smogonStats.filter((e) => !!e);
 
       const vgcStats = await smogon.stats(
-        gens.get(9),
+        gens.get(generation),
         pokemon,
-        "gen9vgc2025" as any,
-      );
+        `gen${generation}vgc2025` as any,
+      ).catch(() => null);
 
       return {
         data: pokedata ?? ({

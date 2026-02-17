@@ -8,6 +8,7 @@ import { fetchPokemon, PokemonData } from "../utils/fetchPokemon";
 import PokemonCard from "../components/pokemonCard";
 import MainPokemonCard from "../components/mainPokemonCard";
 import UsageList from "../components/usageList";
+import GenerationSelector from "../components/generationSelector";
 
 type TeamBuilderProps = {
   mainPokemon?: PokemonData;
@@ -20,6 +21,7 @@ type TeamBuilderProps = {
     [key: string]: number;
   };
   format?: string;
+  currentGeneration?: number;
   error?: string;
 };
 
@@ -28,6 +30,7 @@ const TeamBuilder = ({
   teammates,
   otherTeammates,
   format,
+  currentGeneration = 9,
   error,
 }: TeamBuilderProps) => {
   if (error || !mainPokemon) {
@@ -45,7 +48,10 @@ const TeamBuilder = ({
         <main className="poke-details">
           <Container>
             <h1>Team Builder</h1>
-            <Search route="/teambuilder" />
+            <div style={{ display: "flex", gap: "16px", marginBottom: "16px", flexWrap: "wrap" }}>
+              <Search route="/teambuilder" />
+              <GenerationSelector currentGeneration={currentGeneration} />
+            </div>
             {error && <p>{error}</p>}
             {!error && <p>Search for a Pokémon to start building a team!</p>}
           </Container>
@@ -75,7 +81,10 @@ const TeamBuilder = ({
       <main className="poke-details">
         <Container>
           <h1>Team Builder</h1>
-          <Search route="/teambuilder" />
+          <div style={{ display: "flex", gap: "16px", marginBottom: "16px", flexWrap: "wrap" }}>
+            <Search route="/teambuilder" />
+            <GenerationSelector currentGeneration={currentGeneration} />
+          </div>
 
           <Row className="mb-4">
             <Col sm={12}>
@@ -146,17 +155,19 @@ const TeamBuilder = ({
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const pokemonName = query.pokemon as string;
+  const generation = parseInt((query.gen as string) || "9", 10);
 
   if (!pokemonName) {
     return {
       props: {
         teammates: [],
+        currentGeneration: generation,
       },
     };
   }
 
   try {
-    const results = await fetchPokemon([pokemonName]);
+    const results = await fetchPokemon([pokemonName], generation);
     const mainPokemonData = results[0];
 
     if (
@@ -167,6 +178,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
         props: {
           error: "Could not find that Pokémon or it has no usage stats",
           teammates: [],
+          currentGeneration: generation,
         },
       };
     }
@@ -191,7 +203,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
       normalizePokemonName(name),
     );
 
-    const teammateDataArray = await fetchPokemon(normalizedTeammateNames);
+    const teammateDataArray = await fetchPokemon(normalizedTeammateNames, generation);
 
     const teammatesWithData = topTeammateNames.map((name, index) => ({
       name,
@@ -205,6 +217,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
         teammates: teammatesWithData,
         otherTeammates,
         format: mainPokemonData.formats[0] || null,
+        currentGeneration: generation,
       },
     };
   } catch (error) {
@@ -212,6 +225,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
       props: {
         error: "An error occurred while fetching Pokémon data",
         teammates: [],
+        currentGeneration: generation,
       },
     };
   }
