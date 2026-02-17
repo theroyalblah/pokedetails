@@ -6,6 +6,7 @@ import Search from "../components/search";
 import Head from "next/head";
 import { fetchPokemon, PokemonData } from "../utils/fetchPokemon";
 import PokemonCard from "../components/pokemonCard";
+import MainPokemonCard from "../components/mainPokemonCard";
 import UsageList from "../components/usageList";
 
 type TeamBuilderProps = {
@@ -78,7 +79,14 @@ const TeamBuilder = ({
 
           <Row className="mb-4">
             <Col sm={12}>
-              <PokemonCard pokemonData={mainPokemon} name={mainPokemonName} />
+              <MainPokemonCard 
+                pokemonData={mainPokemon} 
+                name={mainPokemonName}
+                moves={mainPokemon.smogonStats[0]?.moves}
+                items={mainPokemon.smogonStats[0]?.items}
+                abilities={mainPokemon.smogonStats[0]?.abilities}
+                spreads={mainPokemon.smogonStats[0]?.spreads}
+              />
             </Col>
           </Row>
 
