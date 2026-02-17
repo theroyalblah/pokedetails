@@ -1,30 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
 import { GetServerSideProps } from "next";
-import Pokedex from "pokedex-promise-v2";
-import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { capFirstLetter } from "../utils/helpers";
-import UsageDetails, { SmogonStats } from "../components/usageDetails";
+import UsageDetails from "../components/usageDetails";
 import Search from "../components/search";
-import { Specie } from "@pkmn/data";
-import dynamic from "next/dynamic";
 import Head from "next/head";
-import { fetchPokemon } from "../utils/fetchPokemon";
+import { fetchPokemon, PokemonData } from "../utils/fetchPokemon";
+import MainPokemonCard from "../components/mainPokemonCard";
 
-// nextjs renders this server-side differently than client-side
-// and as a result issues a warning. The workaround is to
-// only render server side, which is fine.
-const StatsChart = dynamic(import("../components/chart"), {
-  ssr: false,
-});
-
-type PokeDetailsProps = {
-  data?: Pokedex.Pokemon | string;
-  smogonStats: SmogonStats[];
-  formats: string[];
-  vgcStats: SmogonStats;
-  species?: Specie;
-};
+type PokeDetailsProps = PokemonData;
 
 const PokeDetails = ({
   data,
@@ -42,7 +26,6 @@ const PokeDetails = ({
     );
   }
 
-  const pokemonTypes = species?.types ?? [];
   const name = data.name ?? species?.name;
 
   return (
@@ -62,94 +45,25 @@ const PokeDetails = ({
 
           <Search />
 
-          {name && <h2>{capFirstLetter(name)}</h2>}
-
-          <div className="types-container">
-            {pokemonTypes.map((type) => {
-              const t = type.toLowerCase();
-
-              return (
-                <span key={t} className="types">
-                  <span className={`types__${t}`}>{capFirstLetter(t)}</span>
-                </span>
-              );
-            })}
-          </div>
-
-          <Row>
-            <Col sm={3}>
-              {data.sprites && (
-                <>
-                  <h3>Sprites</h3>
-
-                  <img
-                    width={300}
-                    alt="official artwork"
-                    src={
-                      data.sprites.other["official-artwork"].front_default ?? ""
-                    }
-                  />
-                </>
-              )}
-            </Col>
-
-            <Col sm={9}>
-              {species?.baseStats && (
-                <>
-                  <section className="statChart">
-                    <h2>Stats</h2>
-
-                    <StatsChart
-                      stats={species?.baseStats}
-                      bst={(species as unknown as { bst: number })?.bst}
-                    />
-                  </section>
-                </>
-              )}
+          <Row className="mb-4">
+            <Col sm={12}>
+              <MainPokemonCard
+                pokemonData={{
+                  data,
+                  smogonStats,
+                  formats,
+                  vgcStats,
+                  species,
+                }}
+                name={name || ""}
+                moves={smogonStats[0]?.moves}
+                items={smogonStats[0]?.items}
+                abilities={smogonStats[0]?.abilities}
+                spreads={smogonStats[0]?.spreads}
+                showSprites={true}
+              />
             </Col>
           </Row>
-
-          {data.sprites && (
-            <Row>
-              <Col sm={12}>
-                {data.sprites.front_default ? (
-                  <img
-                    width={120}
-                    height={120}
-                    alt="front default"
-                    src={data.sprites.front_default}
-                  />
-                ) : null}
-
-                {data.sprites.back_default ? (
-                  <img
-                    width={120}
-                    height={120}
-                    alt="back default"
-                    src={data.sprites.back_default ?? ""}
-                  />
-                ) : null}
-
-                {data.sprites.front_shiny ? (
-                  <img
-                    width={120}
-                    height={120}
-                    alt="front shiny"
-                    src={data.sprites.front_shiny ?? ""}
-                  />
-                ) : null}
-
-                {data.sprites.back_shiny ? (
-                  <img
-                    width={120}
-                    height={120}
-                    alt="back shiny"
-                    src={data.sprites.back_shiny ?? ""}
-                  />
-                ) : null}
-              </Col>
-            </Row>
-          )}
 
           <div className="divider" />
 

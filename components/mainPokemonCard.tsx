@@ -19,6 +19,16 @@ type MainPokemonCardProps = {
   items?: StringPercent;
   abilities?: StringPercent;
   spreads?: StringPercent;
+  showSprites?: boolean;
+};
+
+const SMALL_POKEMON_IMAGE_SIZE = 120;
+
+const boxStyle = {
+  backgroundColor: "#222",
+  padding: "16px",
+  borderRadius: "4px",
+  border: "1px solid #555",
 };
 
 const MainPokemonCard = ({
@@ -28,6 +38,7 @@ const MainPokemonCard = ({
   items,
   abilities,
   spreads,
+  showSprites = false,
 }: MainPokemonCardProps) => {
   const pokemonName =
     typeof pokemonData.data === "string"
@@ -36,10 +47,11 @@ const MainPokemonCard = ({
 
   const species = pokemonData.species;
   const pokemonTypes = species?.types ?? [];
-  const sprite =
-    typeof pokemonData.data !== "string"
-      ? pokemonData.data?.sprites?.other["official-artwork"]?.front_default
-      : null;
+  const data = typeof pokemonData.data !== "string" ? pokemonData.data : null;
+  const sprite = data?.sprites?.other["official-artwork"]?.front_default;
+  const sprites = data?.sprites;
+
+  const showMostCommonSet = moves || items || abilities || spreads;
 
   return (
     <Card
@@ -74,11 +86,63 @@ const MainPokemonCard = ({
                 style={{ maxWidth: "100%", height: "auto" }}
               />
             )}
+
+            {showSprites && sprites && (
+              <div
+                style={{
+                  marginTop: "16px",
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: "8px",
+                }}
+              >
+                {sprites.front_default && (
+                  <img
+                    width={SMALL_POKEMON_IMAGE_SIZE}
+                    height={SMALL_POKEMON_IMAGE_SIZE}
+                    alt="front default"
+                    src={sprites.front_default}
+                  />
+                )}
+
+                {sprites.back_default && (
+                  <img
+                    width={SMALL_POKEMON_IMAGE_SIZE}
+                    height={SMALL_POKEMON_IMAGE_SIZE}
+                    alt="back default"
+                    src={sprites.back_default}
+                  />
+                )}
+
+                {sprites.front_shiny && (
+                  <img
+                    width={SMALL_POKEMON_IMAGE_SIZE}
+                    height={SMALL_POKEMON_IMAGE_SIZE}
+                    alt="front shiny"
+                    src={sprites.front_shiny}
+                  />
+                )}
+
+                {sprites.back_shiny && (
+                  <img
+                    width={SMALL_POKEMON_IMAGE_SIZE}
+                    height={SMALL_POKEMON_IMAGE_SIZE}
+                    alt="back shiny"
+                    src={sprites.back_shiny}
+                  />
+                )}
+              </div>
+            )}
           </Col>
 
           <Col md={7}>
             {species?.baseStats && (
-              <div style={{ marginBottom: "16px" }}>
+              <div
+                style={{
+                  marginBottom: "16px",
+                  ...boxStyle,
+                }}
+              >
                 <StatsChart
                   stats={species.baseStats}
                   bst={(species as unknown as { bst: number })?.bst}
@@ -87,14 +151,9 @@ const MainPokemonCard = ({
               </div>
             )}
 
-            {(moves || items || abilities || spreads) && (
+            {showMostCommonSet && (
               <div
-                style={{
-                  backgroundColor: "#222",
-                  padding: "16px",
-                  borderRadius: "4px",
-                  border: "1px solid #555",
-                }}
+                style={boxStyle}
               >
                 <h5 style={{ color: "#e0e0e0", marginBottom: "12px" }}>
                   Most Common Set
