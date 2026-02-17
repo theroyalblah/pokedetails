@@ -18,6 +18,10 @@ const Home: NextPage = () => {
 
           <Search />
 
+          <h4>Or build a team with the teambuilder: </h4>
+
+          <Search route="/teambuilder" />
+
           <p>
             Powered by{" "}
             <a href="https://github.com/pkmn/smogon">
