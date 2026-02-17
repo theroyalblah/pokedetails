@@ -177,12 +177,21 @@ const MainPokemonCard = ({
           </Col>
         </Row>
 
-        <div style={{ marginTop: "16px" }}>
+        <div style={{ marginTop: "16px", display: "flex", gap: "16px", flexWrap: "wrap" }}>
           <a
             href={filledInLinkUrl}
             style={{ color: "#6b9bd1" }}
           >
             {filledInLinkText}
+          </a>
+          
+          <a
+            href={`https://www.smogon.com/dex/sv/pokemon/${pokemonName.toLowerCase()}`}
+            rel="noreferrer"
+            target="_blank"
+            style={{ color: "#6b9bd1" }}
+          >
+            View on Smogon →
           </a>
         </div>
       </Card.Body>

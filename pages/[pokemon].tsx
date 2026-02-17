@@ -67,18 +67,6 @@ const PokeDetails = ({
             </Col>
           </Row>
 
-          <div className="divider" />
-
-          {!!name && (
-            <a
-              href={`https://www.smogon.com/dex/sv/pokemon/${name}`}
-              rel="noreferrer"
-              target="_blank"
-            >
-              View on Smogon
-            </a>
-          )}
-
           {!!smogonStats &&
             smogonStats.map((format, i) => {
               return (
