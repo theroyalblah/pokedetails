@@ -17,6 +17,7 @@ const PokeDetails = ({
   data,
   smogonStats,
   vgcStats,
+  vgcFormat,
   formats,
   species,
   currentGeneration,
@@ -89,7 +90,7 @@ const PokeDetails = ({
 
           {vgcStats && (
             <>
-              <h3>VGC Stats</h3>
+              <h2>{vgcFormat || 'VGC Stats'}</h2>
 
               <Row>
                 {!vgcStats?.error ? (
