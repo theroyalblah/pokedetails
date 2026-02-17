@@ -33,7 +33,7 @@ const GenerationSelector = ({ currentGeneration = 9 }: GenerationSelectorProps) 
 
   return (
     <FormControl 
-      size="small" 
+      size="medium" 
       sx={{ 
         minWidth: 280,
         backgroundColor: "#2a2a2a",
@@ -59,6 +59,7 @@ const GenerationSelector = ({ currentGeneration = 9 }: GenerationSelectorProps) 
       }}
     >
       <InputLabel id="generation-select-label">Generation</InputLabel>
+
       <Select
         labelId="generation-select-label"
         id="generation-select"

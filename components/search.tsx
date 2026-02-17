@@ -48,7 +48,7 @@ const Search = ({ route = "" }: SearchProps) => {
   }
 
   return (
-    <div className="search-bar" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
       <Autocomplete
         freeSolo
         disablePortal
