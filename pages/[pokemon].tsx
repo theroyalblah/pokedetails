@@ -114,7 +114,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const pokemonName = (query.pokemon as string) ?? "".toLowerCase();
   const generation = parseInt((query.gen as string) || "9", 10);
 
-  const results = await fetchPokemon([pokemonName], generation);
+  const results = await fetchPokemon([pokemonName], generation, true);
 
   return {
     props: {

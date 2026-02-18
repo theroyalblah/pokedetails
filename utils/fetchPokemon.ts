@@ -10,14 +10,15 @@ export type PokemonData = {
   data?: Pokedex.Pokemon | string;
   smogonStats: SmogonStats[];
   formats: string[];
-  vgcStats: SmogonStats;
+  vgcStats?: SmogonStats;
   vgcFormat?: string | null;
   species?: Specie;
 };
 
 export async function fetchPokemon(
   pokemonNames: string[], 
-  generation: number = 9
+  generation: number = 9,
+  includeVGC: boolean = false
 ): Promise<PokemonData[]> {
   const P = new Pokedex();
   const gens = new Generations(Dex);
@@ -57,7 +58,6 @@ export async function fetchPokemon(
         .filter((e) => !!e);
 
       // Find VGC formats from the analyses
-      const vgcFormats = formats.filter(format => format.includes('vgc'));
 
       let smogonStats = await Promise.all(
         availableFormats.map((format) =>
@@ -67,11 +67,13 @@ export async function fetchPokemon(
 
       smogonStats = smogonStats.filter((e) => !!e);
 
-      // Fetch stats for the first VGC format found (usually the most recent)
-      const vgcStats = vgcFormats.length > 0
+      // VGC
+      const vgcFormats = includeVGC ? formats.filter(format => format.includes('vgc')) : [];
+      const vgcStats = includeVGC && vgcFormats.length > 0
         ? await smogon.stats(
             gens.get(generation),
             pokemon,
+            // Fetch stats for the first VGC format found (usually the most recent)
             vgcFormats[0] as any,
           ).catch(() => null)
         : null;
@@ -85,8 +87,10 @@ export async function fetchPokemon(
         smogonStats: (smogonStats ?? {
           error: `This pokemon doesn't have any sets on smogon :(`,
         }) as any,
-        vgcStats: (vgcStats ?? { error: `This pokemon isn't used in vgc :( ` }) as any,
-        vgcFormat: vgcFormats[0] ?? null,
+        ...(includeVGC && {
+          vgcStats: (vgcStats ?? { error: `This pokemon isn't used in vgc :( ` }) as any,
+          vgcFormat: vgcFormats[0] ?? null,
+        }),
       };
     })
   );
