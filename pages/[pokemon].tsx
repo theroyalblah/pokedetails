@@ -8,6 +8,7 @@ import Head from "next/head";
 import { fetchPokemon, PokemonData } from "../utils/fetchPokemon";
 import MainPokemonCard from "../components/mainPokemonCard";
 import GenerationSelector from "../components/generationSelector";
+import PageTitle from "../components/pageTitle";
 
 type PokeDetailsProps = PokemonData & {
   currentGeneration: number;
@@ -46,7 +47,7 @@ const PokeDetails = ({
 
       <main className="poke-details">
         <Container>
-          <h1>PokeDetails</h1>
+          <PageTitle>PokeDetails</PageTitle>
 
           <div style={{ display: "flex", gap: "16px", marginBottom: "16px", flexWrap: "wrap" }}>
             <Search />

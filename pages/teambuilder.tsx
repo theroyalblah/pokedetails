@@ -9,6 +9,7 @@ import PokemonCard from "../components/pokemonCard";
 import MainPokemonCard from "../components/mainPokemonCard";
 import UsageList from "../components/usageList";
 import GenerationSelector from "../components/generationSelector";
+import PageTitle from "../components/pageTitle";
 
 type TeamBuilderProps = {
   mainPokemon?: PokemonData;
@@ -47,7 +48,7 @@ const TeamBuilder = ({
 
         <main className="poke-details">
           <Container>
-            <h1>Team Builder</h1>
+            <PageTitle>Team Builder</PageTitle>
             <div style={{ display: "flex", gap: "16px", marginBottom: "16px", flexWrap: "wrap" }}>
               <Search route="/teambuilder" />
               <GenerationSelector currentGeneration={currentGeneration} />
@@ -80,7 +81,7 @@ const TeamBuilder = ({
 
       <main className="poke-details">
         <Container>
-          <h1>Team Builder</h1>
+          <PageTitle>Team Builder</PageTitle>
           <div style={{ display: "flex", gap: "16px", marginBottom: "16px", flexWrap: "wrap" }}>
             <Search route="/teambuilder" />
             <GenerationSelector currentGeneration={currentGeneration} />
