@@ -11,7 +11,7 @@ export type PokemonData = {
   smogonStats: SmogonStats[];
   formats: string[];
   vgcStats: SmogonStats;
-  vgcFormat?: string;
+  vgcFormat?: string | null;
   species?: Specie;
 };
 
@@ -58,7 +58,6 @@ export async function fetchPokemon(
 
       // Find VGC formats from the analyses
       const vgcFormats = formats.filter(format => format.includes('vgc'));
-      console.log(vgcFormats);
 
       let smogonStats = await Promise.all(
         availableFormats.map((format) =>
@@ -87,7 +86,7 @@ export async function fetchPokemon(
           error: `This pokemon doesn't have any sets on smogon :(`,
         }) as any,
         vgcStats: (vgcStats ?? { error: `This pokemon isn't used in vgc :( ` }) as any,
-        vgcFormat: vgcFormats[0],
+        vgcFormat: vgcFormats[0] ?? null,
       };
     })
   );
