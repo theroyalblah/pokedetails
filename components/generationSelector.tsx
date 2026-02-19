@@ -14,6 +14,52 @@ const GENERATIONS = [
   { value: 1, label: "Generation 1 (Red/Blue)" },
 ];
 
+const FORM_CONTROL_STYLES = {
+  minWidth: 280,
+  backgroundColor: "#2a2a2a",
+  borderRadius: "4px",
+  "& .MuiOutlinedInput-root": {
+    color: "#e0e0e0",
+    "& fieldset": {
+      borderColor: "#555",
+    },
+    "&:hover fieldset": {
+      borderColor: "#6b9bd1",
+    },
+    "&.Mui-focused fieldset": {
+      borderColor: "#6b9bd1",
+    },
+  },
+  "& .MuiInputLabel-root": {
+    color: "#b0b0b0",
+  },
+  "& .MuiSelect-icon": {
+    color: "#e0e0e0",
+  },
+};
+
+const SPINNER_STYLES = {
+  color: "#e0e0e0",
+  marginRight: "12px",
+  display: "flex",
+};
+
+const MENU_PAPER_STYLES = {
+  backgroundColor: "#2a2a2a",
+  color: "#e0e0e0",
+  "& .MuiMenuItem-root": {
+    "&:hover": {
+      backgroundColor: "#3a3a3a",
+    },
+    "&.Mui-selected": {
+      backgroundColor: "#3a3a3a",
+      "&:hover": {
+        backgroundColor: "#4a4a4a",
+      },
+    },
+  },
+};
+
 type GenerationSelectorProps = {
   currentGeneration?: number;
 };
@@ -51,29 +97,7 @@ const GenerationSelector = ({ currentGeneration = 9 }: GenerationSelectorProps) 
   return (
     <FormControl 
       size="medium" 
-      sx={{ 
-        minWidth: 280,
-        backgroundColor: "#2a2a2a",
-        borderRadius: "4px",
-        "& .MuiOutlinedInput-root": {
-          color: "#e0e0e0",
-          "& fieldset": {
-            borderColor: "#555",
-          },
-          "&:hover fieldset": {
-            borderColor: "#6b9bd1",
-          },
-          "&.Mui-focused fieldset": {
-            borderColor: "#6b9bd1",
-          },
-        },
-        "& .MuiInputLabel-root": {
-          color: "#b0b0b0",
-        },
-        "& .MuiSelect-icon": {
-          color: "#e0e0e0",
-        },
-      }}
+      sx={FORM_CONTROL_STYLES}
     >
       <InputLabel id="generation-select-label">Generation</InputLabel>
 
@@ -87,30 +111,12 @@ const GenerationSelector = ({ currentGeneration = 9 }: GenerationSelectorProps) 
         IconComponent={isLoading ? () => (
           <CircularProgress 
             size={20} 
-            sx={{ 
-              color: "#e0e0e0", 
-              marginRight: "12px",
-              display: "flex",
-            }} 
+            sx={SPINNER_STYLES}
           />
         ) : undefined}
         MenuProps={{
           PaperProps: {
-            sx: {
-              backgroundColor: "#2a2a2a",
-              color: "#e0e0e0",
-              "& .MuiMenuItem-root": {
-                "&:hover": {
-                  backgroundColor: "#3a3a3a",
-                },
-                "&.Mui-selected": {
-                  backgroundColor: "#3a3a3a",
-                  "&:hover": {
-                    backgroundColor: "#4a4a4a",
-                  },
-                },
-              },
-            },
+            sx: MENU_PAPER_STYLES,
           },
         }}
       >
