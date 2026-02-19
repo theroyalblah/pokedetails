@@ -12,7 +12,7 @@ export const createGoodLink = (name: string, baseUrl = ""): string => {
 export const createLinkWithGeneration = (
   name: string,
   baseUrl = "",
-  currentGeneration?: number
+  currentGeneration?: number,
 ): string => {
   const link = createGoodLink(name, baseUrl);
   // Only add generation param for internal links (empty baseUrl)
@@ -39,7 +39,7 @@ export const getSmogonGenAbbreviation = (generation: number = 9): string => {
 
 export const getSmogonUrl = (
   type: "abilities" | "moves" | "items" | "pokemon",
-  generation: number = 9
+  generation: number = 9,
 ): string => {
   const genAbbrev = getSmogonGenAbbreviation(generation);
   return `https://www.smogon.com/dex/${genAbbrev}/${type}/`;
@@ -55,7 +55,7 @@ export const normalizePokemonName = (name: string): string => {
     .replace(/[:.]/g, "-");
 
   const exactMatch = pokemonList.find(
-    (pokemon) => pokemon.toLowerCase() === normalized
+    (pokemon) => pokemon.toLowerCase() === normalized,
   );
   if (exactMatch) {
     return exactMatch;
@@ -63,7 +63,7 @@ export const normalizePokemonName = (name: string): string => {
 
   const withoutSpecialChars = normalized.replace(/[^a-z0-9-]/g, "");
   const closeMatch = pokemonList.find(
-    (pokemon) => pokemon.toLowerCase() === withoutSpecialChars
+    (pokemon) => pokemon.toLowerCase() === withoutSpecialChars,
   );
   if (closeMatch) {
     return closeMatch;
@@ -71,3 +71,7 @@ export const normalizePokemonName = (name: string): string => {
 
   return normalized;
 };
+
+export function copyToClipboard(text: string): Promise<void> {
+  return navigator.clipboard.writeText(text);
+}

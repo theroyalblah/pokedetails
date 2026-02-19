@@ -1,7 +1,7 @@
 import { GetServerSideProps } from "next";
-import React from "react";
-import { Container, Row, Col, Card } from "react-bootstrap";
-import { capFirstLetter, normalizePokemonName } from "../utils/helpers";
+import React, { useState } from "react";
+import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import { capFirstLetter, normalizePokemonName, copyToClipboard } from "../utils/helpers";
 import Search from "../components/search";
 import Head from "next/head";
 import { fetchPokemon, PokemonData } from "../utils/fetchPokemon";
@@ -10,6 +10,7 @@ import MainPokemonCard from "../components/mainPokemonCard";
 import UsageList from "../components/usageList";
 import GenerationSelector from "../components/generationSelector";
 import PageTitle from "../components/pageTitle";
+import { exportTeamToSmogon } from "../utils/smogonExport";
 
 type TeamGeneratorProps = {
   mainPokemon?: PokemonData;
@@ -34,6 +35,36 @@ const TeamGenerator = ({
   currentGeneration = 9,
   error,
 }: TeamGeneratorProps) => {
+  const [showCopyAlert, setShowCopyAlert] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExportTeam = async () => {
+    if (!mainPokemon) return;
+
+    setIsExporting(true);
+
+    const mainPokemonName =
+      typeof mainPokemon.data === "string"
+        ? ""
+        : (mainPokemon.data?.name ?? mainPokemon.species?.name ?? "");
+
+    const teamText = exportTeamToSmogon(
+      { name: mainPokemonName, data: mainPokemon },
+      teammates
+    );
+
+    try {
+      await copyToClipboard(teamText);
+      setShowCopyAlert(true);
+      setTimeout(() => {
+        setShowCopyAlert(false);
+        setIsExporting(false);
+      }, 3000);
+    } catch (err) {
+      setIsExporting(false);
+    }
+  };
+
   if (error || !mainPokemon) {
     return (
       <>
@@ -82,9 +113,21 @@ const TeamGenerator = ({
       <main className="poke-details">
         <Container>
           <PageTitle>Team Generator</PageTitle>
-          <div style={{ display: "flex", gap: "16px", marginBottom: "16px", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: "16px", marginBottom: "16px", flexWrap: "wrap", alignItems: "center" }}>
             <Search route="/teamgenerator" />
             <GenerationSelector currentGeneration={currentGeneration} />
+            <Button
+              onClick={handleExportTeam}
+              disabled={isExporting || showCopyAlert}
+              style={{
+                backgroundColor: showCopyAlert ? "#28a745" : "#6b9bd1",
+                borderColor: showCopyAlert ? "#28a745" : "#6b9bd1",
+                color: "#fff",
+                transition: "all 0.3s ease",
+              }}
+            >
+              {showCopyAlert ? "✓ Copied!" : "Export Team"}
+            </Button>
           </div>
 
           <Row className="mb-4">
