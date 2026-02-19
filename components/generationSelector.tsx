@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import { FormControl, InputLabel, Select, MenuItem, CircularProgress } from "@mui/material";
+import { useEffect, useState } from "react";
 
 const GENERATIONS = [
   { value: 9, label: "Generation 9 (Scarlet/Violet)" },
@@ -19,6 +20,22 @@ type GenerationSelectorProps = {
 
 const GenerationSelector = ({ currentGeneration = 9 }: GenerationSelectorProps) => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const handleStart = () => setIsLoading(true);
+    const handleComplete = () => setIsLoading(false);
+
+    router.events.on("routeChangeStart", handleStart);
+    router.events.on("routeChangeComplete", handleComplete);
+    router.events.on("routeChangeError", handleComplete);
+
+    return () => {
+      router.events.off("routeChangeStart", handleStart);
+      router.events.off("routeChangeComplete", handleComplete);
+      router.events.off("routeChangeError", handleComplete);
+    };
+  }, [router]);
 
   const handleChange = (event: { target: { value: unknown } }) => {
     const newGen = event.target.value as number;
@@ -66,6 +83,17 @@ const GenerationSelector = ({ currentGeneration = 9 }: GenerationSelectorProps) 
         value={currentGeneration}
         label="Generation"
         onChange={handleChange}
+        disabled={isLoading}
+        IconComponent={isLoading ? () => (
+          <CircularProgress 
+            size={20} 
+            sx={{ 
+              color: "#e0e0e0", 
+              marginRight: "12px",
+              display: "flex",
+            }} 
+          />
+        ) : undefined}
         MenuProps={{
           PaperProps: {
             sx: {
