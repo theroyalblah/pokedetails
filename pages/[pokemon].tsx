@@ -70,8 +70,8 @@ const PokeDetails = ({
                 abilities={smogonStats[0]?.abilities}
                 spreads={smogonStats[0]?.spreads}
                 showSprites={true}
-                linkUrl={`/teambuilder?pokemon=${name?.toLowerCase()}&gen=${currentGeneration}`}
-                linkText="Build a team with this Pokémon →"
+                linkUrl={`/teamgenerator?pokemon=${name?.toLowerCase()}&gen=${currentGeneration}`}
+                linkText="Generate a team with this Pokémon →"
                 currentGeneration={currentGeneration}
               />
             </Col>

@@ -18,9 +18,9 @@ const Home: NextPage = () => {
 
           <Search />
 
-          <h4>Or build a team with the teambuilder: </h4>
+          <h4>Or generate a team with the team generator: </h4>
 
-          <Search route="/teambuilder" />
+          <Search route="/teamgenerator" />
 
           <p>
             Powered by{" "}

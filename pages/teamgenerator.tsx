@@ -11,7 +11,7 @@ import UsageList from "../components/usageList";
 import GenerationSelector from "../components/generationSelector";
 import PageTitle from "../components/pageTitle";
 
-type TeamBuilderProps = {
+type TeamGeneratorProps = {
   mainPokemon?: PokemonData;
   teammates: Array<{
     name: string;
@@ -26,35 +26,35 @@ type TeamBuilderProps = {
   error?: string;
 };
 
-const TeamBuilder = ({
+const TeamGenerator = ({
   mainPokemon,
   teammates,
   otherTeammates,
   format,
   currentGeneration = 9,
   error,
-}: TeamBuilderProps) => {
+}: TeamGeneratorProps) => {
   if (error || !mainPokemon) {
     return (
       <>
         <Head>
-          <title>Pokedetails - Team Builder</title>
+          <title>Pokedetails - Team Generator</title>
           <meta
             property="og:title"
-            content="Pokedetails - Team Builder"
+            content="Pokedetails - Team Generator"
             key="title"
           />
         </Head>
 
         <main className="poke-details">
           <Container>
-            <PageTitle>Team Builder</PageTitle>
+            <PageTitle>Team Generator</PageTitle>
             <div style={{ display: "flex", gap: "16px", marginBottom: "16px", flexWrap: "wrap" }}>
-              <Search route="/teambuilder" />
+              <Search route="/teamgenerator" />
               <GenerationSelector currentGeneration={currentGeneration} />
             </div>
             {error && <p>{error}</p>}
-            {!error && <p>Search for a Pokémon to start building a team!</p>}
+            {!error && <p>Search for a Pokémon to start generating a team!</p>}
           </Container>
         </main>
       </>
@@ -70,20 +70,20 @@ const TeamBuilder = ({
     <>
       <Head>
         <title>
-          Pokedetails - Team Builder - {capFirstLetter(mainPokemonName)}
+          Pokedetails - Team Generator - {capFirstLetter(mainPokemonName)}
         </title>
         <meta
           property="og:title"
-          content={`Pokedetails - Team Builder - ${mainPokemonName}`}
+          content={`Pokedetails - Team Generator - ${mainPokemonName}`}
           key="title"
         />
       </Head>
 
       <main className="poke-details">
         <Container>
-          <PageTitle>Team Builder</PageTitle>
+          <PageTitle>Team Generator</PageTitle>
           <div style={{ display: "flex", gap: "16px", marginBottom: "16px", flexWrap: "wrap" }}>
-            <Search route="/teambuilder" />
+            <Search route="/teamgenerator" />
             <GenerationSelector currentGeneration={currentGeneration} />
           </div>
 
@@ -234,4 +234,4 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   }
 };
 
-export default TeamBuilder;
+export default TeamGenerator;
