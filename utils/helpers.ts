@@ -22,6 +22,29 @@ export const createLinkWithGeneration = (
   return link;
 };
 
+export const getSmogonGenAbbreviation = (generation: number = 9): string => {
+  const genMap: { [key: number]: string } = {
+    1: "rb",
+    2: "gs",
+    3: "rs",
+    4: "dp",
+    5: "bw",
+    6: "xy",
+    7: "sm",
+    8: "ss",
+    9: "sv",
+  };
+  return genMap[generation] || "sv";
+};
+
+export const getSmogonUrl = (
+  type: "abilities" | "moves" | "items" | "pokemon",
+  generation: number = 9
+): string => {
+  const genAbbrev = getSmogonGenAbbreviation(generation);
+  return `https://www.smogon.com/dex/${genAbbrev}/${type}/`;
+};
+
 import pokemonList from "../pokemon.json";
 
 export const normalizePokemonName = (name: string): string => {

@@ -1,4 +1,4 @@
-import { createGoodLink } from "../utils/helpers";
+import { createGoodLink, getSmogonUrl } from "../utils/helpers";
 
 type StringPercent = {
   [key: string]: number;
@@ -9,6 +9,7 @@ type MostCommonSetProps = {
   items?: StringPercent;
   abilities?: StringPercent;
   spreads?: StringPercent;
+  currentGeneration?: number;
 };
 
 const colors = [
@@ -20,11 +21,11 @@ const colors = [
   "#FA92B2",
 ];
 
-const SMOGON_ABILITIES_URL = "https://www.smogon.com/dex/sv/abilities/";
-const SMOGON_MOVES_URL = "https://www.smogon.com/dex/sv/moves/";
-const SMOGON_ITEMS_URL = "https://www.smogon.com/dex/sv/items/";
+const MostCommonSet = ({ moves, items, abilities, spreads, currentGeneration = 9 }: MostCommonSetProps) => {
+  const smogonAbilitiesUrl = getSmogonUrl("abilities", currentGeneration);
+  const smogonMovesUrl = getSmogonUrl("moves", currentGeneration);
+  const smogonItemsUrl = getSmogonUrl("items", currentGeneration);
 
-const MostCommonSet = ({ moves, items, abilities, spreads }: MostCommonSetProps) => {
   const topMoves = moves ? Object.keys(moves).slice(0, 4) : [];
   const topItem = items ? Object.keys(items)[0] : null;
   const topAbility = abilities ? Object.keys(abilities)[0] : null;
@@ -50,7 +51,7 @@ const MostCommonSet = ({ moves, items, abilities, spreads }: MostCommonSetProps)
             {topMoves.map((move) => (
               <a
                 key={move}
-                href={createGoodLink(move, SMOGON_MOVES_URL)}
+                href={createGoodLink(move, smogonMovesUrl)}
                 target="_blank"
                 rel="noreferrer noopener"
                 style={{ color: "#6b9bd1" }}
@@ -66,7 +67,7 @@ const MostCommonSet = ({ moves, items, abilities, spreads }: MostCommonSetProps)
         <div style={{ marginBottom: "12px" }}>
           <strong>Ability: </strong>
           <a
-            href={createGoodLink(topAbility, SMOGON_ABILITIES_URL)}
+            href={createGoodLink(topAbility, smogonAbilitiesUrl)}
             target="_blank"
             rel="noreferrer noopener"
             style={{ color: "#6b9bd1" }}
@@ -80,7 +81,7 @@ const MostCommonSet = ({ moves, items, abilities, spreads }: MostCommonSetProps)
         <div style={{ marginBottom: "12px" }}>
           <strong>Item: </strong>
           <a
-            href={createGoodLink(topItem, SMOGON_ITEMS_URL)}
+            href={createGoodLink(topItem, smogonItemsUrl)}
             target="_blank"
             rel="noreferrer noopener"
             style={{ color: "#6b9bd1" }}

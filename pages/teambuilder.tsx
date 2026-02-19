@@ -96,6 +96,7 @@ const TeamBuilder = ({
                 items={mainPokemon.smogonStats[0]?.items}
                 abilities={mainPokemon.smogonStats[0]?.abilities}
                 spreads={mainPokemon.smogonStats[0]?.spreads}
+                currentGeneration={currentGeneration}
               />
             </Col>
           </Row>

@@ -72,6 +72,7 @@ const PokeDetails = ({
                 showSprites={true}
                 linkUrl={`/teambuilder?pokemon=${name?.toLowerCase()}&gen=${currentGeneration}`}
                 linkText="Build a team with this Pokémon →"
+                currentGeneration={currentGeneration}
               />
             </Col>
           </Row>

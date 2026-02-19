@@ -127,6 +127,7 @@ const PokemonCard = ({
                     items={items}
                     abilities={abilities}
                     spreads={spreads}
+                    currentGeneration={currentGeneration}
                   />
                 </Accordion.Body>
               </Accordion.Item>

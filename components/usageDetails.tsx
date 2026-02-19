@@ -1,6 +1,6 @@
 import { Container, Row, Col } from "react-bootstrap";
 import UsageList from "./usageList";
-import { createLinkWithGeneration } from "../utils/helpers";
+import { createLinkWithGeneration, getSmogonUrl } from "../utils/helpers";
 
 type SmogonPercent = {
   raw: number;
@@ -43,9 +43,6 @@ const colors = [
 
 const colorNames = ["HP", "ATK", "DEF", "SPA", "SPD", "SPE"];
 
-const SMOGON_ABILITIES_URL = "https://www.smogon.com/dex/sv/abilities/";
-const SMOGON_MOVES_URL = "https://www.smogon.com/dex/sv/moves/";
-const SMOGON_ITEMS_URL = "https://www.smogon.com/dex/sv/items/";
 const INTERNAL_URL = "";
 
 const handleSpreads = (spreads: StringPercent, n = 5) => {
@@ -120,9 +117,13 @@ const UsageDetails = ({
   abilities,
   items,
   spreads,
-  currentGeneration,
+  currentGeneration = 9,
 }: SmogonStats & { currentGeneration?: number }) => {
   const countersList = Object.keys(counters);
+  
+  const smogonAbilitiesUrl = getSmogonUrl("abilities", currentGeneration);
+  const smogonMovesUrl = getSmogonUrl("moves", currentGeneration);
+  const smogonItemsUrl = getSmogonUrl("items", currentGeneration);
 
   return (
     <section className="usage">
@@ -131,10 +132,10 @@ const UsageDetails = ({
       <Container>
         <Row>
           <Col sm={4}>
-            <UsageList title="Moves" data={moves} count={20} baseUrl={SMOGON_MOVES_URL} />
+            <UsageList title="Moves" data={moves} count={20} baseUrl={smogonMovesUrl} />
           </Col>
           <Col sm={4}>
-            <UsageList title="Items" data={items} count={20} baseUrl={SMOGON_ITEMS_URL} />
+            <UsageList title="Items" data={items} count={20} baseUrl={smogonItemsUrl} />
           </Col>
           <Col sm={4}>
             <UsageList 
@@ -149,7 +150,7 @@ const UsageDetails = ({
 
         <Row>
           <Col sm={4}>
-            <UsageList title="Abilities" data={abilities} count={10} baseUrl={SMOGON_ABILITIES_URL} />
+            <UsageList title="Abilities" data={abilities} count={10} baseUrl={smogonAbilitiesUrl} />
           </Col>
 
           <Col sm={4}>

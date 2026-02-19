@@ -1,5 +1,5 @@
 import { Card, Row, Col } from "react-bootstrap";
-import { capFirstLetter } from "../utils/helpers";
+import { capFirstLetter, getSmogonGenAbbreviation } from "../utils/helpers";
 import { PokemonData } from "../utils/fetchPokemon";
 import dynamic from "next/dynamic";
 import MostCommonSet from "./mostCommonSet";
@@ -22,6 +22,7 @@ type MainPokemonCardProps = {
   showSprites?: boolean;
   linkUrl?: string;
   linkText?: string;
+  currentGeneration?: number;
 };
 
 const SMALL_POKEMON_IMAGE_SIZE = 120;
@@ -43,6 +44,7 @@ const MainPokemonCard = ({
   showSprites = false,
   linkUrl,
   linkText,
+  currentGeneration = 9,
 }: MainPokemonCardProps) => {
   const pokemonName =
     typeof pokemonData.data === "string"
@@ -171,6 +173,7 @@ const MainPokemonCard = ({
                   items={items}
                   abilities={abilities}
                   spreads={spreads}
+                  currentGeneration={currentGeneration}
                 />
               </div>
             )}
@@ -186,7 +189,7 @@ const MainPokemonCard = ({
           </a>
           
           <a
-            href={`https://www.smogon.com/dex/sv/pokemon/${pokemonName.toLowerCase()}`}
+            href={`https://www.smogon.com/dex/${getSmogonGenAbbreviation(currentGeneration)}/pokemon/${pokemonName.toLowerCase()}`}
             rel="noreferrer"
             target="_blank"
             style={{ color: "#6b9bd1" }}
