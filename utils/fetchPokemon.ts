@@ -6,6 +6,11 @@ import { getFormatsForGeneration } from "./formats";
 import { removeDashes } from "./helpers";
 import { SmogonStats } from "../components/usageDetails";
 
+// Singleton instances to benefit from caching and avoid recreating objects
+const pokedex = new Pokedex();
+const generations = new Generations(Dex);
+const smogon = new Smogon(fetch);
+
 export type PokemonData = {
   data?: Pokedex.Pokemon | string;
   smogonStats: SmogonStats[];
@@ -20,12 +25,9 @@ export async function fetchPokemon(
   generation: number = 9,
   includeVGC: boolean = false
 ): Promise<PokemonData[]> {
-  const P = new Pokedex();
-  const gens = new Generations(Dex);
-  const smogon = new Smogon(fetch);
 
   // Fetch all pokemon data at once
-  const pokeDataArray = await P.getPokemonByName(pokemonNames).catch(() => []);
+  const pokeDataArray = await pokedex.getPokemonByName(pokemonNames).catch(() => []);
   const pokeDataMap = new Map<string, Pokedex.Pokemon>();
   
   if (Array.isArray(pokeDataArray)) {
@@ -45,7 +47,7 @@ export async function fetchPokemon(
       const pokedata = pokeDataMap.get(pokemonName.toLowerCase());
       const finalPokemonName = pokedata?.name ?? pokemonName;
 
-      const analyses = await smogon.analyses(gens.get(generation), finalPokemonName).catch(() => null);
+      const analyses = await smogon.analyses(generations.get(generation), finalPokemonName).catch(() => null);
 
       let formats: string[] = [];
       if (!!analyses) {
@@ -61,7 +63,7 @@ export async function fetchPokemon(
 
       let smogonStats = await Promise.all(
         availableFormats.map((format) =>
-          smogon.stats(gens.get(generation), pokemon, format as any).catch(() => null),
+          smogon.stats(generations.get(generation), pokemon, format as any).catch(() => null),
         ),
       );
 
@@ -71,7 +73,7 @@ export async function fetchPokemon(
       const vgcFormats = includeVGC ? formats.filter(format => format.includes('vgc')) : [];
       const vgcStats = includeVGC && vgcFormats.length > 0
         ? await smogon.stats(
-            gens.get(generation),
+            generations.get(generation),
             pokemon,
             // Fetch stats for the first VGC format found (usually the most recent)
             vgcFormats[0] as any,
