@@ -1,5 +1,6 @@
 import { BarChart } from "@mui/x-charts/BarChart";
 import React, { useState, useEffect } from "react";
+import { STAT_LABELS_SHORT, STAT_LABELS_FULL, STAT_COLORS } from "../utils/constants";
 
 type Stats = {
   stats: {
@@ -28,16 +29,6 @@ const StatsChart = ({ stats, bst, isSmall }: Stats) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const desktopLabels = [
-    "Health",
-    "Attack",
-    "Defense",
-    "Special Attack",
-    "Special Defense",
-    "Speed",
-  ];
-  const mobileLabels = ["HP", "Atk", "Def", "SpA", "SpD", "Spe"];
-
   const statValues = [
     stats.hp,
     stats.atk,
@@ -47,28 +38,19 @@ const StatsChart = ({ stats, bst, isSmall }: Stats) => {
     stats.spe,
   ];
 
-  const colors = [
-    "#FF5959",
-    "#F5AC78",
-    "#FAE078",
-    "#9DB7F5",
-    "#A7DB8D",
-    "#FA92B2",
-  ];
-
   const isDesktop = width > 1200;
 
   const baseStatTotal = bst
     ? bst
     : stats.hp + stats.atk + stats.def + stats.spa + stats.spd + stats.spe;
 
-  const labels = isDesktop && !isSmall ? desktopLabels : mobileLabels;
+  const labels = isDesktop && !isSmall ? STAT_LABELS_FULL : STAT_LABELS_SHORT;
 
   const series = statValues.map((value, index) => ({
     data: statValues.map((_, i) => (i === index ? value : 0)),
     label: labels[index],
     id: `stat-${index}`,
-    color: colors[index],
+    color: STAT_COLORS[index],
     stack: "total",
   }));
 

@@ -1,4 +1,5 @@
 import { createGoodLink, getSmogonUrl } from "../utils/helpers";
+import { STAT_COLORS } from "../utils/constants";
 
 type StringPercent = {
   [key: string]: number;
@@ -11,15 +12,6 @@ type MostCommonSetProps = {
   spreads?: StringPercent;
   currentGeneration?: number;
 };
-
-const colors = [
-  "#FF5959",
-  "#F5AC78",
-  "#FAE078",
-  "#9DB7F5",
-  "#A7DB8D",
-  "#FA92B2",
-];
 
 const MostCommonSet = ({ moves, items, abilities, spreads, currentGeneration = 9 }: MostCommonSetProps) => {
   const smogonAbilitiesUrl = getSmogonUrl("abilities", currentGeneration);
@@ -105,7 +97,7 @@ const MostCommonSet = ({ moves, items, abilities, spreads, currentGeneration = 9
                   <span>{nature}:</span>
                   <span style={{ display: "flex", gap: "8px" }}>
                     {stats.map((stat, index) => (
-                      <span key={index} style={{ color: colors[index] }}>
+                      <span key={index} style={{ color: STAT_COLORS[index] }}>
                         {stat}
                       </span>
                     ))}

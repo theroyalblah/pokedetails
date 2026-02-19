@@ -1,6 +1,7 @@
 import { Container, Row, Col } from "react-bootstrap";
 import UsageList from "./usageList";
 import { createLinkWithGeneration, getSmogonUrl } from "../utils/helpers";
+import { STAT_LABELS_SHORT, STAT_COLORS } from "../utils/constants";
 
 type SmogonPercent = {
   raw: number;
@@ -32,17 +33,6 @@ export type SmogonStats = {
 
 const toPercentageString = (num: number) => `${(num * 100).toFixed(2)}%`;
 
-const colors = [
-  "#FF5959",
-  "#F5AC78",
-  "#FAE078",
-  "#9DB7F5",
-  "#A7DB8D",
-  "#FA92B2",
-];
-
-const colorNames = ["HP", "ATK", "DEF", "SPA", "SPD", "SPE"];
-
 const INTERNAL_URL = "";
 
 const handleSpreads = (spreads: StringPercent, n = 5) => {
@@ -62,14 +52,14 @@ const handleSpreads = (spreads: StringPercent, n = 5) => {
           <tr>
             <th style={{ padding, borderBottom }}>Nature</th>
 
-            {colorNames.map((name, index) => (
+            {STAT_LABELS_SHORT.map((name, index) => (
               <th
                 key={name}
                 style={{
                   padding,
                   textAlign: "center",
                   borderBottom,
-                  color: colors[index],
+                  color: STAT_COLORS[index],
                 }}
               >
                 {name}
@@ -89,7 +79,7 @@ const handleSpreads = (spreads: StringPercent, n = 5) => {
             return (
               <tr key={listItem} style={{ borderBottom: "1px solid #333" }}>
                 <td style={{ padding }}>{nature}</td>
-                {colors.map((color, index) => (
+                {STAT_COLORS.map((color, index) => (
                   <td
                     key={index}
                     style={{ padding, textAlign: "center", color }}
