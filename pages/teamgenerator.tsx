@@ -11,6 +11,7 @@ import UsageList from "../components/usageList";
 import GenerationSelector from "../components/generationSelector";
 import FormatSelector from "../components/formatSelector";
 import PageTitle from "../components/pageTitle";
+import Navigation from "../components/navigation";
 import { exportTeamToSmogon } from "../utils/smogonExport";
 
 type TeamGeneratorProps = {
@@ -78,6 +79,8 @@ const TeamGenerator = ({
           />
         </Head>
 
+        <Navigation />
+
         <main className="poke-details">
           <Container>
             <PageTitle>Team Generator</PageTitle>
@@ -110,6 +113,8 @@ const TeamGenerator = ({
           key="title"
         />
       </Head>
+
+      <Navigation />
 
       <main className="poke-details">
         <Container>

@@ -3,6 +3,7 @@ import Head from "next/head";
 import React from "react";
 import { Container } from "react-bootstrap";
 import Search from "../components/search";
+import Navigation from "../components/navigation";
 
 const Home: NextPage = () => {
   return (
@@ -11,6 +12,8 @@ const Home: NextPage = () => {
         <title>Pokedetails</title>
         <meta property="og:title" content="Pokedetails" key="title" />
       </Head>
+
+      <Navigation />
 
       <main className="poke-details">
         <Container>
