@@ -135,10 +135,10 @@ const TeamGenerator = ({
               <MainPokemonCard 
                 pokemonData={mainPokemon} 
                 name={mainPokemonName}
-                moves={mainPokemon.smogonStats[0]?.moves}
-                items={mainPokemon.smogonStats[0]?.items}
-                abilities={mainPokemon.smogonStats[0]?.abilities}
-                spreads={mainPokemon.smogonStats[0]?.spreads}
+                moves={mainPokemon.smogonStats[0]?.moves || mainPokemon.vgcStats?.moves}
+                items={mainPokemon.smogonStats[0]?.items || mainPokemon.vgcStats?.items}
+                abilities={mainPokemon.smogonStats[0]?.abilities || mainPokemon.vgcStats?.abilities}
+                spreads={mainPokemon.smogonStats[0]?.spreads || mainPokemon.vgcStats?.spreads}
                 currentGeneration={currentGeneration}
               />
             </Col>
@@ -153,7 +153,7 @@ const TeamGenerator = ({
             {teammates.map((teammate) => {
               if (!teammate.data) return null;
 
-              const firstFormatStats = teammate.data.smogonStats?.[0];
+              const firstFormatStats = teammate.data.smogonStats?.[0] || teammate.data.vgcStats;
 
               return (
                 <Col key={teammate.name} sm={12} md={6} lg={4} className="mb-4">

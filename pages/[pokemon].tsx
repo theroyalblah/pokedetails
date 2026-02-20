@@ -65,10 +65,10 @@ const PokeDetails = ({
                   species,
                 }}
                 name={name || ""}
-                moves={smogonStats[0]?.moves}
-                items={smogonStats[0]?.items}
-                abilities={smogonStats[0]?.abilities}
-                spreads={smogonStats[0]?.spreads}
+                moves={smogonStats[0]?.moves || vgcStats?.moves}
+                items={smogonStats[0]?.items || vgcStats?.items}
+                abilities={smogonStats[0]?.abilities || vgcStats?.abilities}
+                spreads={smogonStats[0]?.spreads || vgcStats?.spreads}
                 showSprites={true}
                 linkUrl={`/teamgenerator?pokemon=${name?.toLowerCase()}&gen=${currentGeneration}`}
                 linkText="Generate a team with this Pokémon →"

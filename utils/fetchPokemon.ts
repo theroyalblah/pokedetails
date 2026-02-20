@@ -59,7 +59,6 @@ export async function fetchPokemon(
         .map((format) => (formats.includes(format) ? format : null))
         .filter((e) => !!e);
 
-      // Find VGC formats from the analyses
 
       let smogonStats = await Promise.all(
         availableFormats.map((format) =>
