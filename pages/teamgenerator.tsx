@@ -9,6 +9,7 @@ import PokemonCard from "../components/pokemonCard";
 import MainPokemonCard from "../components/mainPokemonCard";
 import UsageList from "../components/usageList";
 import GenerationSelector from "../components/generationSelector";
+import FormatSelector from "../components/formatSelector";
 import PageTitle from "../components/pageTitle";
 import { exportTeamToSmogon } from "../utils/smogonExport";
 
@@ -135,18 +136,21 @@ const TeamGenerator = ({
               <MainPokemonCard 
                 pokemonData={mainPokemon} 
                 name={mainPokemonName}
-                moves={mainPokemon.smogonStats[0]?.moves || mainPokemon.vgcStats?.moves}
-                items={mainPokemon.smogonStats[0]?.items || mainPokemon.vgcStats?.items}
-                abilities={mainPokemon.smogonStats[0]?.abilities || mainPokemon.vgcStats?.abilities}
-                spreads={mainPokemon.smogonStats[0]?.spreads || mainPokemon.vgcStats?.spreads}
+                moves={mainPokemon.smogonStats[mainPokemon.formats.indexOf(format || mainPokemon.formats[0])]?.moves || mainPokemon.vgcStats?.moves}
+                items={mainPokemon.smogonStats[mainPokemon.formats.indexOf(format || mainPokemon.formats[0])]?.items || mainPokemon.vgcStats?.items}
+                abilities={mainPokemon.smogonStats[mainPokemon.formats.indexOf(format || mainPokemon.formats[0])]?.abilities || mainPokemon.vgcStats?.abilities}
+                spreads={mainPokemon.smogonStats[mainPokemon.formats.indexOf(format || mainPokemon.formats[0])]?.spreads || mainPokemon.vgcStats?.spreads}
                 currentGeneration={currentGeneration}
               />
             </Col>
           </Row>
 
-          <h2>
-            {capFirstLetter(mainPokemonName)}&apos;s Top Teammates
-            {format && ` for ${format}`}
+          <h2 style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
+            <span>{capFirstLetter(mainPokemonName)}&apos;s Top Teammates for</span>
+            <FormatSelector 
+              formats={mainPokemon.formats} 
+              currentFormat={format || mainPokemon.formats[0] || ""} 
+            />
           </h2>
 
           <Row>
@@ -202,6 +206,7 @@ const TeamGenerator = ({
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const pokemonName = query.pokemon as string;
   const generation = parseInt((query.gen as string) || "9", 10);
+  const selectedFormat = query.format as string | undefined;
 
   if (!pokemonName) {
     return {
@@ -229,7 +234,15 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
       };
     }
 
-    const firstFormatStats = mainPokemonData.smogonStats[0];
+    // Use selected format or default to first format
+    const formatToUse = selectedFormat && mainPokemonData.formats.includes(selectedFormat)
+      ? selectedFormat
+      : mainPokemonData.formats[0];
+
+    // Find the stats for the selected format
+    const formatIndex = mainPokemonData.formats.indexOf(formatToUse);
+    const firstFormatStats = mainPokemonData.smogonStats[formatIndex];
+    
     const teammates = firstFormatStats?.teammates || {};
 
     const sortedTeammateNames = Object.keys(teammates).sort(
@@ -262,7 +275,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
         mainPokemon: mainPokemonData,
         teammates: teammatesWithData,
         otherTeammates,
-        format: mainPokemonData.formats[0] || null,
+        format: formatToUse || null,
         currentGeneration: generation,
       },
     };
