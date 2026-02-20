@@ -1,4 +1,4 @@
-import { createGoodLink, getSmogonUrl } from "../utils/helpers";
+import { createGoodLink, getSmogonUrl, shouldExcludeValue } from "../utils/helpers";
 import { STAT_COLORS } from "../utils/constants";
 
 type StringPercent = {
@@ -58,28 +58,36 @@ const MostCommonSet = ({ moves, items, abilities, spreads, currentGeneration = 9
       {topAbility && (
         <div style={{ marginBottom: "12px" }}>
           <strong>Ability: </strong>
-          <a
-            href={createGoodLink(topAbility, smogonAbilitiesUrl)}
-            target="_blank"
-            rel="noreferrer noopener"
-            style={{ color: "#6b9bd1" }}
-          >
-            {topAbility}
-          </a>
+          {shouldExcludeValue(topAbility) ? (
+            <span style={{ color: "#b0b0b0" }}>{topAbility}</span>
+          ) : (
+            <a
+              href={createGoodLink(topAbility, smogonAbilitiesUrl)}
+              target="_blank"
+              rel="noreferrer noopener"
+              style={{ color: "#6b9bd1" }}
+            >
+              {topAbility}
+            </a>
+          )}
         </div>
       )}
 
       {topItem && (
         <div style={{ marginBottom: "12px" }}>
           <strong>Item: </strong>
-          <a
-            href={createGoodLink(topItem, smogonItemsUrl)}
-            target="_blank"
-            rel="noreferrer noopener"
-            style={{ color: "#6b9bd1" }}
-          >
-            {topItem}
-          </a>
+          {shouldExcludeValue(topItem) ? (
+            <span style={{ color: "#b0b0b0" }}>{topItem}</span>
+          ) : (
+            <a
+              href={createGoodLink(topItem, smogonItemsUrl)}
+              target="_blank"
+              rel="noreferrer noopener"
+              style={{ color: "#6b9bd1" }}
+            >
+              {topItem}
+            </a>
+          )}
         </div>
       )}
 

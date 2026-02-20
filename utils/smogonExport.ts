@@ -1,5 +1,5 @@
 import { PokemonData } from "./fetchPokemon";
-import { capFirstLetter } from "./helpers";
+import { capFirstLetter, shouldExcludeValue } from "./helpers";
 import { STAT_LABELS_SHORT } from "./constants";
 
 /**
@@ -16,14 +16,14 @@ export function formatPokemonForSmogon(
 
   // Pokemon name @ item
   const item = stats.items ? Object.keys(stats.items)[0] : null;
-  if (item) {
+  if (item && !shouldExcludeValue(item)) {
     lines.push(`${capFirstLetter(pokemonName)} @ ${formatItemName(item)}`);
   } else {
     lines.push(capFirstLetter(pokemonName));
   }
 
   const ability = stats.abilities ? Object.keys(stats.abilities)[0] : null;
-  if (ability) {
+  if (ability && !shouldExcludeValue(ability)) {
     lines.push(`Ability: ${formatAbilityName(ability)}`);
   }
 

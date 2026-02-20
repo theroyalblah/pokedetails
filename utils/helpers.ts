@@ -45,6 +45,11 @@ export const getSmogonUrl = (
   return `https://www.smogon.com/dex/${genAbbrev}/${type}/`;
 };
 
+export const shouldExcludeValue = (item: string): boolean => {
+  const lowerItem = item.toLowerCase();
+  return lowerItem === "nothing" || lowerItem === "no ability";
+};
+
 import pokemonList from "../pokemon.json";
 
 export const normalizePokemonName = (name: string): string => {

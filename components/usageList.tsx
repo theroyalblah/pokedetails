@@ -1,4 +1,4 @@
-import { createLinkWithGeneration } from "../utils/helpers";
+import { createLinkWithGeneration, shouldExcludeValue } from "../utils/helpers";
 
 type StringPercent = {
   [key: string]: number;
@@ -31,9 +31,13 @@ const UsageList = ({ title, data, count = 10, baseUrl = "", currentGeneration }:
 
           return (
             <li key={listItem}>
-              <a href={createLinkWithGeneration(listItem, baseUrl, currentGeneration)} {...noFollow}>
-                {listItem}
-              </a>
+              {shouldExcludeValue(listItem) ? (
+                <span style={{ color: "#b0b0b0" }}>{listItem}</span>
+              ) : (
+                <a href={createLinkWithGeneration(listItem, baseUrl, currentGeneration)} {...noFollow}>
+                  {listItem}
+                </a>
+              )}
 
               <span>: {toPercentageString(data[listItem])}</span>
             </li>
