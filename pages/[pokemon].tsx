@@ -106,8 +106,6 @@ const PokeDetails = ({
               </Row>
             </>
           )}
-
-          <Search />
         </Container>
       </main>
     </>

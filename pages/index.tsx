@@ -19,13 +19,11 @@ const Home: NextPage = () => {
         <Container>
           <h1>PokeDetails</h1>
 
+          <p>Search a pokemon and view it's most popular moves, items, abilities, and spreads in smogon competitive singles and VGC.</p>
+
           <Search />
 
-          <h4>Or generate a team with the team generator: </h4>
-
-          <Search route="/teamgenerator" />
-
-          <p>
+          <p style={{ marginTop: "32px", fontSize: "0.9em", color: "#666" }}>
             Powered by{" "}
             <a href="https://github.com/pkmn/smogon">
               https://github.com/pkmn/smogon
