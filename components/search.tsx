@@ -19,12 +19,12 @@ const Search = ({ route = "" }: SearchProps) => {
       setIsLoading(false);
     };
 
-    router.events.on('routeChangeComplete', handleRouteChange);
-    router.events.on('routeChangeError', handleRouteChange);
+    router.events.on("routeChangeComplete", handleRouteChange);
+    router.events.on("routeChangeError", handleRouteChange);
 
     return () => {
-      router.events.off('routeChangeComplete', handleRouteChange);
-      router.events.off('routeChangeError', handleRouteChange);
+      router.events.off("routeChangeComplete", handleRouteChange);
+      router.events.off("routeChangeError", handleRouteChange);
     };
   }, [router.events]);
 
@@ -43,17 +43,32 @@ const Search = ({ route = "" }: SearchProps) => {
     }
   };
 
-  const handleInputChange = (_e: React.SyntheticEvent, newInputValue: string) => {
+  const handleInputChange = (
+    _e: React.SyntheticEvent,
+    newInputValue: string,
+  ) => {
     setFormVal(newInputValue);
-  }
+  };
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "12px",
+        flexGrow: 1,
+        minWidth: 150,
+      }}
+    >
       <Autocomplete
         freeSolo
         disablePortal
         options={pokemonList}
-        sx={{ width: 300 }}
+        sx={{
+          width: { xs: "100%", sm: 300 },
+          minWidth: 150,
+          flexGrow: { xs: 1, sm: 0 },
+        }}
         onInputChange={handleInputChange}
         onChange={handleSubmit}
         disabled={isLoading}
@@ -73,15 +88,13 @@ const Search = ({ route = "" }: SearchProps) => {
         onClick={handleSubmit}
         className="search-bar__submit-btn"
         disabled={isLoading}
+        style={{ flexShrink: 0 }}
       >
         Submit
       </Button>
 
       {isLoading && (
-        <Spinner
-          animation="border"
-          role="status"
-        >
+        <Spinner animation="border" role="status" style={{ flexShrink: 0 }}>
           <span className="visually-hidden">Loading...</span>
         </Spinner>
       )}

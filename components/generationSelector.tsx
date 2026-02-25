@@ -1,5 +1,11 @@
 import { useRouter } from "next/router";
-import { FormControl, InputLabel, Select, MenuItem, CircularProgress } from "@mui/material";
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  CircularProgress,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 
 const GENERATIONS = [
@@ -15,7 +21,9 @@ const GENERATIONS = [
 ];
 
 const FORM_CONTROL_STYLES = {
-  minWidth: 280,
+  minWidth: { xs: 150, sm: 280 },
+  flexGrow: { xs: 1, sm: 0 },
+  maxWidth: { xs: "100%", sm: 280 },
   backgroundColor: "#2a2a2a",
   borderRadius: "4px",
   "& .MuiOutlinedInput-root": {
@@ -64,7 +72,9 @@ type GenerationSelectorProps = {
   currentGeneration?: number;
 };
 
-const GenerationSelector = ({ currentGeneration = 9 }: GenerationSelectorProps) => {
+const GenerationSelector = ({
+  currentGeneration = 9,
+}: GenerationSelectorProps) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -95,10 +105,7 @@ const GenerationSelector = ({ currentGeneration = 9 }: GenerationSelectorProps) 
   };
 
   return (
-    <FormControl 
-      size="medium" 
-      sx={FORM_CONTROL_STYLES}
-    >
+    <FormControl size="medium" sx={FORM_CONTROL_STYLES}>
       <InputLabel id="generation-select-label">Generation</InputLabel>
 
       <Select
@@ -108,12 +115,11 @@ const GenerationSelector = ({ currentGeneration = 9 }: GenerationSelectorProps) 
         label="Generation"
         onChange={handleChange}
         disabled={isLoading}
-        IconComponent={isLoading ? () => (
-          <CircularProgress 
-            size={20} 
-            sx={SPINNER_STYLES}
-          />
-        ) : undefined}
+        IconComponent={
+          isLoading
+            ? () => <CircularProgress size={20} sx={SPINNER_STYLES} />
+            : undefined
+        }
         MenuProps={{
           PaperProps: {
             sx: MENU_PAPER_STYLES,

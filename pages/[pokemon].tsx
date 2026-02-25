@@ -52,8 +52,16 @@ const PokeDetails = ({
         <Container>
           <PageTitle>PokeDetails</PageTitle>
 
-          <div style={{ display: "flex", gap: "16px", marginBottom: "16px", flexWrap: "wrap" }}>
+          <div
+            style={{
+              display: "flex",
+              gap: "16px",
+              marginBottom: "16px",
+              flexWrap: "wrap",
+            }}
+          >
             <Search />
+
             <GenerationSelector currentGeneration={currentGeneration} />
           </div>
 
@@ -86,7 +94,10 @@ const PokeDetails = ({
                 <div key={formats[i]}>
                   <h2>{formats[i]}</h2>
 
-                  <UsageDetails {...format} currentGeneration={currentGeneration} />
+                  <UsageDetails
+                    {...format}
+                    currentGeneration={currentGeneration}
+                  />
 
                   <div className="divider" />
                 </div>
@@ -95,11 +106,14 @@ const PokeDetails = ({
 
           {vgcStats && (
             <>
-              <h2>{vgcFormat || 'VGC Stats'}</h2>
+              <h2>{vgcFormat || "VGC Stats"}</h2>
 
               <Row>
                 {!vgcStats?.error ? (
-                  <UsageDetails {...vgcStats} currentGeneration={currentGeneration} />
+                  <UsageDetails
+                    {...vgcStats}
+                    currentGeneration={currentGeneration}
+                  />
                 ) : (
                   <p>Looks like there&lsquo;s no usage in vgc :(</p>
                 )}

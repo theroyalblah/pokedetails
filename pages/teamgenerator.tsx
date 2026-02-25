@@ -1,7 +1,11 @@
 import { GetServerSideProps } from "next";
 import React, { useState } from "react";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
-import { capFirstLetter, normalizePokemonName, copyToClipboard } from "../utils/helpers";
+import {
+  capFirstLetter,
+  normalizePokemonName,
+  copyToClipboard,
+} from "../utils/helpers";
 import Search from "../components/search";
 import Head from "next/head";
 import { fetchPokemon, PokemonData } from "../utils/fetchPokemon";
@@ -52,7 +56,7 @@ const TeamGenerator = ({
 
     const teamText = exportTeamToSmogon(
       { name: mainPokemonName, data: mainPokemon },
-      teammates
+      teammates,
     );
 
     try {
@@ -84,7 +88,15 @@ const TeamGenerator = ({
         <main className="poke-details">
           <Container>
             <PageTitle>Team Generator</PageTitle>
-            <div style={{ display: "flex", gap: "16px", marginBottom: "16px", flexWrap: "wrap" }}>
+            <div
+              style={{
+                display: "flex",
+                gap: "16px",
+                marginBottom: "16px",
+                flexWrap: "wrap",
+                alignItems: "flex-start",
+              }}
+            >
               <Search route="/teamgenerator" />
               <GenerationSelector currentGeneration={currentGeneration} />
             </div>
@@ -119,7 +131,15 @@ const TeamGenerator = ({
       <main className="poke-details">
         <Container>
           <PageTitle>Team Generator</PageTitle>
-          <div style={{ display: "flex", gap: "16px", marginBottom: "16px", flexWrap: "wrap", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              gap: "16px",
+              marginBottom: "16px",
+              flexWrap: "wrap",
+              alignItems: "flex-start",
+            }}
+          >
             <Search route="/teamgenerator" />
             <GenerationSelector currentGeneration={currentGeneration} />
             <Button
@@ -138,23 +158,56 @@ const TeamGenerator = ({
 
           <Row className="mb-4">
             <Col sm={12}>
-              <MainPokemonCard 
-                pokemonData={mainPokemon} 
+              <MainPokemonCard
+                pokemonData={mainPokemon}
                 name={mainPokemonName}
-                moves={mainPokemon.smogonStats[mainPokemon.formats.indexOf(format || mainPokemon.formats[0])]?.moves || mainPokemon.vgcStats?.moves}
-                items={mainPokemon.smogonStats[mainPokemon.formats.indexOf(format || mainPokemon.formats[0])]?.items || mainPokemon.vgcStats?.items}
-                abilities={mainPokemon.smogonStats[mainPokemon.formats.indexOf(format || mainPokemon.formats[0])]?.abilities || mainPokemon.vgcStats?.abilities}
-                spreads={mainPokemon.smogonStats[mainPokemon.formats.indexOf(format || mainPokemon.formats[0])]?.spreads || mainPokemon.vgcStats?.spreads}
+                moves={
+                  mainPokemon.smogonStats[
+                    mainPokemon.formats.indexOf(
+                      format || mainPokemon.formats[0],
+                    )
+                  ]?.moves || mainPokemon.vgcStats?.moves
+                }
+                items={
+                  mainPokemon.smogonStats[
+                    mainPokemon.formats.indexOf(
+                      format || mainPokemon.formats[0],
+                    )
+                  ]?.items || mainPokemon.vgcStats?.items
+                }
+                abilities={
+                  mainPokemon.smogonStats[
+                    mainPokemon.formats.indexOf(
+                      format || mainPokemon.formats[0],
+                    )
+                  ]?.abilities || mainPokemon.vgcStats?.abilities
+                }
+                spreads={
+                  mainPokemon.smogonStats[
+                    mainPokemon.formats.indexOf(
+                      format || mainPokemon.formats[0],
+                    )
+                  ]?.spreads || mainPokemon.vgcStats?.spreads
+                }
                 currentGeneration={currentGeneration}
               />
             </Col>
           </Row>
 
-          <h2 style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
-            <span>{capFirstLetter(mainPokemonName)}&apos;s Top Teammates for</span>
-            <FormatSelector 
-              formats={mainPokemon.formats} 
-              currentFormat={format || mainPokemon.formats[0] || ""} 
+          <h2
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              flexWrap: "wrap",
+            }}
+          >
+            <span>
+              {capFirstLetter(mainPokemonName)}&apos;s Top Teammates for
+            </span>
+            <FormatSelector
+              formats={mainPokemon.formats}
+              currentFormat={format || mainPokemon.formats[0] || ""}
             />
           </h2>
 
@@ -162,7 +215,8 @@ const TeamGenerator = ({
             {teammates.map((teammate) => {
               if (!teammate.data) return null;
 
-              const firstFormatStats = teammate.data.smogonStats?.[0] || teammate.data.vgcStats;
+              const firstFormatStats =
+                teammate.data.smogonStats?.[0] || teammate.data.vgcStats;
 
               return (
                 <Col key={teammate.name} sm={12} md={6} lg={4} className="mb-4">
@@ -240,14 +294,15 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     }
 
     // Use selected format or default to first format
-    const formatToUse = selectedFormat && mainPokemonData.formats.includes(selectedFormat)
-      ? selectedFormat
-      : mainPokemonData.formats[0];
+    const formatToUse =
+      selectedFormat && mainPokemonData.formats.includes(selectedFormat)
+        ? selectedFormat
+        : mainPokemonData.formats[0];
 
     // Find the stats for the selected format
     const formatIndex = mainPokemonData.formats.indexOf(formatToUse);
     const firstFormatStats = mainPokemonData.smogonStats[formatIndex];
-    
+
     const teammates = firstFormatStats?.teammates || {};
 
     const sortedTeammateNames = Object.keys(teammates).sort(
@@ -267,7 +322,10 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
       normalizePokemonName(name),
     );
 
-    const teammateDataArray = await fetchPokemon(normalizedTeammateNames, generation);
+    const teammateDataArray = await fetchPokemon(
+      normalizedTeammateNames,
+      generation,
+    );
 
     const teammatesWithData = topTeammateNames.map((name, index) => ({
       name,

@@ -1,9 +1,17 @@
 import { useRouter } from "next/router";
-import { FormControl, InputLabel, Select, MenuItem, CircularProgress } from "@mui/material";
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  CircularProgress,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 
 const FORM_CONTROL_STYLES = {
-  minWidth: 220,
+  minWidth: { xs: 150, sm: 220 },
+  flexGrow: { xs: 1, sm: 0 },
+  maxWidth: { xs: "100%", sm: 220 },
   backgroundColor: "#2a2a2a",
   borderRadius: "4px",
   "& .MuiOutlinedInput-root": {
@@ -88,10 +96,7 @@ const FormatSelector = ({ formats, currentFormat }: FormatSelectorProps) => {
   }
 
   return (
-    <FormControl 
-      size="medium" 
-      sx={FORM_CONTROL_STYLES}
-    >
+    <FormControl size="medium" sx={FORM_CONTROL_STYLES}>
       <InputLabel id="format-select-label">Format</InputLabel>
 
       <Select
@@ -101,12 +106,11 @@ const FormatSelector = ({ formats, currentFormat }: FormatSelectorProps) => {
         label="Format"
         onChange={handleChange}
         disabled={isLoading}
-        IconComponent={isLoading ? () => (
-          <CircularProgress 
-            size={20} 
-            sx={SPINNER_STYLES}
-          />
-        ) : undefined}
+        IconComponent={
+          isLoading
+            ? () => <CircularProgress size={20} sx={SPINNER_STYLES} />
+            : undefined
+        }
         MenuProps={{
           PaperProps: {
             sx: MENU_PAPER_STYLES,
