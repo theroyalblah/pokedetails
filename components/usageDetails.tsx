@@ -45,56 +45,63 @@ const handleSpreads = (spreads: StringPercent, n = 5) => {
     <>
       <h3>Spreads</h3>
 
-      <table
-        style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.9em" }}
-      >
-        <thead>
-          <tr>
-            <th style={{ padding, borderBottom }}>Nature</th>
+      <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
+        <table
+          style={{ 
+            width: "100%", 
+            borderCollapse: "collapse", 
+            fontSize: "0.9em",
+            minWidth: "500px"
+          }}
+        >
+          <thead>
+            <tr>
+              <th style={{ padding, borderBottom }}>Nature</th>
 
-            {STAT_LABELS_SHORT.map((name, index) => (
-              <th
-                key={name}
-                style={{
-                  padding,
-                  textAlign: "center",
-                  borderBottom,
-                  color: STAT_COLORS[index],
-                }}
-              >
-                {name}
-              </th>
-            ))}
+              {STAT_LABELS_SHORT.map((name, index) => (
+                <th
+                  key={name}
+                  style={{
+                    padding,
+                    textAlign: "center",
+                    borderBottom,
+                    color: STAT_COLORS[index],
+                  }}
+                >
+                  {name}
+                </th>
+              ))}
 
-            <th style={{ padding, borderBottom }}>Usage</th>
-          </tr>
-        </thead>
+              <th style={{ padding, borderBottom }}>Usage</th>
+            </tr>
+          </thead>
 
-        <tbody>
-          {keyList.map((listItem) => {
-            const parts = listItem.split(":");
-            const nature = parts[0];
-            const stats = parts[1].split("/");
+          <tbody>
+            {keyList.map((listItem) => {
+              const parts = listItem.split(":");
+              const nature = parts[0];
+              const stats = parts[1].split("/");
 
-            return (
-              <tr key={listItem} style={{ borderBottom: "1px solid #333" }}>
-                <td style={{ padding }}>{nature}</td>
-                {STAT_COLORS.map((color, index) => (
-                  <td
-                    key={index}
-                    style={{ padding, textAlign: "center", color }}
-                  >
-                    {stats[index]}
+              return (
+                <tr key={listItem} style={{ borderBottom: "1px solid #333" }}>
+                  <td style={{ padding }}>{nature}</td>
+                  {STAT_COLORS.map((color, index) => (
+                    <td
+                      key={index}
+                      style={{ padding, textAlign: "center", color }}
+                    >
+                      {stats[index]}
+                    </td>
+                  ))}
+                  <td style={{ padding, textAlign: "right" }}>
+                    {toPercentageString(spreads[listItem])}
                   </td>
-                ))}
-                <td style={{ padding, textAlign: "right" }}>
-                  {toPercentageString(spreads[listItem])}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </>
   );
 };
