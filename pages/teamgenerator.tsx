@@ -6,13 +6,12 @@ import {
   normalizePokemonName,
   copyToClipboard,
 } from "../utils/helpers";
-import Search from "../components/search";
+import PokemonSearch from "../components/pokemonSearch";
 import Head from "next/head";
 import { fetchPokemon, PokemonData } from "../utils/fetchPokemon";
 import PokemonCard from "../components/pokemonCard";
 import MainPokemonCard from "../components/mainPokemonCard";
 import UsageList from "../components/usageList";
-import GenerationSelector from "../components/generationSelector";
 import FormatSelector from "../components/formatSelector";
 import PageTitle from "../components/pageTitle";
 import Navigation from "../components/navigation";
@@ -88,18 +87,7 @@ const TeamGenerator = ({
         <main className="poke-details">
           <Container>
             <PageTitle>Team Generator</PageTitle>
-            <div
-              style={{
-                display: "flex",
-                gap: "16px",
-                marginBottom: "16px",
-                flexWrap: "wrap",
-                alignItems: "flex-start",
-              }}
-            >
-              <Search route="/teamgenerator" />
-              <GenerationSelector currentGeneration={currentGeneration} />
-            </div>
+            <PokemonSearch currentGeneration={currentGeneration} route="/teamgenerator" />
             {error && <p>{error}</p>}
             {!error && <p>Search for a Pokémon to start generating a team!</p>}
           </Container>
@@ -140,8 +128,9 @@ const TeamGenerator = ({
               alignItems: "flex-start",
             }}
           >
-            <Search route="/teamgenerator" />
-            <GenerationSelector currentGeneration={currentGeneration} />
+            
+            <PokemonSearch currentGeneration={currentGeneration} route="/teamgenerator" />
+
             <Button
               onClick={handleExportTeam}
               disabled={isExporting || showCopyAlert}

@@ -1,9 +1,8 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { Container } from "react-bootstrap";
-import Search from "../components/search";
 import Navigation from "../components/navigation";
-import GenerationSelector from "../components/generationSelector";
+import PokemonSearch from "../components/pokemonSearch";
 import { useRouter } from "next/router";
 
 const Home: NextPage = () => {
@@ -25,10 +24,7 @@ const Home: NextPage = () => {
 
           <p>Search a pokemon and view it's most popular moves, items, abilities, and spreads in smogon competitive singles and VGC.</p>
 
-          <div style={{ display: "flex", gap: "16px", marginBottom: "16px", flexWrap: "wrap", alignItems: "flex-start" }}>
-            <Search />
-            <GenerationSelector currentGeneration={currentGeneration} />
-          </div>
+          <PokemonSearch currentGeneration={currentGeneration} />
 
           <p style={{ marginTop: "32px", fontSize: "0.9em", color: "#666" }}>
             Powered by{" "}

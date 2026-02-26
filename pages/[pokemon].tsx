@@ -3,11 +3,10 @@ import { GetServerSideProps } from "next";
 import { Container, Row, Col } from "react-bootstrap";
 import { capFirstLetter } from "../utils/helpers";
 import UsageDetails from "../components/usageDetails";
-import Search from "../components/search";
+import PokemonSearch from "../components/pokemonSearch";
 import Head from "next/head";
 import { fetchPokemon, PokemonData } from "../utils/fetchPokemon";
 import MainPokemonCard from "../components/mainPokemonCard";
-import GenerationSelector from "../components/generationSelector";
 import PageTitle from "../components/pageTitle";
 import Navigation from "../components/navigation";
 
@@ -27,8 +26,14 @@ const PokeDetails = ({
   if (!data || typeof data === "string") {
     return (
       <>
-        We didn&lsquo;t find anything with that name
-        <Search />
+        <Navigation />
+        <main className="poke-details">
+          <Container>
+            <PageTitle>PokeDetails</PageTitle>
+            <p>We didn&lsquo;t find anything with that name</p>
+            <PokemonSearch currentGeneration={currentGeneration} />
+          </Container>
+        </main>
       </>
     );
   }
@@ -52,18 +57,7 @@ const PokeDetails = ({
         <Container>
           <PageTitle>PokeDetails</PageTitle>
 
-          <div
-            style={{
-              display: "flex",
-              gap: "16px",
-              marginBottom: "16px",
-              flexWrap: "wrap",
-            }}
-          >
-            <Search />
-
-            <GenerationSelector currentGeneration={currentGeneration} />
-          </div>
+          <PokemonSearch currentGeneration={currentGeneration} />
 
           <Row className="mb-4">
             <Col sm={12}>

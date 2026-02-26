@@ -57,6 +57,7 @@ const Search = ({ route = "" }: SearchProps) => {
         alignItems: "center",
         gap: "12px",
         minWidth: 150,
+        flex: "1 1 auto",
       }}
     >
       <Autocomplete
@@ -64,9 +65,8 @@ const Search = ({ route = "" }: SearchProps) => {
         disablePortal
         options={pokemonList}
         sx={{
-          width: { xs: "100%", sm: 300 },
+          flex: 1,
           minWidth: 150,
-          flexGrow: { xs: 1, sm: 0 },
         }}
         onInputChange={handleInputChange}
         onChange={handleSubmit}
