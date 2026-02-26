@@ -36,7 +36,8 @@ const Navigation = () => {
           variant="h6" 
           component="div" 
           sx={{ 
-            flexGrow: 1,
+            flexGrow: { xs: 1, sm: 0 },
+            marginRight: { xs: 0, sm: 4 },
             fontWeight: "bold",
             color: "#6b9bd1"
           }}
