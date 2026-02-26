@@ -32,24 +32,31 @@ const Navigation = () => {
   return (
     <AppBar position="static" sx={{ backgroundColor: "#2a2a2a", marginBottom: 3 }}>
       <Toolbar>
-        <Link href="/" passHref style={{ textDecoration: "none" }}>
-          <Typography 
-            variant="h6" 
-            sx={{ 
-              flexGrow: { xs: 1, sm: 0 },
-              marginRight: { xs: 0, sm: 4 },
-              fontWeight: "bold",
-              color: "#6b9bd1",
+        <Box sx={{ flexGrow: { xs: 1, sm: 0 } }}>
+          <Link 
+            href="/" 
+            passHref 
+            style={{ 
               textDecoration: "none",
-              cursor: "pointer",
-              "&:hover": {
-                color: "#8ab4e5",
-              }
             }}
           >
-            PokeDetails
-          </Typography>
-        </Link>
+            <Typography 
+              variant="h6" 
+              sx={{ 
+                fontWeight: "bold",
+                color: "#6b9bd1",
+                textDecoration: "none",
+                cursor: "pointer",
+                marginRight: { xs: 0, sm: 4 },
+                "&:hover": {
+                  color: "#8ab4e5",
+                }
+              }}
+            >
+              PokeDetails
+            </Typography>
+          </Link>
+        </Box>
         
         {/* Desktop Navigation */}
         <Box sx={{ display: { xs: "none", sm: "block" } }}>
