@@ -116,7 +116,8 @@ const UsageDetails = ({
   spreads,
   currentGeneration = 9,
 }: SmogonStats & { currentGeneration?: number }) => {
-  const countersList = Object.keys(counters);
+  const countersList = Object.keys(counters || {});
+  const hasCounters = countersList.length > 0;
   
   const smogonAbilitiesUrl = getSmogonUrl("abilities", currentGeneration);
   const smogonMovesUrl = getSmogonUrl("moves", currentGeneration);
@@ -150,7 +151,7 @@ const UsageDetails = ({
             <UsageList title="Abilities" data={abilities} count={10} baseUrl={smogonAbilitiesUrl} />
           </Col>
 
-          <Col sm={4}>
+          <Col sm={4} style={{ display: hasCounters ? "block" : "none" }} className="d-sm-block">
             <h3>Counters</h3>
 
             <ol>
