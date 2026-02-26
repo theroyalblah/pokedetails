@@ -56,7 +56,6 @@ const Search = ({ route = "" }: SearchProps) => {
         display: "flex",
         alignItems: "center",
         gap: "12px",
-        flexGrow: 1,
         minWidth: 150,
       }}
     >
