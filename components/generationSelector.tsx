@@ -22,8 +22,8 @@ const GENERATIONS = [
 
 const FORM_CONTROL_STYLES = {
   minWidth: { xs: 150, sm: 280 },
-  flexGrow: { xs: 1, sm: 0 },
-  maxWidth: { xs: "100%", sm: 280 },
+  flexGrow: { xs: 1, sm: 1, md: 0 },
+  maxWidth: { md: "100%" },
   backgroundColor: "#2a2a2a",
   borderRadius: "4px",
   "& .MuiOutlinedInput-root": {
@@ -105,7 +105,7 @@ const GenerationSelector = ({
   };
 
   return (
-    <FormControl size="medium" sx={FORM_CONTROL_STYLES}>
+    <FormControl sx={FORM_CONTROL_STYLES}>
       <InputLabel id="generation-select-label">Generation</InputLabel>
 
       <Select

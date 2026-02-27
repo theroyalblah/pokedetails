@@ -129,13 +129,13 @@ const UsageDetails = ({
 
       <Container>
         <Row>
-          <Col sm={4}>
+          <Col md={4}>
             <UsageList title="Moves" data={moves} count={20} baseUrl={smogonMovesUrl} />
           </Col>
-          <Col sm={4}>
+          <Col md={4}>
             <UsageList title="Items" data={items} count={20} baseUrl={smogonItemsUrl} />
           </Col>
-          <Col sm={4}>
+          <Col md={4}>
             <UsageList 
               title="Teammates" 
               data={teammates} 
@@ -147,11 +147,11 @@ const UsageDetails = ({
         </Row>
 
         <Row>
-          <Col sm={4}>
+          <Col md={4}>
             <UsageList title="Abilities" data={abilities} count={10} baseUrl={smogonAbilitiesUrl} />
           </Col>
 
-          <Col sm={4} style={{ display: hasCounters ? "block" : "none" }} className="d-sm-block">
+          <Col md={4} style={{ display: hasCounters ? "block" : "none" }} className="d-md-block">
             <h3>Counters</h3>
 
             <ol>
@@ -165,7 +165,7 @@ const UsageDetails = ({
             </ol>
           </Col>
 
-          <Col sm={4}>{handleSpreads(spreads)}</Col>
+          <Col md={4}>{handleSpreads(spreads)}</Col>
         </Row>
       </Container>
     </section>
