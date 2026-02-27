@@ -40,6 +40,11 @@ const PokeDetails = ({
 
   const name = data.name ?? species?.name;
 
+  const hasSmogonStats =
+    smogonStats && smogonStats.length > 0 && !smogonStats[0]?.error;
+  const hasVgcStats = vgcStats && !vgcStats?.error;
+  const hasNoResults = !hasSmogonStats && !hasVgcStats;
+
   return (
     <>
       <Head>
@@ -82,7 +87,15 @@ const PokeDetails = ({
             </Col>
           </Row>
 
-          {!!smogonStats &&
+          {hasNoResults && (
+            <Row className="mb-4">
+              <Col sm={12}>
+                <p>There aren't any competitive usage statistics for {name}. This is likely because this Pokémon is either not fully evolved or not used in competitive play.</p>
+              </Col>
+            </Row>
+          )}
+
+          {hasSmogonStats &&
             smogonStats.map((format, i) => {
               return (
                 <div key={formats[i]}>
@@ -98,19 +111,15 @@ const PokeDetails = ({
               );
             })}
 
-          {vgcStats && (
+          {hasVgcStats && (
             <>
               <h2>{vgcFormat || "VGC Stats"}</h2>
 
               <Row>
-                {!vgcStats?.error ? (
-                  <UsageDetails
-                    {...vgcStats}
-                    currentGeneration={currentGeneration}
-                  />
-                ) : (
-                  <p>Looks like there&lsquo;s no usage in vgc :(</p>
-                )}
+                <UsageDetails
+                  {...vgcStats}
+                  currentGeneration={currentGeneration}
+                />
               </Row>
             </>
           )}
