@@ -87,7 +87,10 @@ const TeamGenerator = ({
         <main className="poke-details">
           <Container>
             <PageTitle>Team Generator</PageTitle>
-            <PokemonSearch currentGeneration={currentGeneration} route="/teamgenerator" />
+            <PokemonSearch
+              currentGeneration={currentGeneration}
+              route="/teamgenerator"
+            />
             {error && <p>{error}</p>}
             {!error && <p>Search for a Pokémon to start generating a team!</p>}
           </Container>
@@ -119,18 +122,19 @@ const TeamGenerator = ({
       <main className="poke-details">
         <Container>
           <PageTitle>Team Generator</PageTitle>
+
+          <PokemonSearch
+            currentGeneration={currentGeneration}
+            route="/teamgenerator"
+          />
+
           <div
             style={{
               display: "flex",
-              gap: "16px",
+              justifyContent: "flex-end",
               marginBottom: "16px",
-              flexWrap: "wrap",
-              alignItems: "flex-start",
             }}
           >
-            
-            <PokemonSearch currentGeneration={currentGeneration} route="/teamgenerator" />
-
             <Button
               onClick={handleExportTeam}
               disabled={isExporting || showCopyAlert}
