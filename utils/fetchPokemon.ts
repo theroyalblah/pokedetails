@@ -3,7 +3,7 @@ import { Smogon } from "@pkmn/smogon";
 import { Generations, Specie } from "@pkmn/data";
 import { Dex } from "@pkmn/dex";
 import { getFormatsForGeneration } from "./formats";
-import { removeDashes } from "./helpers";
+import { removeDashes, normalizePokemonForSprite } from "./helpers";
 import { SmogonStats } from "../components/usageDetails";
 
 // Singleton instances to benefit from caching and avoid recreating objects
@@ -26,14 +26,17 @@ export async function fetchPokemon(
   includeVGC: boolean = false
 ): Promise<PokemonData[]> {
 
-  // Fetch all pokemon data at once
-  const pokeDataArray = await pokedex.getPokemonByName(pokemonNames).catch(() => []);
+  // Some pokemon names work for smogon but need normalizing for pokedex to find them
+  const normalizedNamesForSprites = pokemonNames.map(name => normalizePokemonForSprite(name));
+
+  const pokeDataArray = await pokedex.getPokemonByName(normalizedNamesForSprites).catch(() => []);
   const pokeDataMap = new Map<string, Pokedex.Pokemon>();
   
   if (Array.isArray(pokeDataArray)) {
-    pokeDataArray.forEach((poke) => {
+    pokeDataArray.forEach((poke, index) => {
       if (poke && typeof poke !== 'string') {
-        pokeDataMap.set(poke.name.toLowerCase(), poke);
+        // Map the original name to the fetched data
+        pokeDataMap.set(pokemonNames[index].toLowerCase(), poke);
       }
     });
   }

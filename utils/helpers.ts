@@ -50,6 +50,25 @@ export const shouldExcludeValue = (item: string): boolean => {
   return lowerItem === "nothing" || lowerItem === "no ability";
 };
 
+
+export const normalizePokemonForSprite = (pokemonName: string): string => {
+  const lowerName = pokemonName.toLowerCase();
+  
+  if (lowerName.startsWith("arceus-")) {
+    return "arceus";
+  }
+
+  if (lowerName.startsWith("necrozma-dusk")) {
+    return "necrozma-dusk";
+  }
+
+  if (lowerName.startsWith("necrozma-dawn")) {
+    return "necrozma-dawn";
+  }
+  
+  return pokemonName;
+};
+
 import pokemonList from "../pokemon.json";
 
 export const normalizePokemonName = (name: string): string => {
