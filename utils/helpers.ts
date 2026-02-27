@@ -50,22 +50,23 @@ export const shouldExcludeValue = (item: string): boolean => {
   return lowerItem === "nothing" || lowerItem === "no ability";
 };
 
+const problematicPokemonNames = [
+  { startsWith: "arceus-", normalized: "arceus" },
+  { startsWith: "necrozma-dusk", normalized: "necrozma-dusk" },
+  { startsWith: "necrozma-dawn", normalized: "necrozma-dawn" },
+];
 
 export const normalizePokemonForSprite = (pokemonName: string): string => {
   const lowerName = pokemonName.toLowerCase();
-  
-  if (lowerName.startsWith("arceus-")) {
-    return "arceus";
+
+  const problematic = problematicPokemonNames.find(({ startsWith }) =>
+    lowerName.startsWith(startsWith),
+  );
+
+  if (problematic) {
+    return problematic.normalized;
   }
 
-  if (lowerName.startsWith("necrozma-dusk")) {
-    return "necrozma-dusk";
-  }
-
-  if (lowerName.startsWith("necrozma-dawn")) {
-    return "necrozma-dawn";
-  }
-  
   return pokemonName;
 };
 
