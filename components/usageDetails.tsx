@@ -45,13 +45,12 @@ const handleSpreads = (spreads: StringPercent, n = 5) => {
     <>
       <h3>Spreads</h3>
 
-      <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
+      <div className="spreads-table-wrapper">
         <table
           style={{ 
             width: "100%", 
             borderCollapse: "collapse", 
-            fontSize: "0.9em",
-            minWidth: "500px"
+            fontSize: "0.9em"
           }}
         >
           <thead>

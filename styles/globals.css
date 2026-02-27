@@ -59,3 +59,22 @@ a:hover {
 .accordion.accordion-dark .accordion-button::after {
   filter: invert(1);
 }
+
+.spreads-table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.spreads-table-wrapper table {
+  min-width: 500px;
+}
+
+@media (min-width: 1200px) {
+  .spreads-table-wrapper {
+    overflow-x: visible;
+  }
+  
+  .spreads-table-wrapper table {
+    min-width: auto;
+  }
+}
