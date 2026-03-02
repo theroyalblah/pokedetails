@@ -15,7 +15,8 @@ type StringPercent = {
 
 type PokemonCardProps = {
   pokemonData: PokemonData;
-  name: string;
+  pokemonName: string;
+  displayName: string;
   usage?: number;
   isSmall?: boolean;
   moves?: StringPercent;
@@ -27,7 +28,8 @@ type PokemonCardProps = {
 
 const PokemonCard = ({
   pokemonData,
-  name,
+  pokemonName,
+  displayName,
   usage,
   isSmall,
   moves,
@@ -37,11 +39,6 @@ const PokemonCard = ({
   currentGeneration = 9,
 }: PokemonCardProps) => {
   const [isOpen, setIsOpen] = useState(false);
-
-  const pokemonName =
-    typeof pokemonData.data === "string"
-      ? name
-      : (pokemonData.data?.name ?? pokemonData.species?.name ?? name);
 
   const species = pokemonData.species;
   const pokemonTypes = species?.types ?? [];
@@ -60,7 +57,7 @@ const PokemonCard = ({
     >
       <Card.Body>
         <Card.Title style={{ color: "#e0e0e0" }}>
-          {capFirstLetter(pokemonName)}
+          {displayName}
         </Card.Title>
 
         {usage !== undefined && (

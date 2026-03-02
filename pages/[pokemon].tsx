@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { GetServerSideProps } from "next";
 import { Container, Row, Col } from "react-bootstrap";
-import { capFirstLetter } from "../utils/helpers";
+import { formatPokemonDisplayName } from "../utils/helpers";
 import UsageDetails from "../components/usageDetails";
 import PokemonSearch from "../components/pokemonSearch";
 import Head from "next/head";
@@ -38,8 +38,8 @@ const PokeDetails = ({
     );
   }
 
-  const name = data.name ?? species?.name;
-
+  const name = data?.name || data?.species?.name;
+  const displayName = formatPokemonDisplayName(name || "");
   const hasSmogonStats =
     smogonStats && smogonStats.length > 0 && !smogonStats[0]?.error;
   const hasVgcStats = vgcStats && !vgcStats?.error;
@@ -48,10 +48,10 @@ const PokeDetails = ({
   return (
     <>
       <Head>
-        <title>Pokedetails - {!!name ? capFirstLetter(name) : ""}</title>
+        <title>Pokedetails - {displayName}</title>
         <meta
           property="og:title"
-          content={`Pokedetails - ${name}`}
+          content={`Pokedetails - ${displayName}`}
           key="title"
         />
       </Head>
@@ -74,7 +74,8 @@ const PokeDetails = ({
                   vgcStats,
                   species,
                 }}
-                name={name || ""}
+                pokemonName={name || ""}
+                displayPokemonName={displayName}
                 moves={smogonStats[0]?.moves || vgcStats?.moves}
                 items={smogonStats[0]?.items || vgcStats?.items}
                 abilities={smogonStats[0]?.abilities || vgcStats?.abilities}

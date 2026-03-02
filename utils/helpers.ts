@@ -1,3 +1,7 @@
+import pokemonDisplayNames from "../pokemonDisplayNames.json";
+
+type PokemonDisplayNames = Record<string, Record<string, string>>;
+
 export const capFirstLetter = (text: string): string =>
   text.charAt(0).toUpperCase() + text.slice(1);
 
@@ -68,6 +72,31 @@ export const normalizePokemonForSprite = (pokemonName: string): string => {
   }
 
   return pokemonName;
+};
+
+export const formatPokemonDisplayName = (
+  pokemonName: string,
+  language: string = "en",
+): string => {
+  if (!pokemonName) return "";
+
+  const lowerName = pokemonName.toLowerCase();
+  const displayNamesMap = pokemonDisplayNames as PokemonDisplayNames;
+
+  // Try to find the name in the lookup table
+  // For now only names that won't display correctly if capitalized are included in the lookup table
+  if (
+    displayNamesMap[lowerName] &&
+    displayNamesMap[lowerName][language]
+  ) {
+    return displayNamesMap[lowerName][language];
+  }
+
+  if (lowerName.includes("-")) {
+    return lowerName.split("-").map(capFirstLetter).join(" ");
+  }
+
+  return capFirstLetter(pokemonName);
 };
 
 import pokemonList from "../pokemon.json";

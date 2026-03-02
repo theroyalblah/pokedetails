@@ -14,7 +14,8 @@ type StringPercent = {
 
 type MainPokemonCardProps = {
   pokemonData: PokemonData;
-  name: string;
+  pokemonName: string;
+  displayPokemonName: string;
   moves?: StringPercent;
   items?: StringPercent;
   abilities?: StringPercent;
@@ -36,7 +37,8 @@ const boxStyle = {
 
 const MainPokemonCard = ({
   pokemonData,
-  name,
+  pokemonName,
+  displayPokemonName,
   moves,
   items,
   abilities,
@@ -46,10 +48,6 @@ const MainPokemonCard = ({
   linkText,
   currentGeneration = 9,
 }: MainPokemonCardProps) => {
-  const pokemonName =
-    typeof pokemonData.data === "string"
-      ? name
-      : (pokemonData.data?.name ?? pokemonData.species?.name ?? name);
 
   const filledInLinkUrl = linkUrl || `/${pokemonName.toLowerCase()}`;
   const filledInLinkText = linkText || "View Details →";
@@ -71,7 +69,7 @@ const MainPokemonCard = ({
     >
       <Card.Body>
         <Card.Title style={{ color: "#e0e0e0", fontSize: "3rem" }}>
-          {capFirstLetter(pokemonName)}
+          {displayPokemonName}
         </Card.Title>
 
         <div className="types-container">

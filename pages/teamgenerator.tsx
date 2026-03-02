@@ -2,7 +2,7 @@ import { GetServerSideProps } from "next";
 import React, { useState } from "react";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import {
-  capFirstLetter,
+  formatPokemonDisplayName,
   normalizePokemonName,
   copyToClipboard,
 } from "../utils/helpers";
@@ -103,16 +103,15 @@ const TeamGenerator = ({
     typeof mainPokemon.data === "string"
       ? ""
       : (mainPokemon.data?.name ?? mainPokemon.species?.name ?? "");
+  const displayName = formatPokemonDisplayName(mainPokemonName);
 
   return (
     <>
       <Head>
-        <title>
-          Pokedetails - Team Generator - {capFirstLetter(mainPokemonName)}
-        </title>
+        <title>Pokedetails - Team Generator - {displayName}</title>
         <meta
           property="og:title"
-          content={`Pokedetails - Team Generator - ${mainPokemonName}`}
+          content={`Pokedetails - Team Generator - ${displayName}`}
           key="title"
         />
       </Head>
@@ -153,7 +152,8 @@ const TeamGenerator = ({
             <Col sm={12}>
               <MainPokemonCard
                 pokemonData={mainPokemon}
-                name={mainPokemonName}
+                pokemonName={mainPokemonName || ""}
+                displayPokemonName={displayName}
                 moves={
                   mainPokemon.smogonStats[
                     mainPokemon.formats.indexOf(
@@ -195,9 +195,7 @@ const TeamGenerator = ({
               flexWrap: "wrap",
             }}
           >
-            <span>
-              {capFirstLetter(mainPokemonName)}&apos;s Top Teammates for
-            </span>
+            <span>{displayName}&apos;s Top Teammates for</span>
             <FormatSelector
               formats={mainPokemon.formats}
               currentFormat={format || mainPokemon.formats[0] || ""}
@@ -211,11 +209,14 @@ const TeamGenerator = ({
               const firstFormatStats =
                 teammate.data.smogonStats?.[0] || teammate.data.vgcStats;
 
+              const displayName = formatPokemonDisplayName(teammate.name);
+
               return (
                 <Col key={teammate.name} sm={12} md={6} lg={4} className="mb-4">
                   <PokemonCard
                     pokemonData={teammate.data}
-                    name={teammate.name}
+                    pokemonName={teammate.name}
+                    displayName={displayName}
                     usage={teammate.usage}
                     isSmall={true}
                     moves={firstFormatStats?.moves}
