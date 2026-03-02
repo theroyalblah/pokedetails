@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Button, Spinner } from "react-bootstrap";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import pokemonList from "../pokemon.json";
+import competitivePokemon from "../competitivePokemon.json";
 
 type SearchProps = {
   route?: string;
@@ -63,7 +63,7 @@ const Search = ({ route = "" }: SearchProps) => {
       <Autocomplete
         freeSolo
         disablePortal
-        options={pokemonList}
+        options={competitivePokemon}
         sx={{
           flex: 1,
           minWidth: 150,
