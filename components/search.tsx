@@ -12,9 +12,10 @@ import { normalizePokemonSearchInput } from "../utils/helpers";
 
 type SearchProps = {
   route?: string;
+  currentGeneration?: number;
 };
 
-const Search = ({ route = "" }: SearchProps) => {
+const Search = ({ route = "", currentGeneration = 9 }: SearchProps) => {
   const router = useRouter();
   const [formVal, setFormVal] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -59,9 +60,9 @@ const Search = ({ route = "" }: SearchProps) => {
     setIsLoading(true);
 
     if (route) {
-      router.push(`${route}?pokemon=${pokemonName}`);
+      router.push(`${route}?pokemon=${pokemonName}&gen=${currentGeneration}`);
     } else {
-      router.push(`/${pokemonName}`);
+      router.push(`/${pokemonName}?gen=${currentGeneration}`);
     }
   };
 

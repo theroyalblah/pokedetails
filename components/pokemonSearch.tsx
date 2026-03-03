@@ -17,7 +17,7 @@ const PokemonSearch = ({ currentGeneration = 9, route }: PokemonSearchProps) => 
         alignItems: "flex-start",
       }}
     >
-      <Search route={route} />
+      <Search route={route} currentGeneration={currentGeneration} />
 
       <GenerationSelector currentGeneration={currentGeneration} />
     </div>
