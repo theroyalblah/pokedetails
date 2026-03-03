@@ -99,6 +99,92 @@ export const formatPokemonDisplayName = (
   return capFirstLetter(pokemonName);
 };
 
+/**
+ * Creates a reverse lookup map from display names to API names
+ * e.g., "Mega Charizard X" -> "charizard-mega-x"
+ */
+const createReverseDisplayNameMap = (): Record<string, string> => {
+  const displayNamesMap = pokemonDisplayNames as PokemonDisplayNames;
+  const reverseMap: Record<string, string> = {};
+  
+  for (const [apiName, translations] of Object.entries(displayNamesMap)) {
+    if (translations.en) {
+      const displayName = translations.en.toLowerCase();
+      reverseMap[displayName] = apiName;
+    }
+  }
+  
+  return reverseMap;
+};
+
+// Cache the reverse lookup map
+const reverseDisplayNameMap = createReverseDisplayNameMap();
+
+export const normalizePokemonSearchInput = (input: string): string => {
+  if (!input) return "";
+  
+  const cleaned = input.trim().toLowerCase();
+  
+  if (reverseDisplayNameMap[cleaned]) {
+    return reverseDisplayNameMap[cleaned];
+  }
+  
+  const withDashes = cleaned.replace(/\s+/g, "-");
+  
+  if (reverseDisplayNameMap[formatPokemonDisplayName(withDashes).toLowerCase()]) {
+    return withDashes;
+  }
+  
+  // Try common pattern transformations
+  const patterns = [
+    // "mega charizard x" -> "charizard-mega-x"
+    /^mega\s+(\S+)\s+([xy])$/i,
+    // "gigantamax pikachu" -> "pikachu-gmax"
+    /^gigantamax\s+(\S+)$/i,
+    // "gmax pikachu" -> "pikachu-gmax"
+    /^gmax\s+(\S+)$/i,
+    // "alolan raichu" -> "raichu-alola"
+    /^(alolan|galarian|hisuian|paldean)\s+(\S+)(?:\s+\((.+)\))?$/i,
+    // "arceus flying" or "arceus (flying)" -> "arceus-flying"
+    /^(\S+)\s+\(([^)]+)\)$/i,
+  ];
+  
+  for (const pattern of patterns) {
+    const match = cleaned.match(pattern);
+    if (match) {
+      let candidate = "";
+      
+      if (pattern.source.startsWith("^mega")) {
+        // mega charizard x -> charizard-mega-x
+        candidate = match[2] ? `${match[1]}-mega-${match[2]}` : `${match[1]}-mega`;
+      } else if (pattern.source.includes("gigantamax")) {
+        // gigantamax pikachu -> pikachu-gmax
+        candidate = `${match[1]}-gmax`;
+      } else if (pattern.source.includes("alolan|galarian")) {
+        // alolan raichu -> raichu-alola
+        const regionMap: Record<string, string> = {
+          alolan: "alola",
+          galarian: "galar",
+          hisuian: "hisui",
+          paldean: "paldea",
+        };
+        const region = regionMap[match[1]];
+        candidate = match[3] ? `${match[2]}-${region}-${match[3].replace(/\s+/g, "-")}` : `${match[2]}-${region}`;
+      } else if (pattern.source.includes("\\(")) {
+        // arceus (flying) -> arceus-flying
+        candidate = `${match[1]}-${match[2].replace(/\s+/g, "-")}`;
+      }
+      
+      // Verify the candidate is in our display names
+      if (reverseDisplayNameMap[formatPokemonDisplayName(candidate).toLowerCase()]) {
+        return candidate;
+      }
+    }
+  }
+  
+  return withDashes;
+};
+
 import pokemonList from "../pokemon.json";
 
 export const normalizePokemonName = (name: string): string => {

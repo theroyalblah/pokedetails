@@ -1,9 +1,14 @@
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button, Spinner } from "react-bootstrap";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import competitivePokemon from "../competitivePokemon.json";
+import { 
+  generatePokemonAutocompleteOptions,
+  filterPokemonOptions,
+  PokemonAutocompleteOption 
+} from "../utils/pokemonAutocomplete";
+import { normalizePokemonSearchInput } from "../utils/helpers";
 
 type SearchProps = {
   route?: string;
@@ -13,6 +18,8 @@ const Search = ({ route = "" }: SearchProps) => {
   const router = useRouter();
   const [formVal, setFormVal] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+ 
+  const autocompleteOptions = useMemo(() => generatePokemonAutocompleteOptions(), []);
 
   useEffect(() => {
     const handleRouteChange = () => {
@@ -28,18 +35,33 @@ const Search = ({ route = "" }: SearchProps) => {
     };
   }, [router.events]);
 
-  const handleSubmit = (_e: React.SyntheticEvent, value?: string | null) => {
-    const input = value ?? formVal;
-    const str = input.replace(/\s+/g, "-").toLowerCase();
+  const handleSubmit = (_e: React.SyntheticEvent, value?: string | PokemonAutocompleteOption | null) => {
+    let pokemonName = "";
+    
+    // I don't know why but the form submits when hitting the final backspace on a string of input, searching for just the last letter.
+    if (typeof value === "string") {
+       // User typed freely
+      if (value.trim() === "") return;
+      if (value.length < 3) return;
+      
+      pokemonName = normalizePokemonSearchInput(value);
+    } else if (value && typeof value === "object") {
+      // User selected from dropdown
+      pokemonName = value.value;
+    } else {
+      if (formVal.length < 3) return;
+      // Fallback to form value
+      pokemonName = normalizePokemonSearchInput(formVal);
+    }
 
-    if (!str) return;
+    if (!pokemonName) return;
 
     setIsLoading(true);
 
     if (route) {
-      router.push(`${route}?pokemon=${str}`);
+      router.push(`${route}?pokemon=${pokemonName}`);
     } else {
-      router.push(`/${str}`);
+      router.push(`/${pokemonName}`);
     }
   };
 
@@ -62,8 +84,11 @@ const Search = ({ route = "" }: SearchProps) => {
     >
       <Autocomplete
         freeSolo
-        disablePortal
-        options={competitivePokemon}
+        options={autocompleteOptions}
+        getOptionLabel={(option) => 
+          typeof option === "string" ? option : option.label
+        }
+        filterOptions={filterPokemonOptions}
         sx={{
           flex: 1,
           minWidth: 150,
