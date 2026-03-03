@@ -48,7 +48,6 @@ const MainPokemonCard = ({
   linkText,
   currentGeneration = 9,
 }: MainPokemonCardProps) => {
-
   const filledInLinkUrl = linkUrl || `/${pokemonName.toLowerCase()}`;
   const filledInLinkText = linkText || "View Details →";
 
@@ -159,9 +158,7 @@ const MainPokemonCard = ({
             )}
 
             {showMostCommonSet && (
-              <div
-                style={boxStyle}
-              >
+              <div style={boxStyle}>
                 <h5 style={{ color: "#e0e0e0", marginBottom: "12px" }}>
                   Most Common Set
                 </h5>
@@ -178,14 +175,18 @@ const MainPokemonCard = ({
           </Col>
         </Row>
 
-        <div style={{ marginTop: "16px", display: "flex", gap: "16px", flexWrap: "wrap" }}>
-          <a
-            href={filledInLinkUrl}
-            style={{ color: "#6b9bd1" }}
-          >
+        <div
+          style={{
+            marginTop: "16px",
+            display: "flex",
+            gap: "16px",
+            flexWrap: "wrap",
+          }}
+        >
+          <a href={filledInLinkUrl} style={{ color: "#6b9bd1" }}>
             {filledInLinkText}
           </a>
-          
+
           <a
             href={`https://www.smogon.com/dex/${getSmogonGenAbbreviation(currentGeneration)}/pokemon/${pokemonName.toLowerCase()}`}
             rel="noreferrer"

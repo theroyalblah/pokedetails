@@ -91,7 +91,11 @@ const PokeDetails = ({
           {hasNoResults && (
             <Row className="mb-4">
               <Col sm={12}>
-                <p>There aren't any competitive usage statistics for {name}. This is likely because this Pokémon is either not fully evolved or not used in competitive play.</p>
+                <p>
+                  There aren't any competitive usage statistics for {name}. This
+                  is likely because this Pokémon is either not fully evolved or
+                  not used in competitive play.
+                </p>
               </Col>
             </Row>
           )}
