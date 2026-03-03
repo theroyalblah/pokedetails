@@ -60,8 +60,24 @@ const problematicPokemonNames = [
   { startsWith: "necrozma-dawn", normalized: "necrozma-dawn" },
 ];
 
+const formRequiredPokemon: Record<string, string> = {
+  "landorus": "landorus-incarnate",
+  "thundurus": "thundurus-incarnate",
+  "tornadus": "tornadus-incarnate",
+  "enamorus": "enamorus-incarnate",
+  "dudunsparce": "dudunsparce-two-segment",
+  "basculegion": "basculegion-male",
+  "indeedee": "indeedee-male",
+  "meowstic": "meowstic-male",
+  "oinkologne": "oinkologne-male",
+};
+
 export const normalizePokemonForSprite = (pokemonName: string): string => {
   const lowerName = pokemonName.toLowerCase();
+
+  if (formRequiredPokemon[lowerName]) {
+    return formRequiredPokemon[lowerName];
+  }
 
   const problematic = problematicPokemonNames.find(({ startsWith }) =>
     lowerName.startsWith(startsWith),
