@@ -11,8 +11,17 @@ const pokedex = new Pokedex();
 const generations = new Generations(Dex);
 const smogon = new Smogon(fetch);
 
+export type MaybePokemonData = {
+  data: Pokedex.Pokemon | {error: string};
+  smogonStats: SmogonStats[];
+  formats: string[];
+  vgcStats?: SmogonStats;
+  vgcFormat?: string | null;
+  species?: Specie;
+};
+
 export type PokemonData = {
-  data?: Pokedex.Pokemon | string;
+  data: Pokedex.Pokemon;
   smogonStats: SmogonStats[];
   formats: string[];
   vgcStats?: SmogonStats;
@@ -24,7 +33,7 @@ export async function fetchPokemon(
   pokemonNames: string[], 
   generation: number = 9,
   includeVGC: boolean = false
-): Promise<PokemonData[]> {
+): Promise<MaybePokemonData[]> {
 
   // Some pokemon names work for smogon but need normalizing for pokedex to find them
   const normalizedNamesForSprites = pokemonNames.map(name => normalizePokemonForSprite(name));

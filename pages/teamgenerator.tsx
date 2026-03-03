@@ -44,14 +44,12 @@ const TeamGenerator = ({
   const [isExporting, setIsExporting] = useState(false);
 
   const handleExportTeam = async () => {
-    if (!mainPokemon) return;
-
-    setIsExporting(true);
+    if (!mainPokemon || "error" in mainPokemon.data) return;
 
     const mainPokemonName =
-      typeof mainPokemon.data === "string"
-        ? ""
-        : (mainPokemon.data?.name ?? mainPokemon.species?.name ?? "");
+      mainPokemon.data.name ?? mainPokemon.species?.name ?? "";
+
+    setIsExporting(true);
 
     const teamText = exportTeamToSmogon(
       { name: mainPokemonName, data: mainPokemon },
@@ -70,7 +68,7 @@ const TeamGenerator = ({
     }
   };
 
-  if (error || !mainPokemon) {
+  if (!mainPokemon || "error" in mainPokemon.data) {
     return (
       <>
         <Head>
@@ -87,11 +85,14 @@ const TeamGenerator = ({
         <main className="poke-details">
           <Container>
             <PageTitle>Team Generator</PageTitle>
+
             <PokemonSearch
               currentGeneration={currentGeneration}
               route="/teamgenerator"
             />
+
             {error && <p>{error}</p>}
+
             {!error && <p>Search for a Pokémon to start generating a team!</p>}
           </Container>
         </main>
@@ -99,16 +100,14 @@ const TeamGenerator = ({
     );
   }
 
-  const mainPokemonName =
-    typeof mainPokemon.data === "string"
-      ? ""
-      : (mainPokemon.data?.name ?? mainPokemon.species?.name ?? "");
+  const mainPokemonName = (mainPokemon.data?.name ?? mainPokemon.species?.name ?? "");
   const displayName = formatPokemonDisplayName(mainPokemonName);
 
   return (
     <>
       <Head>
         <title>Pokedetails - Team Generator - {displayName}</title>
+
         <meta
           property="og:title"
           content={`Pokedetails - Team Generator - ${displayName}`}
@@ -274,10 +273,9 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     const results = await fetchPokemon([pokemonName], generation);
     const mainPokemonData = results[0];
 
-    if (
-      typeof mainPokemonData.data === "string" ||
-      !mainPokemonData.smogonStats.length
-    ) {
+    console.log("mainPokemonData", mainPokemonData);
+
+    if (!mainPokemonData || "error" in mainPokemonData.data) {
       return {
         props: {
           error: "Could not find that Pokémon or it has no usage stats",
@@ -325,12 +323,16 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
       name,
       usage: teammates[name],
       data: teammateDataArray[index],
-    }));
+    })).filter((t) => t.data && !("error" in t.data));
 
     return {
       props: {
-        mainPokemon: mainPokemonData,
-        teammates: teammatesWithData,
+        mainPokemon: mainPokemonData as PokemonData,
+        teammates: teammatesWithData as Array<{
+          name: string;
+          usage: number;
+          data: PokemonData;
+        }>,
         otherTeammates,
         format: formatToUse || null,
         currentGeneration: generation,

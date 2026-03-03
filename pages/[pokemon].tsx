@@ -12,6 +12,7 @@ import Navigation from "../components/navigation";
 
 type PokeDetailsProps = PokemonData & {
   currentGeneration: number;
+  error?: string | null;
 };
 
 const PokeDetails = ({
@@ -22,16 +23,19 @@ const PokeDetails = ({
   formats,
   species,
   currentGeneration,
+  error,
 }: PokeDetailsProps) => {
-  if (!data || typeof data === "string") {
+  if (error) {
     return (
       <>
         <Navigation />
         <main className="poke-details">
           <Container>
             <PageTitle>PokeDetails</PageTitle>
-            <p>We didn&lsquo;t find anything with that name</p>
+
             <PokemonSearch currentGeneration={currentGeneration} />
+
+            <p>We didn&lsquo;t find a Pokémon with that name</p>
           </Container>
         </main>
       </>
@@ -139,10 +143,12 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const generation = parseInt((query.gen as string) || "9", 10);
 
   const results = await fetchPokemon([pokemonName], generation, true);
+  const error = "error" in results[0].data ? results[0].data.error : null;
 
   return {
     props: {
-      ...results[0],
+      ...results[0] as PokemonData,
+      error,
       currentGeneration: generation,
     },
   };
