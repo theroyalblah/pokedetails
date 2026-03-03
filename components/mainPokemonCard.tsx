@@ -48,7 +48,7 @@ const MainPokemonCard = ({
   linkText,
   currentGeneration = 9,
 }: MainPokemonCardProps) => {
-  const filledInLinkUrl = linkUrl || `/${pokemonName.toLowerCase()}`;
+  const filledInLinkUrl = linkUrl || `/${pokemonData.smogonName.toLowerCase()}`;
   const filledInLinkText = linkText || "View Details →";
 
   const species = pokemonData.species;
@@ -188,7 +188,7 @@ const MainPokemonCard = ({
           </a>
 
           <a
-            href={`https://www.smogon.com/dex/${getSmogonGenAbbreviation(currentGeneration)}/pokemon/${pokemonName.toLowerCase()}`}
+            href={`https://www.smogon.com/dex/${getSmogonGenAbbreviation(currentGeneration)}/pokemon/${pokemonData.smogonName.toLowerCase()}`}
             rel="noreferrer"
             target="_blank"
             style={{ color: "#6b9bd1" }}

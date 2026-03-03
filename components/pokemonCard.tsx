@@ -134,7 +134,7 @@ const PokemonCard = ({
 
         <div style={{ marginTop: "16px" }}>
           <a
-            href={`/${pokemonName.toLowerCase()}?gen=${currentGeneration}`}
+            href={`/${pokemonData.smogonName.toLowerCase()}?gen=${currentGeneration}`}
             style={{ color: "#6b9bd1" }}
           >
             View Details →

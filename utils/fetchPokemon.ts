@@ -18,6 +18,7 @@ export type MaybePokemonData = {
   vgcStats?: SmogonStats;
   vgcFormat?: string | null;
   species?: Specie;
+  smogonName: string;
 };
 
 export type PokemonData = {
@@ -27,6 +28,7 @@ export type PokemonData = {
   vgcStats?: SmogonStats;
   vgcFormat?: string | null;
   species?: Specie;
+  smogonName: string;
 };
 
 export async function fetchPokemon(
@@ -57,9 +59,8 @@ export async function fetchPokemon(
       const species = Dex.data.Species[pokemon];
 
       const pokedata = pokeDataMap.get(pokemonName.toLowerCase());
-      const finalPokemonName = pokedata?.name ?? pokemonName;
 
-      const analyses = await smogon.analyses(generations.get(generation), finalPokemonName).catch(() => null);
+      const analyses = await smogon.analyses(generations.get(generation), pokemon).catch(() => null);
 
       let formats: string[] = [];
       if (!!analyses) {
@@ -97,6 +98,7 @@ export async function fetchPokemon(
         } as any),
         formats: availableFormats as string[],
         species: (species ?? null) as any,
+        smogonName: pokemon,
         smogonStats: (smogonStats ?? {
           error: `This pokemon doesn't have any sets on smogon :(`,
         }) as any,

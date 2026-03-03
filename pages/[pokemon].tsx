@@ -24,6 +24,7 @@ const PokeDetails = ({
   species,
   currentGeneration,
   error,
+  smogonName,
 }: PokeDetailsProps) => {
   if (error) {
     return (
@@ -77,6 +78,7 @@ const PokeDetails = ({
                   formats,
                   vgcStats,
                   species,
+                  smogonName,
                 }}
                 pokemonName={name || ""}
                 displayPokemonName={displayName}
@@ -85,7 +87,7 @@ const PokeDetails = ({
                 abilities={smogonStats[0]?.abilities || vgcStats?.abilities}
                 spreads={smogonStats[0]?.spreads || vgcStats?.spreads}
                 showSprites={true}
-                linkUrl={`/teamgenerator?pokemon=${name?.toLowerCase()}&gen=${currentGeneration}`}
+                linkUrl={`/teamgenerator?pokemon=${smogonName?.toLowerCase()}&gen=${currentGeneration}`}
                 linkText="Generate a team with this Pokémon →"
                 currentGeneration={currentGeneration}
               />
@@ -147,7 +149,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 
   return {
     props: {
-      ...results[0] as PokemonData,
+      ...(results[0] as PokemonData),
       error,
       currentGeneration: generation,
     },
