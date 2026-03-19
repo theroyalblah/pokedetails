@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { GetServerSideProps } from "next";
 import { Container, Row, Col } from "react-bootstrap";
-import { formatPokemonDisplayName } from "../utils/helpers";
+import { formatPokemonDisplayName, setCacheHeaders } from "../utils/helpers";
 import UsageDetails from "../components/usageDetails";
 import PokemonSearch from "../components/pokemonSearch";
 import Head from "next/head";
@@ -140,7 +140,9 @@ const PokeDetails = ({
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+export const getServerSideProps: GetServerSideProps = async ({ query, res }) => {
+  setCacheHeaders(res);
+
   const pokemonName = ((query.pokemon as string) ?? "").toLowerCase();
   const generation = parseInt((query.gen as string) || "9", 10);
 

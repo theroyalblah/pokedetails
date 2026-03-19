@@ -1,6 +1,14 @@
+import { ServerResponse } from "http";
 import pokemonDisplayNames from "../pokemonDisplayNames.json";
 
 type PokemonDisplayNames = Record<string, Record<string, string>>;
+
+// 86400 seconds = 24 hours
+const CACHE_MAX_AGE = 86400;
+
+export const setCacheHeaders = (res: ServerResponse) => {
+  res.setHeader('Cache-Control', `s-maxage=${CACHE_MAX_AGE}, stale-while-revalidate`);
+};
 
 export const capFirstLetter = (text: string): string =>
   text.charAt(0).toUpperCase() + text.slice(1);

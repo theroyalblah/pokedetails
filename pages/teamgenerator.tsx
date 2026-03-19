@@ -5,6 +5,7 @@ import {
   formatPokemonDisplayName,
   normalizePokemonName,
   copyToClipboard,
+  setCacheHeaders,
 } from "../utils/helpers";
 import PokemonSearch from "../components/pokemonSearch";
 import Head from "next/head";
@@ -255,7 +256,9 @@ const TeamGenerator = ({
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+export const getServerSideProps: GetServerSideProps = async ({ query, res }) => {
+  setCacheHeaders(res);
+
   const pokemonName = Array.isArray(query.pokemon) ? query.pokemon[0] : query.pokemon;
   const genParam = Array.isArray(query.gen) ? query.gen[0] : query.gen;
   const generation = parseInt(genParam || "9", 10);
