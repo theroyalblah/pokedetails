@@ -256,9 +256,10 @@ const TeamGenerator = ({
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const pokemonName = query.pokemon as string;
-  const generation = parseInt((query.gen as string) || "9", 10);
-  const selectedFormat = query.format as string | undefined;
+  const pokemonName = Array.isArray(query.pokemon) ? query.pokemon[0] : query.pokemon;
+  const genParam = Array.isArray(query.gen) ? query.gen[0] : query.gen;
+  const generation = parseInt(genParam || "9", 10);
+  const selectedFormat = Array.isArray(query.format) ? query.format[0] : query.format;
 
   if (!pokemonName) {
     return {
