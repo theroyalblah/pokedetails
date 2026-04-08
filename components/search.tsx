@@ -9,13 +9,22 @@ import {
   PokemonAutocompleteOption 
 } from "../utils/pokemonAutocomplete";
 import { normalizePokemonSearchInput } from "../utils/helpers";
+import {
+  getPokemonReleaseGeneration,
+  getResolvedGenerationForPokemon,
+} from "../utils/pokemonGeneration";
 
 type SearchProps = {
   route?: string;
   currentGeneration?: number;
+  onSearchPokemonChange?: (pokemonName?: string) => void;
 };
 
-const Search = ({ route = "", currentGeneration = 9 }: SearchProps) => {
+const Search = ({
+  route = "",
+  currentGeneration = 9,
+  onSearchPokemonChange,
+}: SearchProps) => {
   const router = useRouter();
   const [formVal, setFormVal] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -57,13 +66,34 @@ const Search = ({ route = "", currentGeneration = 9 }: SearchProps) => {
 
     if (!pokemonName) return;
 
+    onSearchPokemonChange?.(pokemonName);
+
     setIsLoading(true);
 
+    const resolvedGeneration = getResolvedGenerationForPokemon(
+      pokemonName,
+      currentGeneration,
+    );
+
     if (route) {
-      router.push(`${route}?pokemon=${pokemonName}&gen=${currentGeneration}`);
+      router.push(`${route}?pokemon=${pokemonName}&gen=${resolvedGeneration}`);
     } else {
-      router.push(`/${pokemonName}?gen=${currentGeneration}`);
+      router.push(`/${pokemonName}?gen=${resolvedGeneration}`);
     }
+  };
+
+  const resolveSearchedPokemonName = (inputValue: string): string | undefined => {
+    if (!inputValue.trim()) {
+      return undefined;
+    }
+
+    const normalizedPokemonName = normalizePokemonSearchInput(inputValue);
+
+    if (!getPokemonReleaseGeneration(normalizedPokemonName)) {
+      return undefined;
+    }
+
+    return normalizedPokemonName;
   };
 
   const handleInputChange = (
@@ -71,6 +101,7 @@ const Search = ({ route = "", currentGeneration = 9 }: SearchProps) => {
     newInputValue: string,
   ) => {
     setFormVal(newInputValue);
+    onSearchPokemonChange?.(resolveSearchedPokemonName(newInputValue));
   };
 
   return (

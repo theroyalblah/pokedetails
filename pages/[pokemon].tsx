@@ -9,6 +9,11 @@ import { fetchPokemon, PokemonData } from "../utils/fetchPokemon";
 import MainPokemonCard from "../components/mainPokemonCard";
 import PageTitle from "../components/pageTitle";
 import Navigation from "../components/navigation";
+import {
+  getResolvedGenerationForPokemon,
+  LATEST_GENERATION,
+} from "../utils/pokemonGeneration";
+import { normalizePokemonSearchInput } from "../utils/helpers";
 
 type PokeDetailsProps = PokemonData & {
   currentGeneration: number;
@@ -141,8 +146,26 @@ const PokeDetails = ({
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const pokemonName = (query.pokemon as string) ?? "".toLowerCase();
-  const generation = parseInt((query.gen as string) || "9", 10);
+  const pokemonName = normalizePokemonSearchInput(
+    ((query.pokemon as string) ?? "").toLowerCase(),
+  );
+  const requestedGeneration = parseInt(
+    (query.gen as string) || LATEST_GENERATION.toString(),
+    10,
+  );
+  const generation = getResolvedGenerationForPokemon(
+    pokemonName,
+    requestedGeneration,
+  );
+
+  if (generation !== requestedGeneration && pokemonName) {
+    return {
+      redirect: {
+        destination: `/${pokemonName}?gen=${generation}`,
+        permanent: false,
+      },
+    };
+  }
 
   const results = await fetchPokemon([pokemonName], generation, true);
   const error = "error" in results[0].data ? results[0].data.error : null;

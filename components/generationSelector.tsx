@@ -7,6 +7,11 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import {
+  AVAILABLE_GENERATIONS,
+  getAvailableGenerationsForPokemon,
+  getResolvedGenerationForPokemon,
+} from "../utils/pokemonGeneration";
 
 const GENERATIONS = [
   { value: 9, label: "Generation 9 (Scarlet/Violet)" },
@@ -70,13 +75,17 @@ const MENU_PAPER_STYLES = {
 
 type GenerationSelectorProps = {
   currentGeneration?: number;
+  currentPokemonName?: string;
 };
 
 const GenerationSelector = ({
   currentGeneration = 9,
+  currentPokemonName,
 }: GenerationSelectorProps) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const availableGenerations = getAvailableGenerationsForPokemon(currentPokemonName);
+  const hasGenerationRestrictions = availableGenerations.length !== AVAILABLE_GENERATIONS.length;
 
   useEffect(() => {
     const handleStart = () => setIsLoading(true);
@@ -94,9 +103,13 @@ const GenerationSelector = ({
   }, [router]);
 
   const handleChange = (event: { target: { value: unknown } }) => {
-    const newGen = event.target.value as number;
+    const newGen = Number(event.target.value);
+    const resolvedGeneration = getResolvedGenerationForPokemon(
+      currentPokemonName,
+      newGen,
+    );
     const currentPath = router.pathname;
-    const query = { ...router.query, gen: newGen.toString() };
+    const query = { ...router.query, gen: resolvedGeneration.toString() };
 
     router.push({
       pathname: currentPath,
@@ -127,7 +140,14 @@ const GenerationSelector = ({
         }}
       >
         {GENERATIONS.map((gen) => (
-          <MenuItem key={gen.value} value={gen.value}>
+          <MenuItem
+            key={gen.value}
+            value={gen.value}
+            disabled={
+              hasGenerationRestrictions &&
+              !availableGenerations.includes(gen.value)
+            }
+          >
             {gen.label}
           </MenuItem>
         ))}

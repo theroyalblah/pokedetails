@@ -16,6 +16,11 @@ import FormatSelector from "../components/formatSelector";
 import PageTitle from "../components/pageTitle";
 import Navigation from "../components/navigation";
 import { exportTeamToSmogon } from "../utils/smogonExport";
+import {
+  getResolvedGenerationForPokemon,
+  LATEST_GENERATION,
+} from "../utils/pokemonGeneration";
+import { normalizePokemonSearchInput } from "../utils/helpers";
 
 type TeamGeneratorProps = {
   mainPokemon?: PokemonData;
@@ -256,9 +261,36 @@ const TeamGenerator = ({
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const pokemonName = query.pokemon as string;
-  const generation = parseInt((query.gen as string) || "9", 10);
+  const pokemonName = normalizePokemonSearchInput(
+    ((query.pokemon as string) ?? "").toLowerCase(),
+  );
+  const requestedGeneration = parseInt(
+    (query.gen as string) || LATEST_GENERATION.toString(),
+    10,
+  );
+  const generation = getResolvedGenerationForPokemon(
+    pokemonName,
+    requestedGeneration,
+  );
   const selectedFormat = query.format as string | undefined;
+
+  if (generation !== requestedGeneration && pokemonName) {
+    const queryParams = new URLSearchParams({
+      pokemon: pokemonName,
+      gen: generation.toString(),
+    });
+
+    if (selectedFormat) {
+      queryParams.set("format", selectedFormat);
+    }
+
+    return {
+      redirect: {
+        destination: `/teamgenerator?${queryParams.toString()}`,
+        permanent: false,
+      },
+    };
+  }
 
   if (!pokemonName) {
     return {
