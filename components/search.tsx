@@ -45,7 +45,12 @@ const Search = ({
     };
   }, [router.events]);
 
-  const handleSubmit = (_e: React.SyntheticEvent, value?: string | PokemonAutocompleteOption | null) => {
+  const handleSubmit = (
+    event?: React.SyntheticEvent,
+    value?: string | PokemonAutocompleteOption | null,
+  ) => {
+    event?.preventDefault?.();
+
     let pokemonName = "";
     
     // I don't know why but the form submits when hitting the final backspace on a string of input, searching for just the last letter.
@@ -82,6 +87,22 @@ const Search = ({
     }
   };
 
+  const handleSelectionChange = (
+    _e: React.SyntheticEvent,
+    value: string | PokemonAutocompleteOption | null,
+  ) => {
+    let nextValue = "";
+
+    if (typeof value === "string") {
+      nextValue = value;
+    } else if (value && typeof value === "object") {
+      nextValue = value.label;
+    }
+
+    setFormVal(nextValue);
+    onSearchPokemonChange?.(resolveSearchedPokemonName(nextValue));
+  };
+
   const resolveSearchedPokemonName = (inputValue: string): string | undefined => {
     if (!inputValue.trim()) {
       return undefined;
@@ -105,7 +126,7 @@ const Search = ({
   };
 
   return (
-    <div
+    <form
       style={{
         display: "flex",
         alignItems: "center",
@@ -113,10 +134,12 @@ const Search = ({
         minWidth: 150,
         flex: "1 1 auto",
       }}
+      onSubmit={handleSubmit}
     >
       <Autocomplete
         freeSolo
         options={autocompleteOptions}
+        inputValue={formVal}
         getOptionLabel={(option) => 
           typeof option === "string" ? option : option.label
         }
@@ -126,13 +149,12 @@ const Search = ({
           minWidth: 150,
         }}
         onInputChange={handleInputChange}
-        onChange={handleSubmit}
+        onChange={handleSelectionChange}
         disabled={isLoading}
         renderInput={(params) => (
           <TextField
             {...params}
             name="Search Pokemon"
-            onSubmit={handleSubmit}
             label="Search Pokemon"
           />
         )}
@@ -141,7 +163,6 @@ const Search = ({
       <Button
         variant={"primary"}
         type="submit"
-        onClick={handleSubmit}
         className="search-bar__submit-btn"
         disabled={isLoading}
         style={{ flexShrink: 0 }}
@@ -154,7 +175,7 @@ const Search = ({
           <span className="visually-hidden">Loading...</span>
         </Spinner>
       )}
-    </div>
+    </form>
   );
 };
 
