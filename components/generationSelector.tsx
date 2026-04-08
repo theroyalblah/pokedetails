@@ -12,6 +12,7 @@ import {
   getAvailableGenerationsForPokemon,
   getResolvedGenerationForPokemon,
 } from "../utils/pokemonGeneration";
+import { useCloseOnScroll } from "../utils/useCloseOnScroll";
 
 const GENERATIONS = [
   { value: 9, label: "Generation 9 (Scarlet/Violet)" },
@@ -84,11 +85,17 @@ const GenerationSelector = ({
 }: GenerationSelectorProps) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const availableGenerations = getAvailableGenerationsForPokemon(currentPokemonName);
   const hasGenerationRestrictions = availableGenerations.length !== AVAILABLE_GENERATIONS.length;
 
+  useCloseOnScroll(isMenuOpen, () => setIsMenuOpen(false));
+
   useEffect(() => {
-    const handleComplete = () => setIsLoading(false);
+    const handleComplete = () => {
+      setIsLoading(false);
+      setIsMenuOpen(false);
+    };
 
     router.events.on("routeChangeComplete", handleComplete);
     router.events.on("routeChangeError", handleComplete);
@@ -105,6 +112,8 @@ const GenerationSelector = ({
       currentPokemonName,
       newGen,
     );
+
+    setIsMenuOpen(false);
 
     if (resolvedGeneration === currentGeneration) {
       return;
@@ -126,11 +135,14 @@ const GenerationSelector = ({
       <InputLabel id="generation-select-label">Generation</InputLabel>
 
       <Select
+        open={isMenuOpen}
         labelId="generation-select-label"
         id="generation-select"
         value={currentGeneration}
         label="Generation"
         onChange={handleChange}
+        onOpen={() => setIsMenuOpen(true)}
+        onClose={() => setIsMenuOpen(false)}
         disabled={isLoading}
         IconComponent={
           isLoading
@@ -138,8 +150,11 @@ const GenerationSelector = ({
             : undefined
         }
         MenuProps={{
-          PaperProps: {
-            sx: MENU_PAPER_STYLES,
+          variant: "menu",
+          slotProps: {
+            paper: {
+              sx: MENU_PAPER_STYLES,
+            },
           },
         }}
       >
