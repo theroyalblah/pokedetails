@@ -2,6 +2,8 @@ import Head from "next/head";
 import { Container } from "react-bootstrap";
 import Navigation from "../components/navigation";
 
+const pkmnShowdownLink = "https://pokemonshowdown.com/intro";
+
 const About = () => {
   return (
     <>
@@ -29,15 +31,29 @@ const About = () => {
           </p>
           <p>
             If you're new to the world of competitive Pokémon, consider reading
-            the following article{" "}
-            <a
-              href="https://www.smogon.com/dp/articles/intro_comp_pokemon"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              https://www.smogon.com/dp/articles/intro_comp_pokemon
-            </a>
+            the following articles
           </p>
+          <ul>
+            <li>
+              <a
+                href={pkmnShowdownLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {pkmnShowdownLink}
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="https://www.smogon.com/dp/articles/intro_comp_pokemon"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                https://www.smogon.com/dp/articles/intro_comp_pokemon
+              </a>
+            </li>
+          </ul>
         </Container>
       </main>
     </>
