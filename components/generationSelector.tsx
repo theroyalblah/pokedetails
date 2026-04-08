@@ -88,15 +88,12 @@ const GenerationSelector = ({
   const hasGenerationRestrictions = availableGenerations.length !== AVAILABLE_GENERATIONS.length;
 
   useEffect(() => {
-    const handleStart = () => setIsLoading(true);
     const handleComplete = () => setIsLoading(false);
 
-    router.events.on("routeChangeStart", handleStart);
     router.events.on("routeChangeComplete", handleComplete);
     router.events.on("routeChangeError", handleComplete);
 
     return () => {
-      router.events.off("routeChangeStart", handleStart);
       router.events.off("routeChangeComplete", handleComplete);
       router.events.off("routeChangeError", handleComplete);
     };
@@ -108,8 +105,15 @@ const GenerationSelector = ({
       currentPokemonName,
       newGen,
     );
+
+    if (resolvedGeneration === currentGeneration) {
+      return;
+    }
+
     const currentPath = router.pathname;
     const query = { ...router.query, gen: resolvedGeneration.toString() };
+
+    setIsLoading(true);
 
     router.push({
       pathname: currentPath,

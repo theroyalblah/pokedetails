@@ -1,8 +1,9 @@
 import { useRouter } from "next/router";
 import { useState, useEffect, useMemo } from "react";
-import { Button, Spinner } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
+import CircularProgress from "@mui/material/CircularProgress";
 import { 
   generatePokemonAutocompleteOptions,
   filterPokemonOptions,
@@ -154,8 +155,25 @@ const Search = ({
         renderInput={(params) => (
           <TextField
             {...params}
-            name="Search Pokemon"
-            label="Search Pokemon"
+            name="Pokemon"
+            label="Pokemon"
+            slotProps={{
+              input: {
+                ...params.InputProps,
+                endAdornment: (
+                  <>
+                    {isLoading && (
+                      <CircularProgress
+                        color="inherit"
+                        size={18}
+                        sx={{ mr: 1 }}
+                      />
+                    )}
+                    {params.InputProps.endAdornment}
+                  </>
+                ),
+              },
+            }}
           />
         )}
       />
@@ -167,14 +185,8 @@ const Search = ({
         disabled={isLoading}
         style={{ flexShrink: 0 }}
       >
-        Submit
+        Search
       </Button>
-
-      {isLoading && (
-        <Spinner animation="border" role="status" style={{ flexShrink: 0 }}>
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
-      )}
     </form>
   );
 };
