@@ -5,6 +5,8 @@ import {
   formatPokemonDisplayName,
   normalizePokemonName,
   copyToClipboard,
+  normalizePokemonSearchInput,
+  setCacheHeaders,
 } from "../utils/helpers";
 import PokemonSearch from "../components/pokemonSearch";
 import Head from "next/head";
@@ -20,7 +22,6 @@ import {
   getResolvedGenerationForPokemon,
   LATEST_GENERATION,
 } from "../utils/pokemonGeneration";
-import { normalizePokemonSearchInput } from "../utils/helpers";
 
 type TeamGeneratorProps = {
   mainPokemon?: PokemonData;
@@ -260,19 +261,29 @@ const TeamGenerator = ({
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+export const getServerSideProps: GetServerSideProps = async ({ query, res }) => {
+  setCacheHeaders(res);
+
+  const pokemonParam = Array.isArray(query.pokemon)
+    ? query.pokemon[0]
+    : query.pokemon;
+  const genParam = Array.isArray(query.gen) ? query.gen[0] : query.gen;
+  const formatParam = Array.isArray(query.format)
+    ? query.format[0]
+    : query.format;
+
   const pokemonName = normalizePokemonSearchInput(
-    ((query.pokemon as string) ?? "").toLowerCase(),
+    (pokemonParam ?? "").toLowerCase(),
   );
   const requestedGeneration = parseInt(
-    (query.gen as string) || LATEST_GENERATION.toString(),
+    genParam || LATEST_GENERATION.toString(),
     10,
   );
   const generation = getResolvedGenerationForPokemon(
     pokemonName,
     requestedGeneration,
   );
-  const selectedFormat = query.format as string | undefined;
+  const selectedFormat = formatParam;
 
   if (generation !== requestedGeneration && pokemonName) {
     const queryParams = new URLSearchParams({

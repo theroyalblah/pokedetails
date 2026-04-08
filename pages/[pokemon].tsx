@@ -1,7 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 import { GetServerSideProps } from "next";
 import { Container, Row, Col } from "react-bootstrap";
-import { formatPokemonDisplayName } from "../utils/helpers";
+import {
+  formatPokemonDisplayName,
+  normalizePokemonSearchInput,
+  setCacheHeaders,
+} from "../utils/helpers";
 import UsageDetails from "../components/usageDetails";
 import PokemonSearch from "../components/pokemonSearch";
 import Head from "next/head";
@@ -13,7 +17,6 @@ import {
   getResolvedGenerationForPokemon,
   LATEST_GENERATION,
 } from "../utils/pokemonGeneration";
-import { normalizePokemonSearchInput } from "../utils/helpers";
 
 type PokeDetailsProps = PokemonData & {
   currentGeneration: number;
@@ -145,12 +148,18 @@ const PokeDetails = ({
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+export const getServerSideProps: GetServerSideProps = async ({ query, res }) => {
+  setCacheHeaders(res);
+
+  const pokemonParam = Array.isArray(query.pokemon)
+    ? query.pokemon[0]
+    : query.pokemon;
+  const genParam = Array.isArray(query.gen) ? query.gen[0] : query.gen;
   const pokemonName = normalizePokemonSearchInput(
-    ((query.pokemon as string) ?? "").toLowerCase(),
+    (pokemonParam ?? "").toLowerCase(),
   );
   const requestedGeneration = parseInt(
-    (query.gen as string) || LATEST_GENERATION.toString(),
+    genParam || LATEST_GENERATION.toString(),
     10,
   );
   const generation = getResolvedGenerationForPokemon(
