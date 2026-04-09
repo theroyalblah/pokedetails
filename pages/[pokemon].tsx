@@ -8,7 +8,6 @@ import {
 } from "../utils/helpers";
 import UsageDetails from "../components/usageDetails";
 import PokemonSearch from "../components/pokemonSearch";
-import Head from "next/head";
 import { fetchPokemon, PokemonData } from "../utils/fetchPokemon";
 import MainPokemonCard from "../components/mainPokemonCard";
 import PageTitle from "../components/pageTitle";
@@ -17,6 +16,7 @@ import {
   getResolvedGenerationForPokemon,
   LATEST_GENERATION,
 } from "../utils/pokemonGeneration";
+import SiteMeta, { DEFAULT_SITE_DESCRIPTION } from "../components/siteMeta";
 
 type PokeDetailsProps = PokemonData & {
   currentGeneration: number;
@@ -34,9 +34,19 @@ const PokeDetails = ({
   error,
   smogonName,
 }: PokeDetailsProps) => {
+  const pokemonPath = smogonName
+    ? `/${smogonName.toLowerCase()}?gen=${currentGeneration}`
+    : "/";
+
   if (error) {
     return (
       <>
+        <SiteMeta
+          title="PokeDetails - Pokemon Not Found"
+          description={DEFAULT_SITE_DESCRIPTION}
+          path={pokemonPath}
+        />
+
         <Navigation />
         <main className="poke-details">
           <Container>
@@ -53,6 +63,12 @@ const PokeDetails = ({
 
   const name = data?.name || data?.species?.name;
   const displayName = formatPokemonDisplayName(name || "");
+  const pageTitle = `PokeDetails - ${displayName}`;
+  const pageDescription = `View ${displayName}'s most common competitive moves, items, abilities, spreads, and usage stats for generation ${currentGeneration}.`;
+  const pokemonArtwork =
+    data.sprites.other?.["official-artwork"]?.front_default ||
+    data.sprites.front_default ||
+    undefined;
   const hasSmogonStats =
     smogonStats && smogonStats.length > 0 && !smogonStats[0]?.error;
   const hasVgcStats = vgcStats && !vgcStats?.error;
@@ -60,14 +76,13 @@ const PokeDetails = ({
 
   return (
     <>
-      <Head>
-        <title>Pokedetails - {displayName}</title>
-        <meta
-          property="og:title"
-          content={`Pokedetails - ${displayName}`}
-          key="title"
-        />
-      </Head>
+      <SiteMeta
+        title={pageTitle}
+        description={pageDescription}
+        path={pokemonPath}
+        imageUrl={pokemonArtwork}
+        imageAlt={`${displayName} official artwork`}
+      />
 
       <Navigation />
 

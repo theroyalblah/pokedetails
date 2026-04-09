@@ -9,7 +9,6 @@ import {
   setCacheHeaders,
 } from "../utils/helpers";
 import PokemonSearch from "../components/pokemonSearch";
-import Head from "next/head";
 import { fetchPokemon, PokemonData } from "../utils/fetchPokemon";
 import PokemonCard from "../components/pokemonCard";
 import MainPokemonCard from "../components/mainPokemonCard";
@@ -22,6 +21,7 @@ import {
   getResolvedGenerationForPokemon,
   LATEST_GENERATION,
 } from "../utils/pokemonGeneration";
+import SiteMeta, { DEFAULT_SITE_DESCRIPTION } from "../components/siteMeta";
 
 type TeamGeneratorProps = {
   mainPokemon?: PokemonData;
@@ -77,14 +77,11 @@ const TeamGenerator = ({
   if (!mainPokemon || "error" in mainPokemon.data) {
     return (
       <>
-        <Head>
-          <title>Pokedetails - Team Generator</title>
-          <meta
-            property="og:title"
-            content="Pokedetails - Team Generator"
-            key="title"
-          />
-        </Head>
+        <SiteMeta
+          title="PokeDetails - Team Generator"
+          description={`${DEFAULT_SITE_DESCRIPTION} Build a quick competitive team around a Pokemon using common teammates and popular sets.`}
+          path="/teamgenerator"
+        />
 
         <Navigation />
 
@@ -108,18 +105,17 @@ const TeamGenerator = ({
 
   const mainPokemonName = (mainPokemon.data?.name ?? mainPokemon.species?.name ?? "");
   const displayName = formatPokemonDisplayName(mainPokemonName);
+  const teamGeneratorPath = `/teamgenerator?pokemon=${mainPokemon.smogonName.toLowerCase()}&gen=${currentGeneration}${format ? `&format=${encodeURIComponent(format)}` : ""}`;
+  const teamGeneratorTitle = `PokeDetails - Team Generator - ${displayName}`;
+  const teamGeneratorDescription = `Build a quick competitive team around ${displayName} using common teammates and popular sets for generation ${currentGeneration}.`;
 
   return (
     <>
-      <Head>
-        <title>Pokedetails - Team Generator - {displayName}</title>
-
-        <meta
-          property="og:title"
-          content={`Pokedetails - Team Generator - ${displayName}`}
-          key="title"
-        />
-      </Head>
+      <SiteMeta
+        title={teamGeneratorTitle}
+        description={teamGeneratorDescription}
+        path={teamGeneratorPath}
+      />
 
       <Navigation />
 

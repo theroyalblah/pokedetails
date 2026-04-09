@@ -1,16 +1,19 @@
-import Head from "next/head";
 import { Container } from "react-bootstrap";
 import Navigation from "../components/navigation";
+import SiteMeta from "../components/siteMeta";
 
 const pkmnShowdownLink = "https://pokemonshowdown.com/intro";
+const ABOUT_DESCRIPTION =
+  "Learn what PokeDetails does, where its competitive usage data comes from, and how the team generator is intended to be used.";
 
 const About = () => {
   return (
     <>
-      <Head>
-        <title>Pokedetails - About</title>
-        <meta property="og:title" content="Pokedetails - About" key="title" />
-      </Head>
+      <SiteMeta
+        title="PokeDetails - About"
+        description={ABOUT_DESCRIPTION}
+        path="/about"
+      />
 
       <Navigation />
 

@@ -1,9 +1,9 @@
 import type { NextPage } from "next";
-import Head from "next/head";
 import { Container } from "react-bootstrap";
 import Navigation from "../components/navigation";
 import PokemonSearch from "../components/pokemonSearch";
 import { useRouter } from "next/router";
+import SiteMeta, { DEFAULT_SITE_DESCRIPTION } from "../components/siteMeta";
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -11,10 +11,11 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <Head>
-        <title>Pokedetails</title>
-        <meta property="og:title" content="Pokedetails" key="title" />
-      </Head>
+      <SiteMeta
+        title="PokeDetails"
+        description={DEFAULT_SITE_DESCRIPTION}
+        path="/"
+      />
 
       <Navigation />
 
