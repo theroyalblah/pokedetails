@@ -1,5 +1,5 @@
 import { Card, Accordion } from "react-bootstrap";
-import { capFirstLetter } from "../utils/helpers";
+import { capFirstLetter, getPokemonArtworkUrl } from "../utils/helpers";
 import { PokemonData } from "../utils/fetchPokemon";
 import dynamic from "next/dynamic";
 import { useState } from "react";
@@ -44,7 +44,7 @@ const PokemonCard = ({
   const pokemonTypes = species?.types ?? [];
   const sprite =
     typeof pokemonData.data !== "string"
-      ? pokemonData.data?.sprites?.other["official-artwork"]?.front_default
+      ? getPokemonArtworkUrl(pokemonData.data?.sprites)
       : null;
 
   return (

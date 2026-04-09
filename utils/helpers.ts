@@ -3,6 +3,15 @@ import pokemonDisplayNames from "../pokemonDisplayNames.json";
 
 type PokemonDisplayNames = Record<string, Record<string, string>>;
 
+type PokemonSprites = {
+  front_default?: string | null;
+  other?: {
+    [key: string]: {
+      front_default?: string | null;
+    } | undefined;
+  };
+};
+
 // 86400 seconds = 24 hours
 const CACHE_MAX_AGE = 86400;
 
@@ -121,6 +130,16 @@ export const formatPokemonDisplayName = (
   }
 
   return capFirstLetter(pokemonName);
+};
+
+export const getPokemonArtworkUrl = (
+  sprites?: PokemonSprites | null,
+): string | undefined => {
+  return (
+    sprites?.other?.["official-artwork"]?.front_default ||
+    sprites?.front_default ||
+    undefined
+  );
 };
 
 /**

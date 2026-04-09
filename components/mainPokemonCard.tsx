@@ -1,5 +1,9 @@
 import { Card, Row, Col } from "react-bootstrap";
-import { capFirstLetter, getSmogonGenAbbreviation } from "../utils/helpers";
+import {
+  capFirstLetter,
+  getPokemonArtworkUrl,
+  getSmogonGenAbbreviation,
+} from "../utils/helpers";
 import { PokemonData } from "../utils/fetchPokemon";
 import dynamic from "next/dynamic";
 import MostCommonSet from "./mostCommonSet";
@@ -54,8 +58,9 @@ const MainPokemonCard = ({
   const species = pokemonData.species;
   const pokemonTypes = species?.types ?? [];
   const data = typeof pokemonData.data !== "string" ? pokemonData.data : null;
-  const sprite = data?.sprites?.other["official-artwork"]?.front_default;
   const sprites = data?.sprites;
+  const sprite = getPokemonArtworkUrl(sprites);
+
 
   const showMostCommonSet = moves || items || abilities || spreads;
 

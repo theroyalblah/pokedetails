@@ -3,6 +3,7 @@ import { GetServerSideProps } from "next";
 import { Container, Row, Col } from "react-bootstrap";
 import {
   formatPokemonDisplayName,
+  getPokemonArtworkUrl,
   normalizePokemonSearchInput,
   setCacheHeaders,
 } from "../utils/helpers";
@@ -65,10 +66,7 @@ const PokeDetails = ({
   const displayName = formatPokemonDisplayName(name || "");
   const pageTitle = `PokeDetails - ${displayName}`;
   const pageDescription = `View ${displayName}'s most common competitive moves, items, abilities, spreads, and usage stats for generation ${currentGeneration}.`;
-  const pokemonArtwork =
-    data.sprites.other?.["official-artwork"]?.front_default ||
-    data.sprites.front_default ||
-    undefined;
+  const pokemonArtwork = getPokemonArtworkUrl(data.sprites);
   const hasSmogonStats =
     smogonStats && smogonStats.length > 0 && !smogonStats[0]?.error;
   const hasVgcStats = vgcStats && !vgcStats?.error;
