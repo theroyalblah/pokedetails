@@ -35,9 +35,6 @@
   "raticate-alola": {
     "en": "Alolan Raticate"
   },
-  "raticate-alola-totem": {
-    "en": "Totem Alolan Raticate"
-  },
   "pikachu-gmax": {
     "en": "Gigantamax Pikachu"
   },
@@ -124,9 +121,6 @@
   },
   "marowak-alola": {
     "en": "Alolan Marowak"
-  },
-  "marowak-alola-totem": {
-    "en": "Totem Alolan Marowak"
   },
   "weezing-galar": {
     "en": "Galarian Weezing"
@@ -590,12 +584,6 @@
   "mimikyu-busted": {
     "en": "Mimikyu (Busted Form)"
   },
-  "mimikyu-totem": {
-    "en": "Totem Mimikyu"
-  },
-  "mimikyu-busted-totem": {
-    "en": "Totem Mimikyu (Busted)"
-  },
   "necrozma-dusk": {
     "en": "Necrozma (Dusk Mane)"
   },
@@ -829,9 +817,6 @@
   },
   "kommo-o": {
     "en": "Kommo-o"
-  },
-  "kommo-o-totem": {
-    "en": "Totem Kommo-o"
   },
   "tapu-koko": {
     "en": "Tapu Koko"
